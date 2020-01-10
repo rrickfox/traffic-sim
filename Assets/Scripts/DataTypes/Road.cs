@@ -4,10 +4,10 @@ namespace DataTypes
 {
     public class Road
     {
-        public StartingAnchor startingAnchor;
-        public EndingAnchor endingAnchor;
-        public uint lanes;
-        public uint length;
-        public CurvatureDirection curvatureDirection;
+        public StartingAnchor StartingAnchor;
+        public EndingAnchor EndingAnchor;
+        public int Lanes;
+        public int Length;
+        public CurvatureDirection CurvatureDirection;
     }
 }

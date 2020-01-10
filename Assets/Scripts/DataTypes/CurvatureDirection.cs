@@ -2,7 +2,7 @@ namespace DataTypes
 {
     public enum CurvatureDirection
     {
-        left,
-        right,
+        Left,
+        Right,
     }
 }

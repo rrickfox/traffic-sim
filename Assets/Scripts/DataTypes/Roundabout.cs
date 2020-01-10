@@ -1,5 +1,3 @@
-
-
 namespace DataTypes
 {
     public class Roundabout

@@ -2,9 +2,9 @@ namespace DataTypes
 {
     public class TeeSection
     {
-        public int Rotation;
-        public CombinedAnchors North;
-        public CombinedAnchors East;
-        public CombinedAnchors South;
+        public int rotation;
+        public CombinedAnchors north;
+        public CombinedAnchors east;
+        public CombinedAnchors south;
     }
 }

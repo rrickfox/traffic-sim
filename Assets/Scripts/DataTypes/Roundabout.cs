@@ -4,10 +4,10 @@ namespace DataTypes
 {
     public class Roundabout
     {
-        public CombinedAnchors North;
-        public CombinedAnchors East;
-        public CombinedAnchors South;
-        public CombinedAnchors West;
+        public CombinedAnchors north;
+        public CombinedAnchors east;
+        public CombinedAnchors south;
+        public CombinedAnchors west;
 
         private TeeSection _northSection;
         private Road _neRoad;

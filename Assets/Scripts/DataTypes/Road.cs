@@ -2,10 +2,10 @@
 {
     public class Road
     {
-        public StartingAnchor StartingAnchor;
-        public EndingAnchor EndingAnchor;
-        public int Lanes;
-        public int Length;
-        public CurvatureDirection CurvatureDirection;
+        public StartingAnchor startingAnchor;
+        public EndingAnchor endingAnchor;
+        public int lanes;
+        public int length;
+        public CurvatureDirection curvatureDirection;
     }
 }

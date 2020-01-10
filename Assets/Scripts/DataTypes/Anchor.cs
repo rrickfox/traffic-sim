@@ -14,4 +14,10 @@ namespace DataTypes
     {
         
     }
+
+    public struct CombinedAnchors
+    {
+        public StartingAnchor Start;
+        public EndingAnchor End;
+    }
 }

@@ -2,13 +2,9 @@ namespace DataTypes
 {
     public class CrossSection
     {
-        public StartingAnchor NorthStart;
-        public EndingAnchor NorthEnd;
-        public StartingAnchor EastStart;
-        public EndingAnchor EastEnd;
-        public StartingAnchor SouthStart;
-        public EndingAnchor SouthEnd;
-        public StartingAnchor WestStart;
-        public EndingAnchor WestEnd;
+        public CombinedAnchors North;
+        public CombinedAnchors East;
+        public CombinedAnchors South;
+        public CombinedAnchors West;
     }
 }

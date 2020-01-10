@@ -1,6 +1,4 @@
-﻿using DataTypes;
-
-namespace DataTypes
+﻿namespace DataTypes
 {
     public class Road
     {

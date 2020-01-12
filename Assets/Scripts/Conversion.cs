@@ -11,7 +11,7 @@ public class Conversion
     // convert meters per second to units per Timestep
     public float UnitsPerTimeStepFromMPS(float metersPerSecond)
     {
-        return metersPerSecond * _constants.TIME_STEP;
+        return metersPerSecond * _constants.TIME_STEP / _constants.DISTANCE_STEP;
     }
 
     // convert units per Timestep to kilometers per hour
@@ -23,6 +23,6 @@ public class Conversion
     // convert units per Timestep to meters per second
     public float MetersPerSecondFromUPTS(float unitsPerTimeStep)
     {
-        return unitsPerTimeStep * _constants.DISTANCE_STEP / _constants.TIME_STEP;
+        return unitsPerTimeStep / _constants.TIME_STEP * _constants.DISTANCE_STEP;
     }
 }

@@ -14,7 +14,7 @@ namespace DataTypes
 
         private CONSTANTS _constants = new CONSTANTS();
 
-        Road(int setId, Vector2 startPosition, Vector2 endingPosition, int setLanesStartToEnd, int setLanesEndToStart)
+        public Road(int setId, Vector2 startPosition, Vector2 endingPosition, int setLanesStartToEnd, int setLanesEndToStart)
         {
             id = setId;
             startingAnchor = new StartingAnchor(startPosition);

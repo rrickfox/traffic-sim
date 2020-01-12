@@ -1,28 +1,28 @@
 public class Conversion
 {
-    private CONSTANTS Constants = new CONSTANTS();
+    private CONSTANTS _constants = new CONSTANTS();
 
     // convert kilometers per hour to units per Timestep
-    public float UnitPerTimeStepFromKPH(float KilometersPerHour)
+    public float UnitPerTimeStepFromKPH(float kilometersPerHour)
     {
-        return KilometersPerHour * (1000/3600f) * Constants.TIME_STEP;
+        return kilometersPerHour * (1000/3600f) * _constants.TIME_STEP;
     }
 
-    // convert meters pr second to units per Timestep
-    public float UnitPerTimeStepFromMPS(float MetersPerSecond)
+    // convert meters per second to units per Timestep
+    public float UnitPerTimeStepFromMPS(float metersPerSecond)
     {
-        return MetersPerSecond * Constants.TIME_STEP;
+        return metersPerSecond * _constants.TIME_STEP;
     }
 
     // convert units per Timestep to kilometers per hour
-    public float KilometersPerHourFromUPTS(float UnitPerTimeStep)
+    public float KilometersPerHourFromUPTS(float unitsPerTimeStep)
     {
-        return (Constants.DISTANCE_STEP / Constants.TIME_STEP) * (3600/1000f);
+        return (_constants.DISTANCE_STEP / _constants.TIME_STEP) * (3600/1000f);
     }
 
     // convert units per Timestep to meters per second
-    public float MetersPerSecondFromUPTS(float UnitPerTimeStep)
+    public float MetersPerSecondFromUPTS(float unitsPerTimeStep)
     {
-        return Constants.DISTANCE_STEP / Constants.TIME_STEP;
+        return _constants.DISTANCE_STEP / _constants.TIME_STEP;
     }
 }

@@ -3,13 +3,13 @@ public class Conversion
     private CONSTANTS _constants = new CONSTANTS();
 
     // convert kilometers per hour to units per Timestep
-    public float UnitPerTimeStepFromKPH(float kilometersPerHour)
+    public float UnitsPerTimeStepFromKPH(float kilometersPerHour)
     {
         return kilometersPerHour * (1000/3600f) * _constants.TIME_STEP;
     }
 
     // convert meters per second to units per Timestep
-    public float UnitPerTimeStepFromMPS(float metersPerSecond)
+    public float UnitsPerTimeStepFromMPS(float metersPerSecond)
     {
         return metersPerSecond * _constants.TIME_STEP;
     }

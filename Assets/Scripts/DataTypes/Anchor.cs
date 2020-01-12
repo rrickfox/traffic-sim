@@ -1,3 +1,4 @@
+using UnityEngine;
 namespace DataTypes
 {
     public class BaseAnchor
@@ -7,12 +8,22 @@ namespace DataTypes
 
     public class StartingAnchor : BaseAnchor
     {
+    	public Vector2 position;
         
+        public StartingAnchor(Vector2 setPosition)
+        {
+            position = setPosition;
+        }
     }
     
     public class EndingAnchor : BaseAnchor
     {
+        public Vector2 position;
         
+        public EndingAnchor(Vector2 setPosition)
+        {
+            position = setPosition;
+        }
     }
 
     public struct CombinedAnchors

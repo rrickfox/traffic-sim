@@ -5,7 +5,7 @@ public class Conversion
     // convert kilometers per hour to units per Timestep
     public float UnitsPerTimeStepFromKPH(float kilometersPerHour)
     {
-        return kilometersPerHour * (10/36f) * _constants.TIME_STEP;
+        return UnitsPerTimeStepFromMPS(kilometersPerHour * (10/36f));
     }
 
     // convert meters per second to units per Timestep
@@ -17,12 +17,12 @@ public class Conversion
     // convert units per Timestep to kilometers per hour
     public float KilometersPerHourFromUPTS(float unitsPerTimeStep)
     {
-        return (_constants.DISTANCE_STEP * 3.6f / _constants.TIME_STEP) * unitsPerTimeStep;
+        return MetersPerSecondFromUPTS(unitsPerTimeStep * 3.6f);
     }
 
     // convert units per Timestep to meters per second
     public float MetersPerSecondFromUPTS(float unitsPerTimeStep)
     {
-        return unitsPerTimeStep / _constants.TIME_STEP;
+        return unitsPerTimeStep * _constants.DISTANCE_STEP / _constants.TIME_STEP;
     }
 }

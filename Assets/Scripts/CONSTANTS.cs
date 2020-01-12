@@ -2,8 +2,17 @@
 public class CONSTANTS
 {
     //in seconds
-    public float TIME_STEP = Time.fixedDeltaTime;
+    private float TimeStep = Time.fixedDeltaTime;
     //Distance a car travels at 5kmph in TIME_STEP seconds
     //in unity distance units
-    public float DISTANCE_STEP = 5 * (1000/3600f) * Time.fixedDeltaTime;
+    private float DistanceStep = 5 * (1000/3600f) * Time.fixedDeltaTime;
+
+    public float TIME_STEP
+    {
+        get {return TimeStep;}
+    }
+    public float DISTANCE_STEP
+    {
+        get {return DistanceStep;}
+    }
 }

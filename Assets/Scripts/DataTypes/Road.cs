@@ -5,23 +5,23 @@ namespace DataTypes
     public class Road
     {
         public readonly int id;
-        public StartingAnchor startingAnchor;
-        public EndingAnchor endingAnchor;
-        public int lanesStartToEnd;
-        public int lanesEndToStart;
+        public CombinedAnchors anchors1;
+        public CombinedAnchors anchors2;
+        public int lanes1To2;
+        public int lanes2To1;
         public int length;
         public CurvatureDirection curvatureDirection;
 
         private CONSTANTS _constants = new CONSTANTS();
 
-        public Road(int setId, Vector2 startPosition, Vector2 endingPosition, int setLanesStartToEnd, int setLanesEndToStart)
+        public Road(int id, Vector2 position1, Vector2 position2, int lanes1To2, int lanes2To1)
         {
-            id = setId;
-            startingAnchor = new StartingAnchor(startPosition);
-            endingAnchor = new EndingAnchor(endingPosition);
-            lanesStartToEnd = setLanesStartToEnd;
-            lanesEndToStart = setLanesEndToStart;
-            length = (int)Math.Round(Vector2.Distance(startPosition, endingPosition) / _constants.DISTANCE_UNIT);
+            this.id = id;
+            anchors1 = new CombinedAnchors(position1);
+            anchors2 = new CombinedAnchors(position2);
+            this.lanes1To2 = lanes1To2;
+            this.lanes2To1 = lanes2To1;
+            length = (int)Math.Round(Vector2.Distance(position1, position2) / _constants.DISTANCE_UNIT);
         }
     }
 }

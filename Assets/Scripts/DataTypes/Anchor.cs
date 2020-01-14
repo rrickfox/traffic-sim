@@ -25,5 +25,11 @@ namespace DataTypes
     {
         public StartingAnchor start;
         public EndingAnchor end;
+
+        public CombinedAnchors(Vector2 coordinates)
+        {
+            this.start = new StartingAnchor(coordinates);
+            this.end = new EndingAnchor(coordinates);
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace DataTypes
         public CombinedAnchors anchors2;
         public int lanes1To2;
         public int lanes2To1;
-        public int length;
+        public float length;
         public CurvatureDirection curvatureDirection;
 
         private CONSTANTS _constants = new CONSTANTS();
@@ -21,7 +21,7 @@ namespace DataTypes
             anchors2 = new CombinedAnchors(position2);
             this.lanes1To2 = lanes1To2;
             this.lanes2To1 = lanes2To1;
-            length = (int)Math.Round(Vector2.Distance(position1, position2) / _constants.DISTANCE_UNIT);
+            length = Vector2.Distance(position1, position2) / _constants.DISTANCE_UNIT;
         }
     }
 }

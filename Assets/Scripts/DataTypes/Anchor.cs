@@ -3,27 +3,22 @@ namespace DataTypes
 {
     public class BaseAnchor
     {
+        public Vector2 position;
         
+        public BaseAnchor(Vector2 position)
+        {
+            this.position = position;
+        }
     }
 
     public class StartingAnchor : BaseAnchor
     {
-    	public Vector2 position;
-        
-        public StartingAnchor(Vector2 setPosition)
-        {
-            position = setPosition;
-        }
+        public StartingAnchor(Vector2 position) : base(position) {}
     }
     
     public class EndingAnchor : BaseAnchor
     {
-        public Vector2 position;
-        
-        public EndingAnchor(Vector2 setPosition)
-        {
-            position = setPosition;
-        }
+        public EndingAnchor(Vector2 position) : base(position) {}
     }
 
     public struct CombinedAnchors

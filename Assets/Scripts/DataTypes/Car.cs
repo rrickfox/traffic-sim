@@ -7,15 +7,15 @@ namespace DataTypes
         public float positionOnRoad;
         public float lane;
         // true if from start to finish
-        public bool direction;
+        public Direction direction;
 
-        public Car(int setId, Road setRoad, float setPositionOnRoad, float setLane, bool setDirection)
+        public Car(int id, Road road, float positionOnRoad, float lane, Direction direction)
         {
-            id = setId;
-            road = setRoad;
-            positionOnRoad = setPositionOnRoad;
-            lane = setLane;
-            direction = setDirection;
+            this.id = id;
+            this.road = road;
+            this.positionOnRoad = positionOnRoad;
+            this.lane = lane;
+            this.direction = direction;
         }
     }
 }

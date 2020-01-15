@@ -1,19 +1,16 @@
+using System.Collections.Generic;
 namespace DataTypes
 {
     public class Roundabout
     {
-        public CombinedAnchors north;
-        public CombinedAnchors east;
-        public CombinedAnchors south;
-        public CombinedAnchors west;
+        public List<Anchor> anchors = new List<Anchor>();
 
-        private TeeSection _northSection;
-        private Road _neRoad;
-        private TeeSection _eastSection;
-        private Road _esRoad;
-        private TeeSection _southSection;
-        private Road _swSection;
-        private TeeSection _westSection;
-        private Road _wnSection;
+        private List<TeeSection> _teeSections = new List<TeeSection>();
+        private List<Road> _roads = new List<Road>();
+
+        public Roundabout(List<Anchor> anchors)
+        {
+            this.anchors = anchors;
+        }
     }
 }

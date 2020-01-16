@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-float speed = 0f; 
-
 public class car_ai : MonoBehaviour
- // Längeneinheiten pro Zeiteinheit
-
-
 {
+    // Längeneinheiten pro Zeiteinheit
+    float speed = 0f; 
     // Start is called before the first frame update
     void Start()
     {

@@ -16,14 +16,16 @@ public class SimulationController : MonoBehaviour
      {
         _roadSpawner = new RoadSpawner(roadPrefab);
 
-         Vector2 startPos = new Vector2(-140, 0);
-         Vector2 endPos = new Vector2(140, 0);
-         createRoad(startPos, endPos, 1, 0);
+         Vector2 pos1 = new Vector2(-140, 0);
+         Vector2 pos2 = new Vector2(140, 0);
+         createRoad(pos1, pos2, 1, 0);
      }
 
-     public void createRoad(Vector2 startPos, Vector2 endPos, int lanesStartToEnd, int lanesEndToStart)
+     public void createRoad(Vector2 pos1, Vector2 pos2, int lanes1To2, int lanes2To1)
      {
-         Road tempRoad = new Road(_idRoad, startPos, endPos, lanesStartToEnd, lanesEndToStart);
+         Node node1 = new Node(pos1, lanes1To2, lanes2To1);
+         Node node2 = new Node(pos2, lanes2To1, lanes1To2);
+         Road tempRoad = new Road(_idRoad, node1, node2, lanes1To2, lanes2To1);
          _idRoad++;
          _roads.Add(tempRoad);
          _roadSpawner.displayRoad(tempRoad);

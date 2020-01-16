@@ -15,12 +15,12 @@ public class RoadSpawner : ScriptableObject
 
     public void displayRoad(Road road)
     {
-        float scaleLength = Vector2.Distance(road.anchors1.position, road.anchors2.position);
+        float scaleLength = Vector2.Distance(road.node1.position, road.node2.position);
         float scaleWidth = (road.lanes1To2 + road.lanes2To1) * _constants.LANE_WIDTH;
-        Vector2 middlePoint = (road.anchors2.position - road.anchors1.position) * 0.5f + road.anchors1.position;
+        Vector2 middlePoint = (road.node2.position - road.node1.position) * 0.5f + road.node1.position;
         Vector3 spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
 
-        Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(road.anchors1.position - middlePoint, new Vector2(1, 0)), 0);
+        Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(road.node1.position - middlePoint, new Vector2(1, 0)), 0);
 
         GameObject tempRoad = Instantiate(_roadPrefab, spawnPoint, rotation);
         tempRoad.transform.localScale = new Vector3(scaleLength, tempRoad.transform.localScale.y, scaleWidth);

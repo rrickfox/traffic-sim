@@ -4,7 +4,6 @@ using System;
 using DataTypes;
 public class RoadSpawner : ScriptableObject
 {
-    private CONSTANTS _constants = new CONSTANTS();
     private GameObject _roadPrefab;
     private List<GameObject> _roads = new List<GameObject>();
 

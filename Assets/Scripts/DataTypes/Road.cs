@@ -21,7 +21,7 @@ namespace DataTypes
             this.node2 = node2;
             this.lanes1To2 = lanes1To2;
             this.lanes2To1 = lanes2To1;
-            length = Vector2.Distance(node1.position, node2.position) / _constants.DISTANCE_UNIT;
+            length = Vector2.Distance(node1.position, node2.position) / CONSTANTS.DISTANCE_UNIT;
         }
     }
 }

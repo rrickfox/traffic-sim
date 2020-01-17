@@ -3,14 +3,14 @@ namespace DataTypes
 {
     public class Roundabout
     {
-        public List<Anchor> anchors = new List<Anchor>();
+        public List<Node> node = new List<Node>();
 
         private List<TeeSection> _teeSections = new List<TeeSection>();
         private List<Road> _roads = new List<Road>();
 
-        public Roundabout(List<Anchor> anchors)
+        public Roundabout(List<Node> node)
         {
-            this.anchors = anchors;
+            this.node = node;
         }
     }
 }

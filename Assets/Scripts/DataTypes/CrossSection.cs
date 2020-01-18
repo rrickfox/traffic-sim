@@ -3,17 +3,17 @@ namespace DataTypes
 {
     public class CrossSection
     {
-        public Node node0;
-        public Node node1;
-        public Node node2;
-        public Node node3;
+        public Anchor anchor0;
+        public Anchor anchor1;
+        public Anchor anchor2;
+        public Anchor anchor3;
 
-        public CrossSection(Node node0, Node node1, Node node2, Node node3)
+        public CrossSection(Anchor anchor0, Anchor anchor1, Anchor anchor2, Anchor anchor3)
         {
-            this.node0 = node0;
-            this.node1 = node1;
-            this.node2 = node2;
-            this.node3 = node3;
+            this.anchor0 = anchor0;
+            this.anchor1 = anchor1;
+            this.anchor2 = anchor2;
+            this.anchor3 = anchor3;
         }
     }
 }

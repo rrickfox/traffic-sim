@@ -1,4 +1,5 @@
 using UnityEngine;
+
 namespace DataTypes
 {
     public struct Anchor

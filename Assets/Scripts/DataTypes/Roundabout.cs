@@ -1,16 +1,11 @@
 using System.Collections.Generic;
+
 namespace DataTypes
 {
-    public class Roundabout
+    public class Roundabout : Vertex
     {
-        public List<Anchor> anchors = new List<Anchor>();
-
-        private List<TeeSection> _teeSections = new List<TeeSection>();
-        private List<Road> _roads = new List<Road>();
-
-        public Roundabout(List<Anchor> anchors)
+        public Roundabout(IEnumerable<Anchor> anchors) : base(anchors)
         {
-            this.anchors = anchors;
         }
     }
 }

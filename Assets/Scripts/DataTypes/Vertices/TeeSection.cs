@@ -21,7 +21,7 @@ namespace DataTypes
             endingAnchor = this.anchors[2];
         }
 
-        private TeeSection(Anchor straightAnchor1, Anchor straightAnchor2, Anchor endingAnchor)
+        public TeeSection(Anchor straightAnchor1, Anchor straightAnchor2, Anchor endingAnchor)
             : base(ImmutableArray.Create(straightAnchor1, straightAnchor2, endingAnchor))
         {
             this.straightAnchor1 = straightAnchor1;

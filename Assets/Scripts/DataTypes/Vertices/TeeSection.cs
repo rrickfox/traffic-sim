@@ -5,9 +5,9 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
-        protected Anchor straightAnchor1;
-        protected Anchor straightAnchor2;
-        protected Anchor endingAnchor;
+        protected Anchor throughAnchor1;
+        protected Anchor throughAnchor2;
+        protected Anchor turnAnchor;
         
         public TeeSection(IEnumerable<Anchor> anchors) : base(anchors)
         {
@@ -16,17 +16,17 @@ namespace DataTypes
                 throw new WrongAnchorCount("T-sections require exactly 3 anchors!");
             }
 
-            straightAnchor1 = this.anchors[0];
-            straightAnchor2 = this.anchors[1];
-            endingAnchor = this.anchors[2];
+            throughAnchor1 = this.anchors[0];
+            throughAnchor2 = this.anchors[1];
+            turnAnchor = this.anchors[2];
         }
 
-        public TeeSection(Anchor straightAnchor1, Anchor straightAnchor2, Anchor endingAnchor)
-            : base(ImmutableArray.Create(straightAnchor1, straightAnchor2, endingAnchor))
+        public TeeSection(Anchor throughAnchor1, Anchor throughAnchor2, Anchor turnAnchor)
+            : base(ImmutableArray.Create(throughAnchor1, throughAnchor2, turnAnchor))
         {
-            this.straightAnchor1 = straightAnchor1;
-            this.straightAnchor2 = straightAnchor2;
-            this.endingAnchor = endingAnchor;
+            this.throughAnchor1 = throughAnchor1;
+            this.throughAnchor2 = throughAnchor2;
+            this.turnAnchor = turnAnchor;
         }
     }
 }

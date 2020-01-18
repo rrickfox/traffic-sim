@@ -12,8 +12,6 @@ namespace DataTypes
         public float length;
         public RoadShape shape;
 
-        private CONSTANTS _constants = new CONSTANTS();
-
         public Road(int id, Anchor anchor1, Anchor anchor2, int lanes1To2, int lanes2To1)
         {
             this.id = id;

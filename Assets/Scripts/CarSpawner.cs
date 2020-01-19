@@ -6,15 +6,13 @@ class CarSpawner : ScriptableObject
 {
     private CONSTANTS _constants = new CONSTANTS();
     private List<GameObject> _cars = new List<GameObject>();
-    private List<GameObject> _roads = new List<GameObject>();
     private GameObject _carPrefab;
     private GameObject _roadPrefab;
 
-    public CarSpawner (GameObject carPrefab, GameObject roadPrefab, List<GameObject> roads)
+    public CarSpawner (GameObject carPrefab, GameObject roadPrefab)
     {
         _carPrefab = carPrefab;
         _roadPrefab = roadPrefab;
-        _roads = roads;
     }
 
     public void displayCar(Car car)
@@ -25,12 +23,12 @@ class CarSpawner : ScriptableObject
         if(car.direction == Direction.direction1To2)
         {
             position = car.road.node1.position;
-            angle = _roads[car.road.id].transform.rotation.y;
+            angle = RoadAngle(car.road);
             offset = (((car.road.lanes1To2 + car.road.lanes2To1) / 2) - car.road.lanes1To2 + 0.5f + car.lane) * CONSTANTS.LANE_WIDTH ;
         } else
         {
             position = car.road.node2.position;
-            angle = (_roads[car.road.id].transform.rotation.y + 180) % 360;
+            angle = (RoadAngle(car.road) + 180) % 360;
             offset = (((car.road.lanes1To2 + car.road.lanes2To1) / 2) - car.road.lanes2To1 + 0.5f + car.lane) * CONSTANTS.LANE_WIDTH ;
         }
 
@@ -40,5 +38,11 @@ class CarSpawner : ScriptableObject
         tempCar.transform.position += tempCar.transform.right * offset;
         tempCar.name = "Car_" + car.id;
         _cars.Add(tempCar);
+    }
+
+    public float RoadAngle(Road road)
+    {
+        Vector2 middlePoint = (road.node2.position - road.node1.position) * 0.5f + road.node1.position;
+        return Vector2.Angle(road.node1.position - middlePoint, new Vector2(1, 0));
     }
 }

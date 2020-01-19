@@ -5,7 +5,7 @@ namespace DataTypes
 {
     public class Vertex
     {
-        protected ImmutableArray<Anchor> anchors;
+        private ImmutableArray<Anchor> anchors;
 
         public Vertex(IEnumerable<Anchor> anchors)
         {

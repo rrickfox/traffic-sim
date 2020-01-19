@@ -4,7 +4,7 @@ namespace DataTypes
 {
     public class Roundabout : Vertex
     {
-        public Roundabout(IEnumerable<Anchor> anchors) : base(anchors)
+        private Roundabout(IEnumerable<Anchor> anchors) : base(anchors)
         {
         }
     }

@@ -17,19 +17,13 @@ namespace DataTypes
                 throw new WrongAnchorCount("Cross sections require exactly 4 anchors!");
             }
 
-            this.upAnchor = this.anchors[0];
-            this.rightAnchor = this.anchors[1];
-            this.downAnchor = this.anchors[2];
-            this.leftAnchor = this.anchors[3];
+            upAnchor = this.anchors[0];
+            rightAnchor = this.anchors[1];
+            downAnchor = this.anchors[2];
+            leftAnchor = this.anchors[3];
         }
 
         public CrossSection(Anchor upAnchor, Anchor rightAnchor, Anchor downAnchor, Anchor leftAnchor)
-            : base(ImmutableArray.Create(upAnchor, rightAnchor, downAnchor, leftAnchor))
-        {
-            this.upAnchor = upAnchor;
-            this.rightAnchor = rightAnchor;
-            this.downAnchor = downAnchor;
-            this.leftAnchor = leftAnchor;
-        }
+            : this(ImmutableArray.Create(upAnchor, rightAnchor, downAnchor, leftAnchor)) {}
     }
 }

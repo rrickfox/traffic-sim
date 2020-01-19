@@ -1,25 +1,24 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace DataTypes
 {
     public class Road
     {
         public readonly int id;
-        public Anchor anchor1;
-        public Anchor anchor2;
-        public int lanes1To2;
-        public int lanes2To1;
+        public Dictionary<AnchorNumber, Anchor> anchors;
         public float length;
         public RoadShape shape;
 
-        public Road(int id, Anchor anchor1, Anchor anchor2, int lanes1To2, int lanes2To1)
+        public Road(int id, Anchor anchor1, Anchor anchor2, RoadShape shape)
         {
             this.id = id;
-            this.anchor1 = anchor2;
-            this.anchor1 = anchor2;
-            this.lanes1To2 = lanes1To2;
-            this.lanes2To1 = lanes2To1;
+            anchor1.parentRoad = this;
+            anchor2.parentRoad = this;
+            anchors.Add(AnchorNumber.One, anchor1);
+            anchors.Add(AnchorNumber.Two, anchor2);
             length = Vector2.Distance(anchor1.position, anchor2.position) / CONSTANTS.DISTANCE_UNIT;
+            this.shape = shape;
         }
     }
 }

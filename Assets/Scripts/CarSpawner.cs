@@ -30,7 +30,6 @@ class CarSpawner : ScriptableObject
         Vector3 spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
         GameObject tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
-        tempCar.transform.position += tempCar.transform.right * offset;
         tempCar.name = "Car_" + car.id;
         _cars.Add(tempCar);
     }

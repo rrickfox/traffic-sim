@@ -19,10 +19,10 @@ class CarSpawner : ScriptableObject
 
     public void displayCar(Car car)
     {
-        Vector2 position = Vector2.Lerp(car.road.anchors1.position, car.road.anchors2.position, car.positionOnRoad/car.road.length);
+        Vector2 position = Vector2.Lerp(car.road.node1.position, car.road.node2.position, car.positionOnRoad/car.road.length);
         Vector3 spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
         float angle = 0;
-        float offset = (car.road.lanes1To2 - 1) * _constants.LANE_WIDTH * car.lane / 2f; // TODO: Check if different for other direction
+        float offset = (car.road.lanes1To2 - 1) * CONSTANTS.LANE_WIDTH * car.lane / 2f; // TODO: Check if different for other direction
         if(car.direction == Direction.direction1To2)
         {
             angle = _roads[car.road.id].transform.rotation.y;

@@ -10,15 +10,14 @@ namespace DataTypes
         public float length;
         public RoadShape shape;
 
-        public Road(int id, Anchor anchor1, Anchor anchor2, RoadShape shape)
+        public Road(int id, RoadShape shape, Point point1, Point point2,
+            IEnumerable<Lane> lanes2To1, IEnumerable<Lane> lanes1To2)
         {
             this.id = id;
-            anchor1.parentRoad = this;
-            anchor2.parentRoad = this;
-            anchors.Add(AnchorNumber.One, anchor1);
-            anchors.Add(AnchorNumber.Two, anchor2);
-            length = Vector2.Distance(anchor1.position, anchor2.position) / CONSTANTS.DISTANCE_UNIT;
             this.shape = shape;
+            length = Vector2.Distance(point1.position, point2.position) / CONSTANTS.DISTANCE_UNIT;
+            anchors.Add(AnchorNumber.One, new Anchor(point1, this, AnchorNumber.One, lanes2To1));
+            anchors.Add(AnchorNumber.Two, new Anchor(point2, this, AnchorNumber.Two, lanes1To2));
         }
     }
 }

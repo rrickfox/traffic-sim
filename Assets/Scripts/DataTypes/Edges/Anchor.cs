@@ -18,11 +18,5 @@ namespace DataTypes
             this.position = position;
             this.endingLanes = endingLanes.ToImmutableArray();
         }
-
-        public Anchor(Road parentRoad, AnchorNumber number, Vector2 position, IEnumerable<Lane> endingLanes)
-            : this(number, position, endingLanes)
-        {
-            this.parentRoad = parentRoad;
-        }
     }
 }

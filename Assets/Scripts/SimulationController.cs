@@ -24,6 +24,29 @@ public class SimulationController : MonoBehaviour
         createCar(_roads[0], 0, Direction.direction1To2);
     }
 
+    public void spawnCars(Road road)
+    {
+        if(road.lanes1To2 > 0)
+        {
+            if(road.lanes2To1 > 0)
+            {
+                Direction direction = (Random.value > 0.5f) ? Direction.direction1To2 : Direction.direction2To1;
+                float lane = (Direction.direction1To2 == direction) ? Mathf.Floor(Random.Range(0, road.lanes1To2 - 1)) : Mathf.Floor(Random.Range(0, road.lanes2To1 - 1));
+                createCar(road, lane, direction);
+            } else
+            {
+                createCar(road, Mathf.Floor(Random.Range(0, road.lanes1To2 - 1)), Direction.direction1To2);
+            }
+        } else
+        {
+            if(road.lanes2To1 > 0)
+            {
+                createCar(road, Mathf.Floor(Random.Range(0, road.lanes2To1 - 1)), Direction.direction2To1);
+            }
+        }
+        
+    }
+
     public void createRoad(Vector2 pos1, Vector2 pos2, int lanes1To2, int lanes2To1)
     {
         Node node1 = new Node(pos1, lanes1To2, lanes2To1);

@@ -1,31 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DataTypes;
 
-public class car_ai : MonoBehaviour
+
+public class car_ai
 {
-    // Längeneinheiten pro Zeiteinheit
-    float speed = 0f; 
-    // Start is called before the first frame update
-    void Start()
+    
+    public float speed = 0f; // Längeneinheiten pro Zeiteinheit
+    public car Car;
+    
+
+    void fixedUpdate()
     {
-        
+        EarlyfixedUpdate();
+        LatefixedUpdate();
+    }
+    private void EarlyfixedUpdate()
+    {
+        //get Distance
     }
 
-    // Update is called once per frame
-    void fixedUpdate()
+    void LatefixedUpdate()
     {
         move();
     }
 
-
     void move()
     {
-        
+        car.positionOnRoad += speed;
     }
 
     void accelerate(float acceleation)
     {
-        speed = speed + acceleation;
+        speed += acceleation;
     } 
 }

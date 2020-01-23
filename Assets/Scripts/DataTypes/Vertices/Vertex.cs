@@ -5,9 +5,9 @@ namespace DataTypes
 {
     public class Vertex
     {
-        private ImmutableArray<Anchor> _anchors;
+        private ImmutableArray<Edge> _anchors;
 
-        public Vertex(IEnumerable<Anchor> anchors)
+        public Vertex(IEnumerable<Edge> anchors)
         {
             _anchors = anchors.ToImmutableArray();
         }

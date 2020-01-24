@@ -6,7 +6,7 @@ namespace DataTypes
     public class Road
     {
         public readonly int id;
-        public Dictionary<AnchorNumber, Anchor> anchors;
+        public Dictionary<AnchorNumber, Anchor> anchors = new Dictionary<AnchorNumber, Anchor>();
         public float length;
         public RoadShape shape;
 

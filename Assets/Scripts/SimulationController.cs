@@ -27,20 +27,20 @@ public class SimulationController : MonoBehaviour
         lane1To2_0_types.Add(LaneType.Through);
         Lane lane1To2_0 = new Lane(lane1To2_0_types);
 
-        IEnumerable<Lane> lanes1To2 = new List<Lane>()
+        var lanes1To2 = new List<Lane>()
         {
             lane1To2_0
-        }.AsEnumerable();
+        };
 
         //lane2To1
         HashSet<LaneType> lane2To1_0_types = new HashSet<LaneType>();
         lane1To2_0_types.Add(LaneType.Through);
         Lane lane2To1_0 = new Lane(lane2To1_0_types);
 
-        IEnumerable<Lane> lanes2To1 = new List<Lane>()
+        var lanes2To1 = new List<Lane>()
         {
             lane2To1_0
-        }.AsEnumerable();
+        };
 
         // Road create..
         createRoad(point1, point2, lanes1To2, lanes2To1);

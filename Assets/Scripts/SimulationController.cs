@@ -57,22 +57,22 @@ public class SimulationController : MonoBehaviour
 
     public void spawnCars(Road road)
     {
-        if(road.lanes1To2 > 0)
+        if(road.anchors[AnchorNumber.Two].endingLanes.Length > 0)
         {
-            if(road.lanes2To1 > 0)
+            if(road.anchors[AnchorNumber.One].endingLanes.Length > 0)
             {
                 Direction direction = (Random.value > 0.5f) ? Direction.direction1To2 : Direction.direction2To1;
-                float lane = (Direction.direction1To2 == direction) ? Mathf.Floor(Random.Range(0, road.lanes1To2 - 1)) : Mathf.Floor(Random.Range(0, road.lanes2To1 - 1));
+                float lane = (Direction.direction1To2 == direction) ? Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.Two].endingLanes.Length - 1)) : Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.One].endingLanes.Length - 1));
                 createCar(road, lane, direction);
             } else
             {
-                createCar(road, Mathf.Floor(Random.Range(0, road.lanes1To2 - 1)), Direction.direction1To2);
+                createCar(road, Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.Two].endingLanes.Length - 1)), Direction.direction1To2);
             }
         } else
         {
-            if(road.lanes2To1 > 0)
+            if(road.anchors[AnchorNumber.One].endingLanes.Length > 0)
             {
-                createCar(road, Mathf.Floor(Random.Range(0, road.lanes2To1 - 1)), Direction.direction2To1);
+                createCar(road, Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.One].endingLanes.Length - 1)), Direction.direction2To1);
             }
         }
         

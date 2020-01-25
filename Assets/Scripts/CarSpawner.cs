@@ -36,7 +36,6 @@ class CarSpawner : ScriptableObject
 
     public float RoadAngle(Road road)
     {
-        Vector2 middlePoint = (road.node2.position - road.node1.position) * 0.5f + road.node1.position;
-        return Vector2.Angle(road.node1.position - middlePoint, new Vector2(1, 0));
+        return Vector2.Angle((road.anchors[AnchorNumber.Two].position - road.anchors[AnchorNumber.One].position) * 0.5f, new Vector2(1, 0));
     }
 }

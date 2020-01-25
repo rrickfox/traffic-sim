@@ -1,45 +1,49 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+namespace Cameras
 {
-    public List<Camera> cams;
-
-    int activeCam;
-
-    void Start()
+    public class CameraManager : MonoBehaviour
     {
-        activeCam = 0;
-        ChangeCam();
-    }
+        public List<Camera> cams;
 
-    // Switching Cameras with Q for previous and E for next
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Q))
+        int _activeCam;
+
+        void Start()
         {
-            if (activeCam == 0) activeCam = cams.Count-1;
-            else activeCam--;
+            _activeCam = 0;
             ChangeCam();
         }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            if (activeCam == cams.Count-1) activeCam = 0;
-            else activeCam++;
-            ChangeCam();
-        }
-    }
 
-    // Set active Camera, disable all others
-    void ChangeCam()
-    {
-        for (int i = 0; i < cams.Count; i++)
+        // Switching Cameras with Q for previous and E for next
+        void Update()
         {
-            if (i == activeCam)
-                cams[i].enabled = true;
-            else
-                cams[i].enabled = false;
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (_activeCam == 0) _activeCam = cams.Count - 1;
+
+                else _activeCam--;
+                ChangeCam();
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (_activeCam == cams.Count - 1) _activeCam = 0;
+                else _activeCam++;
+                ChangeCam();
+            }
+        }
+
+        // Set active Camera, disable all others
+        void ChangeCam()
+        {
+            int i = 0;
+            foreach (Camera cam in cams)
+            {
+                if (i == _activeCam)
+                    cam.enabled = true;
+                else
+                    cam.enabled = false;
+            }
         }
     }
 }

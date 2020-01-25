@@ -1,18 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class BirdCamera : MonoBehaviour
+namespace Cameras
 {
-    public float height;
-
-    void Start()
+    public class BirdCamera : MonoBehaviour
     {
+        public float height;
 
-    }
+        void Start()
+        {
 
-    void Update()
-    {
-        transform.position = new Vector3(transform.position.x, height, transform.position.z);
+        }
+
+        void Update()
+        {
+            transform.position = new Vector3(transform.position.x, height, transform.position.z);
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace DataTypes
 
                 backward = (anchors[AnchorNumber.One].position - anchors[AnchorNumber.Two].position).normalized * -1;
                 
-                position += backward * offset;
+                position += Vector2.Perpendicular(backward) * offset;
             }
 
             return position;

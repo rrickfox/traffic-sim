@@ -6,24 +6,26 @@ public class RoadSpawner : ScriptableObject
 {
     private GameObject _roadPrefab;
     private List<GameObject> _roads = new List<GameObject>();
+    private int _idRoad = 0;
 
     public RoadSpawner(GameObject roadPrefab)
     {
         _roadPrefab = roadPrefab;
     }
 
-    public void displayRoad(Road road)
+    public void displayRoad(RoadView view)
     {
-        float scaleLength = Vector2.Distance(road.anchors[AnchorNumber.One].position, road.anchors[AnchorNumber.Two].position); 
-        float scaleWidth = (road.anchors[AnchorNumber.Two].endingLanes.Length + road.anchors[AnchorNumber.One].endingLanes.Length) * CONSTANTS.LANE_WIDTH;
-        Vector2 middlePoint = (road.anchors[AnchorNumber.Two].position - road.anchors[AnchorNumber.One].position) * 0.5f + road.anchors[AnchorNumber.One].position;
+        float scaleLength = Vector2.Distance(view.position, view.other.position); 
+        float scaleWidth = (view.outgoingLanes.Count + view.incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
+        Vector2 middlePoint = (view.other.position - view.position) * 0.5f + view.position;
         Vector3 spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
 
-        Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(road.anchors[AnchorNumber.One].position - middlePoint, new Vector2(1, 0)), 0);
+        Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(view.position - middlePoint, new Vector2(1, 0)), 0);
 
         GameObject tempRoad = Instantiate(_roadPrefab, spawnPoint, rotation);
         tempRoad.transform.localScale = new Vector3(scaleLength, tempRoad.transform.localScale.y, scaleWidth);
-        tempRoad.name = "Road_" + road.id;
+        tempRoad.name = "Road_" + _idRoad;
+        _idRoad++;
         _roads.Add(tempRoad);
     }
 }

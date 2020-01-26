@@ -4,18 +4,18 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
-        protected Anchor upAnchor;
-        protected Anchor rightAnchor;
-        protected Anchor downAnchor;
-        protected Anchor leftAnchor;
+        protected Edge up;
+        protected Edge right;
+        protected Edge down;
+        protected Edge left;
 
-        public CrossSection(Anchor upAnchor, Anchor rightAnchor, Anchor downAnchor, Anchor leftAnchor)
-            : base(ImmutableArray.Create(upAnchor, rightAnchor, downAnchor, leftAnchor))
+        public CrossSection(Edge up, Edge right, Edge down, Edge left)
+            : base(ImmutableArray.Create(up, right, down, left))
         {
-            this.upAnchor = upAnchor;
-            this.rightAnchor = rightAnchor;
-            this.downAnchor = downAnchor;
-            this.leftAnchor = leftAnchor;
+            this.up = up;
+            this.right = right;
+            this.down = down;
+            this.left = left;
         }
     }
 }

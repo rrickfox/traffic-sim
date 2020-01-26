@@ -6,13 +6,13 @@ public class SimulationController : MonoBehaviour
     public GameObject roadPrefab;
     public GameObject carPrefab;
 
-     private RoadSpawner _roadSpawner;
-     private List<Road> _roads = new List<Road>();
-     private List<List<Car>> _cars = new List<List<Car>>();
-     private int _idCar = 0;
+    private RoadSpawner _roadSpawner;
+    private List<RoadView> _roads = new List<RoadView>();
+    private List<List<Car>> _cars = new List<List<Car>>();
+    private int _idCar = 0;
      
-     public void Start()
-     {
+    public void Start()
+    {
         _roadSpawner = new RoadSpawner(roadPrefab);
 
         // Point1, Point2
@@ -29,7 +29,7 @@ public class SimulationController : MonoBehaviour
             lane1To2_0
         };
 
-        //lane2To1
+        // lanes2To1
         HashSet<LaneType> lane2To1_0_types = new HashSet<LaneType>();
         lane1To2_0_types.Add(LaneType.Through);
         Lane lane2To1_0 = new Lane(lane2To1_0_types);
@@ -40,8 +40,8 @@ public class SimulationController : MonoBehaviour
         };
 
         // Road create..
-        createRoad(point1, point2, lanes1To2, lanes2To1);
-     }
+        createRoad(pos1, pos2, lanes1To2, lanes2To1);
+    }
 
     public void createRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
     {

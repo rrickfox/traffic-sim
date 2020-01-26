@@ -8,13 +8,10 @@ namespace Cameras
         public List<Camera> cams;
 
         int _activeCamIndex;
-        int _newCamIndex;
 
         void Start()
         {
-            _activeCamIndex = 0;
-            _newCamIndex = _activeCamIndex;
-            ChangeCam();
+            ChangeCam(0);
         }
 
         // Switching Cameras with Q for previous and E for next
@@ -23,28 +20,26 @@ namespace Cameras
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 if (_activeCamIndex == 0)
-                    _newCamIndex = cams.Count - 1;
+                    ChangeCam(cams.Count - 1);
                 else
-                    _newCamIndex--;
-                ChangeCam();
+                    ChangeCam(_activeCamIndex - 1);
             }
 
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (_activeCamIndex == cams.Count - 1)
-                    _newCamIndex = 0;
+                    ChangeCam(0);
                 else
-                    _newCamIndex++;
-                ChangeCam();
+                    ChangeCam(_activeCamIndex + 1);
             }
         }
 
         // Set active Camera, disable all others
-        void ChangeCam()
+        void ChangeCam(int newCamIndex)
         {
             cams[_activeCamIndex].enabled = false;
-            cams[_newCamIndex].enabled = true;
-            _activeCamIndex = _newCamIndex;
+            cams[newCamIndex].enabled = true;
+            _activeCamIndex = newCamIndex;
         }
     }
 }

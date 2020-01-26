@@ -5,11 +5,11 @@ namespace DataTypes
 {
     public class Vertex
     {
-        private ImmutableArray<Edge> _anchors;
+        private ImmutableArray<Edge> _edges;
 
-        public Vertex(IEnumerable<Edge> anchors)
+        public Vertex(IEnumerable<Edge> edges)
         {
-            _anchors = anchors.ToImmutableArray();
+            _edges = edges.ToImmutableArray();
         }
     }
 }

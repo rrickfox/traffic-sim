@@ -5,14 +5,26 @@ namespace DataTypes
 {
     class EndPoint : Vertex
     {
-        protected Anchor anchor;
-        public CarSpawner spawner;
+        protected Edge edge;
+        private CarSpawner _spawner;
 
-        public EndPoint(Anchor anchor, GameObject carPrefab, GameObject roadPrefab)
-            : base(ImmutableArray.Create(anchor))
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab)
+            : base(ImmutableArray.Create(edge))
         {
-            this.anchor = anchor;
-            spawner = new CarSpawner(carPrefab, roadPrefab);
+            this.edge = edge;
+            _spawner = new CarSpawner(carPrefab, roadPrefab);
+        }
+
+        public void spawnCars(Edge road)
+        {
+                        
+        }
+
+        public void createCar(float lane)
+        {
+            Car tempCar = new Car(edge, 0, lane);
+            edge.cars.Add(tempCar);
+            _spawner.displayCar(tempCar);
         }
     }
 }

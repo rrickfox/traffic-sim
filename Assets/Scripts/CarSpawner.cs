@@ -17,25 +17,19 @@ class CarSpawner : ScriptableObject
 
     public void displayCar(Car car)
     {
-        Vector2 position = car.road.GetPosition(car.positionOnRoad, car.direction, car.lane);
+        Vector2 position = car.road.GetPosition(car.positionOnRoad, car.lane);
         float angle = 0;
-        if(car.direction == Direction.direction1To2)
-        {
-            angle = RoadAngle(car.road);
-        } else
-        {
-            angle = (RoadAngle(car.road) + 180) % 360;
-        }
+        angle = RoadAngle(car.road);
 
         Vector3 spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
         GameObject tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
-        tempCar.name = "Car_" + car.id;
+        tempCar.name = "Car_" + CarId.id;
         _cars.Add(tempCar);
     }
 
-    public float RoadAngle(Road road)
+    public float RoadAngle(Edge road)
     {
-        return Vector2.Angle((road.anchors[AnchorNumber.Two].position - road.anchors[AnchorNumber.One].position) * 0.5f, new Vector2(1, 0));
+        return Vector2.Angle((road.other.position - road.position) * 0.5f, new Vector2(1, 0));
     }
 }

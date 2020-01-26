@@ -9,14 +9,12 @@ public class SimulationController : MonoBehaviour
     private RoadSpawner _roadSpawner;
     private List<RoadView> _roads = new List<RoadView>();
     private int _idRoad = 0;
-    private CarSpawner _carSpawner;
     private List<List<Car>> _cars = new List<List<Car>>();
     private int _idCar = 0;
      
     public void Start()
     {
         _roadSpawner = new RoadSpawner(roadPrefab);
-        _carSpawner = new CarSpawner(carPrefab, roadPrefab);
         // Point1, Point2
         Vector2 pos1 = new Vector2(-140, 0);
         Vector2 pos2 = new Vector2(140, 0);
@@ -50,36 +48,5 @@ public class SimulationController : MonoBehaviour
         RoadView view = new RoadView(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
         _roads.Add(view);
         _roadSpawner.displayRoad(view);
-    }
-
-    public void spawnCars(Road road)
-    {
-        if(road.anchors[AnchorNumber.Two].endingLanes.Length > 0)
-        {
-            if(road.anchors[AnchorNumber.One].endingLanes.Length > 0)
-            {
-                Direction direction = (Random.value > 0.5f) ? Direction.direction1To2 : Direction.direction2To1;
-                float lane = (Direction.direction1To2 == direction) ? Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.Two].endingLanes.Length - 1)) : Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.One].endingLanes.Length - 1));
-                createCar(road, lane, direction);
-            } else
-            {
-                createCar(road, Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.Two].endingLanes.Length - 1)), Direction.direction1To2);
-            }
-        } else
-        {
-            if(road.anchors[AnchorNumber.One].endingLanes.Length > 0)
-            {
-                createCar(road, Mathf.Floor(Random.Range(0, road.anchors[AnchorNumber.One].endingLanes.Length - 1)), Direction.direction2To1);
-            }
-        }
-        
-    }
-
-    public void createCar(Road road, float lane, Direction direction)
-    {
-        Car tempCar = new Car(_idCar, road, 0, lane, direction);
-        _cars[road.id].Add(tempCar);
-        _carSpawner.displayCar(tempCar);
-        _idCar++;
     }
 }

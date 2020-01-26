@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace DataTypes
 {
@@ -20,6 +21,8 @@ namespace DataTypes
             other = otherEdge;
             this.vertex = vertex;
         }
+
+        public List<Car> cars = new List<Car>();
 
         public Vector2 GetPosition(float positionOnRoad, float lane)
         {

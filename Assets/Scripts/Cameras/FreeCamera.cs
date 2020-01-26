@@ -31,7 +31,8 @@ namespace Cameras
 
         void FixedUpdate()
         {
-            if (!_cam.enabled) return;
+            if (!_cam.enabled)
+                return;
             Rotate();
             Move();
             Zoom();
@@ -46,13 +47,9 @@ namespace Cameras
                 if (_cam.transform.rotation.eulerAngles.x <= maxTurnAngle && _cam.transform.rotation.eulerAngles.x >= minTurnAngle)
                     _cam.transform.RotateAround(transform.position, _cam.transform.right, -1 * Input.GetAxis("Mouse Y") * turnSpeed);
                 if (_cam.transform.rotation.eulerAngles.x < minTurnAngle)
-                {
                     _cam.transform.RotateAround(transform.position, _cam.transform.right, minTurnAngle - _cam.transform.rotation.eulerAngles.x);
-                }
                 if (_cam.transform.rotation.eulerAngles.x > maxTurnAngle)
-                {
                     _cam.transform.RotateAround(transform.position, _cam.transform.right, maxTurnAngle - _cam.transform.rotation.eulerAngles.x);
-                }
             }
         }
 

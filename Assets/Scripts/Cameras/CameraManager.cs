@@ -7,11 +7,13 @@ namespace Cameras
     {
         public List<Camera> cams;
 
-        int _activeCam;
+        int _activeCamIndex;
+        int _newCamIndex;
 
         void Start()
         {
-            _activeCam = 0;
+            _activeCamIndex = 0;
+            _newCamIndex = _activeCamIndex;
             ChangeCam();
         }
 
@@ -20,15 +22,19 @@ namespace Cameras
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                if (_activeCam == 0) _activeCam = cams.Count - 1;
-
-                else _activeCam--;
+                if (_activeCamIndex == 0)
+                    _newCamIndex = cams.Count - 1;
+                else
+                    _newCamIndex--;
                 ChangeCam();
             }
+
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (_activeCam == cams.Count - 1) _activeCam = 0;
-                else _activeCam++;
+                if (_activeCamIndex == cams.Count - 1)
+                    _newCamIndex = 0;
+                else
+                    _newCamIndex++;
                 ChangeCam();
             }
         }
@@ -36,14 +42,9 @@ namespace Cameras
         // Set active Camera, disable all others
         void ChangeCam()
         {
-            int i = 0;
-            foreach (Camera cam in cams)
-            {
-                if (i == _activeCam)
-                    cam.enabled = true;
-                else
-                    cam.enabled = false;
-            }
+            cams[_activeCamIndex].enabled = false;
+            cams[_newCamIndex].enabled = true;
+            _activeCamIndex = _newCamIndex;
         }
     }
 }

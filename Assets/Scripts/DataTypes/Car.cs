@@ -5,7 +5,7 @@ namespace DataTypes
         public Edge road;
         public float positionOnRoad;
         public float lane;
-
+        public float speed = 5f; // Längeneinheiten pro Zeiteinheit
 
         public Car(Edge road, float positionOnRoad, float lane)
         {
@@ -14,15 +14,16 @@ namespace DataTypes
             this.lane = lane;
         }
 
-        public float speed = 5f; // Längeneinheiten pro Zeiteinheit
+       
         
         public void Move()
         {
             positionOnRoad += speed; 
         }
-        public void Accelerate(float acceleation)
+
+        public void Accelerate(float acceleration)
         {
-            speed += acceleation;
+            speed += acceleration;
         }
     }
 }

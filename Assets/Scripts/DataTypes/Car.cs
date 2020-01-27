@@ -6,7 +6,6 @@ namespace DataTypes
         public Edge road;
         public float positionOnRoad;
         public float lane;
-        // true if from start to finish
         public Direction direction;
 
         public Car(int id, Edge road, float positionOnRoad, float lane, Direction direction)

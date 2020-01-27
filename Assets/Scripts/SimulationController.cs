@@ -29,7 +29,7 @@ public class SimulationController : MonoBehaviour
             lane1To2_0
         };
 
-        // lanes2To1
+        // Definition lanes2To1
         HashSet<LaneType> lane2To1_0_types = new HashSet<LaneType>();
         lane1To2_0_types.Add(LaneType.Through);
         Lane lane2To1_0 = new Lane(lane2To1_0_types);

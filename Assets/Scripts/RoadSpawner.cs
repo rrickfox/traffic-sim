@@ -15,9 +15,13 @@ public class RoadSpawner : ScriptableObject
 
     public void displayRoad(RoadView view)
     {
+        // Road length
         float scaleLength = Vector2.Distance(view.position, view.other.position); 
+        // Road width
         float scaleWidth = (view.outgoingLanes.Count + view.incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
+        // 
         Vector2 middlePoint = (view.other.position - view.position) * 0.5f + view.position;
+        // Road spawnpoint
         Vector3 spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
 
         Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(view.position - middlePoint, new Vector2(1, 0)), 0);

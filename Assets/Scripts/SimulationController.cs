@@ -8,9 +8,6 @@ public class SimulationController : MonoBehaviour
 
     private RoadSpawner _roadSpawner;
     private List<RoadView> _roads = new List<RoadView>();
-    private int _idRoad = 0;
-    private List<List<Car>> _cars = new List<List<Car>>();
-    private int _idCar = 0;
      
     public void Start()
     {

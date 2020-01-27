@@ -9,6 +9,7 @@ namespace DataTypes
         public new Edge other { get => (Edge)_other; set => _other = value; }
         // the Vertex from which this edge originates
         public Vertex vertex;
+        public List<Car> cars = new List<Car>();
 
         public Edge(RoadView view, Vertex vertex, RoadView otherView, Vertex otherVertex) : base(view)
         {
@@ -22,11 +23,9 @@ namespace DataTypes
             this.vertex = vertex;
         }
 
-        public List<Car> cars = new List<Car>();
-
         public Vector2 GetPosition(float positionOnRoad, float lane)
         {
-            Vector2 position = Vector2.Lerp(this.position, other.position, positionOnRoad);
+            Vector2 position = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
             // set offset to the right to accomodate different lanes
             float offset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 

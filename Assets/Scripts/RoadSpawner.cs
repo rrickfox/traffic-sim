@@ -26,10 +26,10 @@ public class RoadSpawner : ScriptableObject
 
         Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(view.position - middlePoint, new Vector2(1, 0)), 0);
 
-        GameObject tempRoad = Instantiate(_roadPrefab, spawnPoint, rotation);
-        tempRoad.transform.localScale = new Vector3(scaleLength, tempRoad.transform.localScale.y, scaleWidth);
-        tempRoad.name = "Road_" + _idRoad;
+        GameObject roadVisual = Instantiate(_roadPrefab, spawnPoint, rotation);
+        roadVisual.transform.localScale = new Vector3(scaleLength, roadVisual.transform.localScale.y, scaleWidth);
+        roadVisual.name = "Road_" + _idRoad;
         _idRoad++;
-        _roads.Add(tempRoad);
+        _roads.Add(roadVisual);
     }
 }

@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DataTypes;
+//ruft Autos zur Bewegung auf
+//-> hat einzige Update-Funktion ("interne Zeit")
+//erstellt Straße (vorläufig)
 public class SimulationController : MonoBehaviour
 {
     public GameObject roadPrefab;

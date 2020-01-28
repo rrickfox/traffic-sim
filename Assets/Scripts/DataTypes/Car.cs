@@ -7,7 +7,7 @@ namespace DataTypes
         public float positionOnRoad;
         public float lane;
         public float speed = 5f; // Laengeneinheiten pro Zeiteinheit
-        public transform carTransform;
+        public Transform carTransform;
 
         public Car(Edge road, float positionOnRoad, float lane)
         {
@@ -18,7 +18,8 @@ namespace DataTypes
        
         public void Move()
         {
-            positionOnRoad += speed; 
+            positionOnRoad += speed;
+            carTransform.position = road.GetPosition(positionOnRoad, lane);
         }
 
         public void Accelerate(float acceleration)

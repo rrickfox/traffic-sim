@@ -1,20 +1,30 @@
+using UnityEngine;
 namespace DataTypes
-{
+{ 
     public class Car
     {
-        public readonly int id;
         public Edge road;
         public float positionOnRoad;
         public float lane;
-        public Direction direction;
+        public float speed = 5f; // Laengeneinheiten pro Zeiteinheit
+        public Transform carTransform;
 
-        public Car(int id, Edge road, float positionOnRoad, float lane, Direction direction)
+        public Car(Edge road, float positionOnRoad, float lane)
         {
-            this.id = id;
             this.road = road;
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
-            this.direction = direction;
+        }
+       
+        public void Move()
+        {
+            positionOnRoad += speed;
+            carTransform.position = road.GetPosition(positionOnRoad, lane);
+        }
+
+        public void Accelerate(float acceleration)
+        {
+            speed += acceleration;
         }
     }
 }

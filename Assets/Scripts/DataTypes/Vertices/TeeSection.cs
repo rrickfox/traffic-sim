@@ -4,16 +4,16 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
-        protected Anchor throughOrRightAnchor;
-        protected Anchor throughOrLeftAnchor;
-        protected Anchor leftOrRightAnchor;
+        protected Edge throughOrRight;
+        protected Edge throughOrLeft;
+        protected Edge leftOrRight;
 
-        public TeeSection(Anchor throughOrRightAnchor, Anchor throughOrLeftAnchor, Anchor leftOrRightAnchor)
-            : base(ImmutableArray.Create(throughOrRightAnchor, throughOrLeftAnchor, leftOrRightAnchor))
+        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
+            : base(ImmutableArray.Create(throughOrRight, throughOrLeft, leftOrRight))
         {
-            this.throughOrRightAnchor = throughOrRightAnchor;
-            this.throughOrLeftAnchor = throughOrLeftAnchor;
-            this.leftOrRightAnchor = leftOrRightAnchor;
+            this.throughOrRight = throughOrRight;
+            this.throughOrLeft = throughOrLeft;
+            this.leftOrRight = leftOrRight;
         }
     }
 }

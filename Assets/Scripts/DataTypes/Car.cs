@@ -1,3 +1,4 @@
+using UnityEngine;
 namespace DataTypes
 { 
     public class Car
@@ -5,7 +6,8 @@ namespace DataTypes
         public Edge road;
         public float positionOnRoad;
         public float lane;
-        public float speed = 5f; // Längeneinheiten pro Zeiteinheit
+        public float speed = 5f; // Laengeneinheiten pro Zeiteinheit
+        public transform carTransform;
 
         public Car(Edge road, float positionOnRoad, float lane)
         {
@@ -13,9 +15,7 @@ namespace DataTypes
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
         }
-
        
-        
         public void Move()
         {
             positionOnRoad += speed; 

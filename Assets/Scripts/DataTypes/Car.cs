@@ -3,12 +3,12 @@ namespace DataTypes
     public class Car
     {
         public readonly int id;
-        public Road road;
+        public Edge road;
         public float positionOnRoad;
         public float lane;
         public Direction direction;
 
-        public Car(int id, Road road, float positionOnRoad, float lane, Direction direction)
+        public Car(int id, Edge road, float positionOnRoad, float lane, Direction direction)
         {
             this.id = id;
             this.road = road;

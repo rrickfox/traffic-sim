@@ -154,6 +154,10 @@ MonoBehaviour:
     type: 3}
   carPrefab: {fileID: 5327732160065177629, guid: 4c7ad48a12bdff64ea058f9783da6062,
     type: 3}
+  pos1: {x: -140, y: 0}
+  pos2: {x: 140, y: 0}
+  lane1To2: 100
+  lane2To1: 100
 --- !u!4 &431655176
 Transform:
   m_ObjectHideFlags: 0

@@ -150,7 +150,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f2ae315dc4ddb429e0125eeeac1f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &431655176
+  roadPrefab: {fileID: 8832777517996270473, guid: dd65774c1417627499ef86c1652c43b5,
+    type: 3}
+  carPrefab: {fileID: 5327732160065177629, guid: 4c7ad48a12bdff64ea058f9783da6062,
+    type: 3}
+  pos1: {x: -140, y: 0}
+  pos2: {x: 140, y: 0}
+  lane1To2: 100
+  lane2To1: 100
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

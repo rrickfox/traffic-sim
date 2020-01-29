@@ -24,10 +24,11 @@ class CarSpawner : ScriptableObject
         GameObject tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
         tempCar.name = "Car_" + CarId.id;
         _cars.Add(tempCar);
+        car.carTransform = tempCar.transform;
     }
 
     public float RoadAngle(Edge road)
     {
-        return Vector2.Angle(road.other.position - road.position, Vector2.right);
+        return Vector2.SignedAngle(road.other.position - road.position, Vector2.right);
     }
 }

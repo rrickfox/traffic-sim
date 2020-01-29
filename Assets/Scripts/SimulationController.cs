@@ -10,7 +10,7 @@ public class SimulationController : MonoBehaviour
     public GameObject carPrefab;
 
     private RoadSpawner _roadSpawner;
-    private List<RoadView> _roads = new List<RoadView>();
+    private List<Edge> _roads = new List<Edge>();
 
     private List<EndPoint> _spawnPoints = new List<EndPoint>();
      
@@ -43,41 +43,58 @@ public class SimulationController : MonoBehaviour
         };
 
         // Road create..
-        CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
+        RoadView view = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 
         // spawn freuquency
         float[] freqLane1To2 = new float[1];
-        freqLane1To2[0] = 25;
+        freqLane1To2[0] = 100;
         float[] freqLane2To1 = new float[1];
-        freqLane2To1[0] = 25;
+        freqLane2To1[0] = 100;
 
         // EndPoint creation
-        Edge road = new Edge(_roads[0], null, _roads[0].other, null);
+        Edge road = new Edge(view, null, view.other, null);
         EndPoint pointA = new EndPoint(road, carPrefab, roadPrefab, freqLane1To2);
         _spawnPoints.Add(pointA);
-        EndPoint pointB = new EndPoint(road, carPrefab, roadPrefab, freqLane2To1);
+        EndPoint pointB = new EndPoint(road.other, carPrefab, roadPrefab, freqLane2To1);
         _spawnPoints.Add(pointB);
         road.vertex = pointA;
         road.other.vertex = pointB;
+        _roads.Add(road);
     }
 
     void FixedUpdate()
     {
-        checkForSpawn();
+        CheckForSpawn();
+        MoveCars();
     }
 
-    public void CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
+    public RoadView CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
     {
         RoadView view = new RoadView(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
-        _roads.Add(view);
         _roadSpawner.DisplayRoad(view);
+        return view;
     }
 
-    public void checkForSpawn()
+    public void CheckForSpawn()
     {
         foreach(EndPoint vertex in _spawnPoints)
         {
             vertex.spawnCars();
+        }
+    }
+
+    public void MoveCars()
+    {
+        foreach(Edge road in _roads)
+        {
+            foreach(Car car in road.cars)
+            {
+                car.Move();
+            }
+            foreach(Car car in road.other.cars)
+            {
+                car.Move();
+            }
         }
     }
 }

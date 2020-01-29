@@ -4,7 +4,6 @@ using DataTypes;
 
 class CarSpawner : ScriptableObject
 {
-    private List<GameObject> _cars = new List<GameObject>();
     private GameObject _carPrefab;
     private GameObject _roadPrefab;
 
@@ -23,7 +22,6 @@ class CarSpawner : ScriptableObject
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
         GameObject tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
         tempCar.name = "Car_" + CarId.id;
-        _cars.Add(tempCar);
         car.carTransform = tempCar.transform;
     }
 

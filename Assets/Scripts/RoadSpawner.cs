@@ -24,7 +24,7 @@ public class RoadSpawner : ScriptableObject
         // Road spawnpoint
         Vector3 spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
 
-        Quaternion rotation = Quaternion.Euler(0, Vector2.Angle(view.position - middlePoint, new Vector2(1, 0)), 0);
+        Quaternion rotation = Quaternion.Euler(0, Vector2.SignedAngle(view.other.position - view.position, Vector2.right), 0);
 
         GameObject roadVisual = Instantiate(_roadPrefab, spawnPoint, rotation);
         roadVisual.transform.localScale = new Vector3(scaleLength, roadVisual.transform.localScale.y, scaleWidth);

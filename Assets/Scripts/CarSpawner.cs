@@ -29,6 +29,6 @@ class CarSpawner : ScriptableObject
 
     public float RoadAngle(Edge road)
     {
-        return Vector2.Angle(road.other.position - road.position, Vector2.right);
+        return Vector2.SignedAngle(road.other.position - road.position, Vector2.right);
     }
 }

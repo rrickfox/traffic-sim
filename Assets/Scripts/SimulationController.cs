@@ -9,6 +9,15 @@ public class SimulationController : MonoBehaviour
     public GameObject roadPrefab;
     public GameObject carPrefab;
 
+    
+    // Point1, Point2
+    public Vector2 pos1 = new Vector2(-140, 0);
+    public Vector2 pos2 = new Vector2(140, 0);
+
+    // spawn frequency
+    public float lane1To2 = 100;
+    public float lane2To1 = 100;
+
     private RoadSpawner _roadSpawner;
     private List<Edge> _roads = new List<Edge>();
 
@@ -17,9 +26,6 @@ public class SimulationController : MonoBehaviour
     public void Start()
     {
         _roadSpawner = new RoadSpawner(roadPrefab);
-        // Point1, Point2
-        Vector2 pos1 = new Vector2(-140, 0);
-        Vector2 pos2 = new Vector2(140, 0);
 
         // Definition lanes1To2
         HashSet<LaneType> lane1To2_0_types = new HashSet<LaneType>(); 
@@ -46,9 +52,9 @@ public class SimulationController : MonoBehaviour
 
         // spawn freuquency
         float[] freqLane1To2 = new float[1];
-        freqLane1To2[0] = 100;
+        freqLane1To2[0] = lane1To2;
         float[] freqLane2To1 = new float[1];
-        freqLane2To1[0] = 100;
+        freqLane2To1[0] = lane2To1;
 
         // EndPoint creation
         Edge road = new Edge(view, null, view.other, null);

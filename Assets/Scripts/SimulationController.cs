@@ -66,6 +66,7 @@ public class SimulationController : MonoBehaviour
     {
         CheckForSpawn();
         MoveCars();
+        CheckForDespawn();
     }
 
     public RoadView CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
@@ -80,6 +81,14 @@ public class SimulationController : MonoBehaviour
         foreach(EndPoint vertex in _spawnPoints)
         {
             vertex.spawnCars();
+        }
+    }
+
+    public void CheckForDespawn()
+    {
+        foreach(EndPoint vertex in _spawnPoints)
+        {
+            vertex.despawnCars();
         }
     }
 

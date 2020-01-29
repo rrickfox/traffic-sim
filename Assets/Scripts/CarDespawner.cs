@@ -4,13 +4,9 @@ using DataTypes;
 
 class CarDepawner : ScriptableObject 
 {
-    
     public Edge road;
     public CarDepawner (Edge road) 
     {
-
-
-
         this.road = road;
     }
 

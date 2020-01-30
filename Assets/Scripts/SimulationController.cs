@@ -27,23 +27,15 @@ public class SimulationController : MonoBehaviour
         _roadSpawner = new RoadSpawner(roadPrefab);
 
         // Definition lanes1To2
-        var lane1To2_0_types = new HashSet<LaneType>(); 
-        lane1To2_0_types.Add(LaneType.Through);
-        var lane1To2_0 = new Lane(lane1To2_0_types);
-
-        var lanes1To2 = new List<Lane>()
+        var lanes1To2 = new List<Lane>
         {
-            lane1To2_0
+            new Lane(new HashSet<LaneType> {LaneType.Through})
         };
 
         // Definition lanes2To1
-        var lane2To1_0_types = new HashSet<LaneType>();
-        lane1To2_0_types.Add(LaneType.Through);
-        var lane2To1_0 = new Lane(lane2To1_0_types);
-
-        var lanes2To1 = new List<Lane>()
+        var lanes2To1 = new List<Lane>
         {
-            lane2To1_0
+            new Lane(new HashSet<LaneType> {LaneType.Through})
         };
 
         // Road create..

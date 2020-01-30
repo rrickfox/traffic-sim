@@ -25,27 +25,16 @@ public class SimulationController : MonoBehaviour
     public void Start()
     {
         _roadSpawner = new RoadSpawner(roadPrefab);
-
-        // Definition lanes1To2
-        var lanes1To2 = new List<Lane>
-        {
-            new Lane(new HashSet<LaneType> {LaneType.Through})
-        };
-
-        // Definition lanes2To1
-        var lanes2To1 = new List<Lane>
-        {
-            new Lane(new HashSet<LaneType> {LaneType.Through})
-        };
+        
+        var lanes1To2 = new List<Lane> { new Lane(new HashSet<LaneType> {LaneType.Through}) };
+        var lanes2To1 = new List<Lane> { new Lane(new HashSet<LaneType> {LaneType.Through}) };
+        
+        // spawn frequency
+        var frequencyLanes1To2 = new[] { lane1To2 };
+        var frequencyLanes2To1 = new[] { lane2To1 };
 
         // Road create..
         var road = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
-
-        // spawn frequency
-        var frequencyLanes1To2 = new float[1];
-        frequencyLanes1To2[0] = lane1To2;
-        var frequencyLanes2To1 = new float[1];
-        frequencyLanes2To1[0] = lane2To1;
 
         // EndPoint creation
         var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);

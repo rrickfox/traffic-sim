@@ -38,7 +38,7 @@ namespace Cameras
             Zoom();
         }
 
-        // Rotating Camera around center while right mousebutton is pressed, up-down-rotation (X-axis) can be limited
+        // Rotating Camera around center while right mouse button is pressed, up-down-rotation (X-axis) can be limited
         void Rotate()
         {
             if (Input.GetMouseButton(1))
@@ -81,7 +81,7 @@ namespace Cameras
             transform.position = _newPosition;
         }
 
-        // Zooming with the mousewheel betwenn maxZoom and minZoom
+        // Zooming with the mousewheel between maxZoom and minZoom
         void Zoom()
         {
             _camDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;

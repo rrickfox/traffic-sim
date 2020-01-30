@@ -50,7 +50,7 @@ public class SimulationController : MonoBehaviour
         // Road create..
         RoadView view = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 
-        // spawn freuquency
+        // spawn frequency
         float[] freqLane1To2 = new float[1];
         freqLane1To2[0] = lane1To2;
         float[] freqLane2To1 = new float[1];

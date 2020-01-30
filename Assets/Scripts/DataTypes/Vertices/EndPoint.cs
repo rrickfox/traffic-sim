@@ -7,7 +7,7 @@ namespace DataTypes
     {
         protected Edge edge;
         private CarSpawner _spawner;
-        private CarDepawner _despawner;
+        private CarDespawner _despawner;
         // ticks before a car spawns on a lane (index)
         private float[] _spawnFrequency;
         // counter for ticks since start
@@ -18,7 +18,7 @@ namespace DataTypes
         {
             this.edge = edge;
             _spawner = new CarSpawner(carPrefab, roadPrefab);
-            _despawner = new CarDepawner(edge.other);
+            _despawner = new CarDespawner(edge.other);
             _spawnFrequency = spawnFrequency;
         }
 

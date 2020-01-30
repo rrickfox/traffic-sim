@@ -13,7 +13,7 @@ public class RoadSpawner : ScriptableObject
         _roadPrefab = roadPrefab;
     }
 
-    public void DisplayRoad(RoadView view)
+    public void DisplayRoad(Edge view)
     {
         // Road length
         var scaleLength = Vector2.Distance(view.position, view.other.position); 

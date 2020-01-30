@@ -1,6 +1,6 @@
 namespace DataTypes
 {
-    public class CarId
+    public static class CarId
     {
         private static int _id = 0;
 

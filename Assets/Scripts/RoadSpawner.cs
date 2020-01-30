@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 using DataTypes;
 
 public class RoadSpawner : ScriptableObject

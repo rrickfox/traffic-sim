@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using DataTypes;
 
 class CarDespawner : ScriptableObject 

@@ -5,12 +5,13 @@ using DataTypes;
 class CarDepawner : ScriptableObject 
 {
     public Edge road;
+    
     public CarDepawner (Edge road) 
     {
         this.road = road;
     }
 
-    public void removeCars () 
+    public void removeCars()
     {
         foreach(Car car in road.cars) 
         {
@@ -19,7 +20,6 @@ class CarDepawner : ScriptableObject
                 Object.Destroy(car.carTransform.gameObject);
                 road.cars.Remove(car);
             }
-                
         }
     }
 }

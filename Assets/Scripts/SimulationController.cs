@@ -1,15 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 using DataTypes;
-//ruft Autos zur Bewegung auf
-//-> hat einzige Update-Funktion ("interne Zeit")
-//erstellt Straße (vorläufig)
+
+// ruft Autos zur Bewegung auf
+// -> hat einzige Update-Funktion ("interne Zeit")
+// erstellt Straße (vorläufig)
 public class SimulationController : MonoBehaviour
 {
     public GameObject roadPrefab;
     public GameObject carPrefab;
 
-    
     // Point1, Point2
     public Vector2 pos1 = new Vector2(-140, 0);
     public Vector2 pos2 = new Vector2(140, 0);
@@ -20,7 +20,6 @@ public class SimulationController : MonoBehaviour
 
     private RoadSpawner _roadSpawner;
     private List<Edge> _roads = new List<Edge>();
-
     private List<EndPoint> _spawnPoints = new List<EndPoint>();
      
     public void Start()

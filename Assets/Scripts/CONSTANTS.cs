@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class CONSTANTS
+public static class CONSTANTS
 {
     // in seconds
     public static readonly float TIME_UNIT = Time.fixedDeltaTime;

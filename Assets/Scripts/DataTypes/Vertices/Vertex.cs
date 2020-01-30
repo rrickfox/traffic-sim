@@ -10,6 +10,10 @@ namespace DataTypes
         protected Vertex(IEnumerable<Edge> edges)
         {
             _edges = edges.ToImmutableArray();
+            foreach (var edge in edges)
+            {
+                edge.vertex = this;
+            }
         }
     }
 }

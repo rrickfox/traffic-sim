@@ -52,8 +52,6 @@ public class SimulationController : MonoBehaviour
         _spawnPoints.Add(pointA);
         var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
-        road.vertex = pointA;
-        road.other.vertex = pointB;
         _roads.Add(road);
     }
 

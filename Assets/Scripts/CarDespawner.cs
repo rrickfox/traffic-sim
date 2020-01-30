@@ -9,7 +9,7 @@ class CarDespawner : ScriptableObject
         this.road = road;
     }
 
-    public void removeCars()
+    public void RemoveCars()
     {
         foreach(var car in road.cars) 
         {

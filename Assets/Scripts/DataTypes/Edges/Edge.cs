@@ -23,18 +23,18 @@ namespace DataTypes
             this.vertex = vertex;
         }
 
-        public Vector2 GetPosition(float positionOnRoad, float lane)
+        public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
         {
-            var position = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
+            var absolutePosition = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
             // set offset to the right to accomodate different lanes
-            var offset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
+            var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var backward = (other.position - this.position).normalized * -1;
+            var inverse = (other.position - this.position).normalized * -1;
 
-            position += Vector2.Perpendicular(backward) * offset;
+            absolutePosition += Vector2.Perpendicular(inverse) * perpandicularOffset;
 
-            return position;
+            return absolutePosition;
         }
     }
 }

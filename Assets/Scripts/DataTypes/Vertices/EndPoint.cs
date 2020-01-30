@@ -22,28 +22,28 @@ namespace DataTypes
             _spawnFrequency = spawnFrequency;
         }
 
-        public void spawnCars()
+        public void SpawnCars()
         {
             for(var i = 0; i < edge.outgoingLanes.Count; i++)
             {
                 if(_ticks % _spawnFrequency[i] == 0)
                 {
-                    createCar(i);
+                    CreateCar(i);
                 }
             }
             _ticks++;
         }
 
-        public void despawnCars()
+        public void DespawnCars()
         {
-            _despawner.removeCars();
+            _despawner.RemoveCars();
         }
 
-        public void createCar(float lane)
+        public void CreateCar(float lane)
         {
             var tempCar = new Car(edge, 0, lane);
             edge.cars.Add(tempCar);
-            _spawner.displayCar(tempCar);
+            _spawner.DisplayCar(tempCar);
         }
     }
 }

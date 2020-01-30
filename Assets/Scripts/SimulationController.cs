@@ -50,16 +50,16 @@ public class SimulationController : MonoBehaviour
         var view = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 
         // spawn frequency
-        var freqLane1To2 = new float[1];
-        freqLane1To2[0] = lane1To2;
-        var freqLane2To1 = new float[1];
-        freqLane2To1[0] = lane2To1;
+        var frequencyLanes1To2 = new float[1];
+        frequencyLanes1To2[0] = lane1To2;
+        var frequencyLanes2To1 = new float[1];
+        frequencyLanes2To1[0] = lane2To1;
 
         // EndPoint creation
         var road = new Edge(view, null, view.other, null);
-        var pointA = new EndPoint(road, carPrefab, roadPrefab, freqLane1To2);
+        var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);
         _spawnPoints.Add(pointA);
-        var pointB = new EndPoint(road.other, carPrefab, roadPrefab, freqLane2To1);
+        var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
         road.vertex = pointA;
         road.other.vertex = pointB;
@@ -84,7 +84,7 @@ public class SimulationController : MonoBehaviour
     {
         foreach(var vertex in _spawnPoints)
         {
-            vertex.spawnCars();
+            vertex.SpawnCars();
         }
     }
 
@@ -92,7 +92,7 @@ public class SimulationController : MonoBehaviour
     {
         foreach(var vertex in _spawnPoints)
         {
-            vertex.despawnCars();
+            vertex.DespawnCars();
         }
     }
 

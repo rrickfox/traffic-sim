@@ -12,9 +12,9 @@ class CarSpawner : ScriptableObject
         _roadPrefab = roadPrefab;
     }
 
-    public void displayCar(Car car)
+    public void DisplayCar(Car car)
     {
-        var position = car.road.GetPosition(car.positionOnRoad, car.lane);
+        var position = car.road.GetAbsolutePosition(car.positionOnRoad, car.lane);
         var angle = RoadAngle(car.road);
 
         var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);

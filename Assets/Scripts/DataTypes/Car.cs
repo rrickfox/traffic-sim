@@ -20,7 +20,7 @@ namespace DataTypes
         public void Move()
         {
             positionOnRoad += speed;
-            var position = road.GetPosition(positionOnRoad, lane);
+            var position = road.GetAbsolutePosition(positionOnRoad, lane);
             carTransform.position = new Vector3(position.x, carTransform.position.y, position.y);
         }
 

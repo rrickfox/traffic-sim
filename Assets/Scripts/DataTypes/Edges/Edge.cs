@@ -25,12 +25,12 @@ namespace DataTypes
 
         public Vector2 GetPosition(float positionOnRoad, float lane)
         {
-            Vector2 position = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
+            var position = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
             // set offset to the right to accomodate different lanes
-            float offset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
+            var offset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            Vector2 backward = (other.position - this.position).normalized * -1;
+            var backward = (other.position - this.position).normalized * -1;
 
             position += Vector2.Perpendicular(backward) * offset;
 

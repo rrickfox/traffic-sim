@@ -12,7 +12,7 @@ class CarDespawner : ScriptableObject
 
     public void removeCars()
     {
-        foreach(Car car in road.cars) 
+        foreach(var car in road.cars) 
         {
             if (car.positionOnRoad > road.length)
             {

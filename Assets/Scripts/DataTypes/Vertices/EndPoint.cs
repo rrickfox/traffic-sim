@@ -24,7 +24,7 @@ namespace DataTypes
 
         public void spawnCars()
         {
-            for(int i = 0; i < edge.outgoingLanes.Count; i++)
+            for(var i = 0; i < edge.outgoingLanes.Count; i++)
             {
                 if(_ticks % _spawnFrequency[i] == 0)
                 {
@@ -41,7 +41,7 @@ namespace DataTypes
 
         public void createCar(float lane)
         {
-            Car tempCar = new Car(edge, 0, lane);
+            var tempCar = new Car(edge, 0, lane);
             edge.cars.Add(tempCar);
             _spawner.displayCar(tempCar);
         }

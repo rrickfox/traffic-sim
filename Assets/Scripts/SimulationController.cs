@@ -27,9 +27,9 @@ public class SimulationController : MonoBehaviour
         _roadSpawner = new RoadSpawner(roadPrefab);
 
         // Definition lanes1To2
-        HashSet<LaneType> lane1To2_0_types = new HashSet<LaneType>(); 
+        var lane1To2_0_types = new HashSet<LaneType>(); 
         lane1To2_0_types.Add(LaneType.Through);
-        Lane lane1To2_0 = new Lane(lane1To2_0_types);
+        var lane1To2_0 = new Lane(lane1To2_0_types);
 
         var lanes1To2 = new List<Lane>()
         {
@@ -37,9 +37,9 @@ public class SimulationController : MonoBehaviour
         };
 
         // Definition lanes2To1
-        HashSet<LaneType> lane2To1_0_types = new HashSet<LaneType>();
+        var lane2To1_0_types = new HashSet<LaneType>();
         lane1To2_0_types.Add(LaneType.Through);
-        Lane lane2To1_0 = new Lane(lane2To1_0_types);
+        var lane2To1_0 = new Lane(lane2To1_0_types);
 
         var lanes2To1 = new List<Lane>()
         {
@@ -47,19 +47,19 @@ public class SimulationController : MonoBehaviour
         };
 
         // Road create..
-        RoadView view = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
+        var view = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 
         // spawn frequency
-        float[] freqLane1To2 = new float[1];
+        var freqLane1To2 = new float[1];
         freqLane1To2[0] = lane1To2;
-        float[] freqLane2To1 = new float[1];
+        var freqLane2To1 = new float[1];
         freqLane2To1[0] = lane2To1;
 
         // EndPoint creation
-        Edge road = new Edge(view, null, view.other, null);
-        EndPoint pointA = new EndPoint(road, carPrefab, roadPrefab, freqLane1To2);
+        var road = new Edge(view, null, view.other, null);
+        var pointA = new EndPoint(road, carPrefab, roadPrefab, freqLane1To2);
         _spawnPoints.Add(pointA);
-        EndPoint pointB = new EndPoint(road.other, carPrefab, roadPrefab, freqLane2To1);
+        var pointB = new EndPoint(road.other, carPrefab, roadPrefab, freqLane2To1);
         _spawnPoints.Add(pointB);
         road.vertex = pointA;
         road.other.vertex = pointB;
@@ -75,14 +75,14 @@ public class SimulationController : MonoBehaviour
 
     public RoadView CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
     {
-        RoadView view = new RoadView(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
+        var view = new RoadView(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
         _roadSpawner.DisplayRoad(view);
         return view;
     }
 
     public void CheckForSpawn()
     {
-        foreach(EndPoint vertex in _spawnPoints)
+        foreach(var vertex in _spawnPoints)
         {
             vertex.spawnCars();
         }
@@ -90,7 +90,7 @@ public class SimulationController : MonoBehaviour
 
     public void CheckForDespawn()
     {
-        foreach(EndPoint vertex in _spawnPoints)
+        foreach(var vertex in _spawnPoints)
         {
             vertex.despawnCars();
         }
@@ -98,13 +98,13 @@ public class SimulationController : MonoBehaviour
 
     public void MoveCars()
     {
-        foreach(Edge road in _roads)
+        foreach(var road in _roads)
         {
-            foreach(Car car in road.cars)
+            foreach(var car in road.cars)
             {
                 car.Move();
             }
-            foreach(Car car in road.other.cars)
+            foreach(var car in road.other.cars)
             {
                 car.Move();
             }

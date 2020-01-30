@@ -10,6 +10,9 @@ namespace DataTypes
         // represents how the road would look like from its other endpoint
         public RoadView other { get => _other; set => _other = value; }
         
+        // the cars on the outgoing side of the road
+        public List<Car> cars = new List<Car>();
+        
         private RoadShape _shape;
         // the shape of the road is synchronized between the two RoadViews
         public RoadShape shape
@@ -73,6 +76,20 @@ namespace DataTypes
             shape = roadView.shape;
             position = roadView.position;
             outgoingLanes = roadView.outgoingLanes;
+        }
+        
+        public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
+        {
+            var absolutePosition = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
+            // set offset to the right to accomodate different lanes
+            var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
+
+            // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
+            var inverse = (other.position - this.position).normalized * -1;
+
+            absolutePosition += Vector2.Perpendicular(inverse) * perpandicularOffset;
+
+            return absolutePosition;
         }
     }
 }

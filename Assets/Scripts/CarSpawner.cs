@@ -26,29 +26,23 @@ class CarSpawner
         {
             if(_ticks % _spawnFrequencies[lane] == 0)
             {
-                CreateCar(_edge, 0, lane);
+                CreateCar(lane);
             }
         }
         _ticks++;
     }
     
-    public void CreateCar(Edge road, float positionOnRoad, float lane)
+    private void CreateCar(float lane)
     {
         // construct car
-        var car = new Car(road, 0, lane);
+        var car = new Car(_edge, 0, lane);
         
         // display the car graphically
-        var position = road.GetAbsolutePosition(positionOnRoad, lane);
-        var angle = RoadAngle(car.road);
+        var position = _edge.GetAbsolutePosition(car.positionOnRoad, lane);
         var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
-        var rotation = Quaternion.Euler(0, angle, 0);
+        var rotation = Quaternion.Euler(0, _edge.angle, 0);
         var carGameObject = Object.Instantiate(_carPrefab, spawnPoint, rotation);
         carGameObject.name = "Car_" + CarId.id;
         car.carTransform = carGameObject.transform;
-    }
-
-    public float RoadAngle(Edge road)
-    {
-        return Vector2.SignedAngle(road.other.position - road.position, Vector2.right);
     }
 }

@@ -45,6 +45,8 @@ namespace DataTypes
             }
         }
         
+        public float angle => Vector2.SignedAngle(other.position - position, Vector2.right);
+        
         public List<Lane> outgoingLanes;
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes

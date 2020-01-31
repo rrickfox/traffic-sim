@@ -5,7 +5,7 @@ namespace DataTypes
 {
     class EndPoint : Vertex
     {
-        protected Edge edge;
+        private Edge _edge;
         private CarSpawner _spawner;
         private CarDespawner _despawner;
         // ticks before a car spawns on a lane (index)
@@ -16,7 +16,7 @@ namespace DataTypes
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, float[] spawnFrequencies)
             : base(ImmutableArray.Create(edge))
         {
-            this.edge = edge;
+            _edge = edge;
             _spawner = new CarSpawner(carPrefab, roadPrefab);
             _despawner = new CarDespawner(edge.other);
             _spawnFrequencies = spawnFrequencies;
@@ -24,7 +24,7 @@ namespace DataTypes
 
         public void SpawnCars()
         {
-            for(var i = 0; i < edge.outgoingLanes.Count; i++)
+            for(var i = 0; i < _edge.outgoingLanes.Count; i++)
             {
                 if(_ticks % _spawnFrequencies[i] == 0)
                 {
@@ -41,7 +41,7 @@ namespace DataTypes
 
         public void CreateCar(float lane)
         {
-            var newCar = new Car(edge, 0, lane);
+            var newCar = new Car(_edge, 0, lane);
             _spawner.DisplayCar(newCar);
         }
     }

@@ -34,7 +34,7 @@ public class SimulationController : MonoBehaviour
         var frequencyLanes2To1 = new[] { lane2To1 };
 
         // Road create..
-        var road = CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
+        var road = _roadSpawner.CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 
         // EndPoint creation
         var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);
@@ -49,13 +49,6 @@ public class SimulationController : MonoBehaviour
         CheckForSpawn();
         MoveCars();
         CheckForDespawn();
-    }
-
-    public Edge CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
-    {
-        var view = new Edge(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
-        _roadSpawner.DisplayRoad(view);
-        return view;
     }
 
     public void CheckForSpawn()

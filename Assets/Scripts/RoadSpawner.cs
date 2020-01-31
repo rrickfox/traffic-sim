@@ -13,23 +13,25 @@ public class RoadSpawner
         _roadPrefab = roadPrefab;
     }
 
-    public void DisplayRoad(Edge view)
+    public Edge CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
     {
+        var road = new Edge(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
         // Road length
-        var scaleLength = Vector2.Distance(view.position, view.other.position); 
+        var scaleLength = Vector2.Distance(road.position, road.other.position); 
         // Road width
-        var scaleWidth = (view.outgoingLanes.Count + view.incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
+        var scaleWidth = (road.outgoingLanes.Count + road.incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
         // 
-        var middlePoint = (view.other.position - view.position) * 0.5f + view.position;
+        var middlePoint = (road.other.position - road.position) * 0.5f + road.position;
         // Road spawnpoint
         var spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
-
-        var rotation = Quaternion.Euler(0, Vector2.SignedAngle(view.other.position - view.position, Vector2.right), 0);
-
+        var rotation = Quaternion.Euler(0, Vector2.SignedAngle(road.other.position - road.position, Vector2.right), 0);
+        
         var roadVisual = Object.Instantiate(_roadPrefab, spawnPoint, rotation);
         roadVisual.transform.localScale = new Vector3(scaleLength, roadVisual.transform.localScale.y, scaleWidth);
         roadVisual.name = "Road_" + _idRoad;
+        
         _idRoad++;
         _roads.Add(roadVisual);
+        return road;
     }
 }

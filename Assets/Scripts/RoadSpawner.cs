@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using DataTypes;
 
-public class RoadSpawner : ScriptableObject
+public class RoadSpawner
 {
     private GameObject _roadPrefab;
     private List<GameObject> _roads = new List<GameObject>();
@@ -26,7 +26,7 @@ public class RoadSpawner : ScriptableObject
 
         var rotation = Quaternion.Euler(0, Vector2.SignedAngle(view.other.position - view.position, Vector2.right), 0);
 
-        var roadVisual = Instantiate(_roadPrefab, spawnPoint, rotation);
+        var roadVisual = Object.Instantiate(_roadPrefab, spawnPoint, rotation);
         roadVisual.transform.localScale = new Vector3(scaleLength, roadVisual.transform.localScale.y, scaleWidth);
         roadVisual.name = "Road_" + _idRoad;
         _idRoad++;

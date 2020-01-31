@@ -1,7 +1,7 @@
 using UnityEngine;
 using DataTypes;
 
-class CarDespawner : ScriptableObject 
+class CarDespawner
 {
     public Edge road;
     public CarDespawner (Edge road)

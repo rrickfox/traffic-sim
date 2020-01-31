@@ -36,6 +36,7 @@ namespace DataTypes
                 }
             }
         }
+        
         protected Vertex(IEnumerable<Edge> edges)
         {
             _edges = edges.ToImmutableArray();

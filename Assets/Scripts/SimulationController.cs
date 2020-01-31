@@ -80,6 +80,6 @@ public class SimulationController : MonoBehaviour
             {
                 car.Move();
             }
-        } 
+        }
     }
 }

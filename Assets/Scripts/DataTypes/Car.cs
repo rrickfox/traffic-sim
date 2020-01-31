@@ -13,6 +13,7 @@ namespace DataTypes
         public Car(Edge road, float positionOnRoad, float lane)
         {
             this.road = road;
+            this.road.cars.Add(this);
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
         }

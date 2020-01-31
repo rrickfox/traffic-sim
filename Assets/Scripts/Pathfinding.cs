@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
+using MoreLinq;
 
 public static class Pathfinding
 {
@@ -20,16 +21,13 @@ public static class Pathfinding
     {
         var tempVertices = vertices;
         start.pathDistance = 0;
-        Vertex minVertex = start;
+        Vertex minVertex;
     
         // calculates pathDistance and corresponding previousVertex for entire graph
         while (tempVertices.Count != 0)
         {
             // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
-            foreach (var vertex in tempVertices.Where(vertex => vertex.pathDistance < minVertex.pathDistance))
-            {
-                minVertex = vertex;
-            }
+            minVertex = tempVertices.MinBy(v => v.pathDistance).First();
             minVertex.CheckNeigbourhood();
             tempVertices.Remove(minVertex);
         }

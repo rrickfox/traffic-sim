@@ -9,11 +9,11 @@ namespace DataTypes
         private CarSpawner _spawner;
         private CarDespawner _despawner;
         // ticks before a car spawns on a lane (index)
-        private float[] _spawnFrequencies;
+        private int[] _spawnFrequencies;
         // counter for ticks since start
         private int _ticks = 0;
 
-        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, float[] spawnFrequencies)
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies)
             : base(ImmutableArray.Create(edge))
         {
             _edge = edge;

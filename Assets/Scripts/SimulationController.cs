@@ -15,8 +15,8 @@ public class SimulationController : MonoBehaviour
     public Vector2 pos2 = new Vector2(140, 0);
 
     // spawn frequency
-    public float lane1To2 = 100;
-    public float lane2To1 = 100;
+    public int lane1To2 = 100;
+    public int lane2To1 = 100;
 
     private RoadSpawner _roadSpawner;
     private List<Edge> _roads = new List<Edge>();

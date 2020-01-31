@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-
 namespace DataTypes
 {
     public class TeeSection : Vertex
@@ -9,7 +7,7 @@ namespace DataTypes
         protected Edge leftOrRight;
 
         public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
-            : base(ImmutableArray.Create(throughOrRight, throughOrLeft, leftOrRight))
+            : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             this.throughOrRight = throughOrRight;
             this.throughOrLeft = throughOrLeft;

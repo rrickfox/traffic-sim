@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using UnityEngine;
 
 namespace DataTypes
@@ -13,8 +12,7 @@ namespace DataTypes
         // counter for ticks since start
         private int _ticks = 0;
 
-        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, float[] spawnFrequencies)
-            : base(ImmutableArray.Create(edge))
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, float[] spawnFrequencies) : base(edge)
         {
             this.edge = edge;
             _spawner = new CarSpawner(carPrefab, roadPrefab);

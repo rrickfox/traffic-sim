@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-
 namespace DataTypes
 {
     public class CrossSection : Vertex
@@ -10,7 +8,7 @@ namespace DataTypes
         protected Edge left;
 
         public CrossSection(Edge up, Edge right, Edge down, Edge left)
-            : base(ImmutableArray.Create(up, right, down, left))
+            : base(up, right, down, left)
         {
             this.up = up;
             this.right = right;

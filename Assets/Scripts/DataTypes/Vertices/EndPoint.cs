@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Linq;
 using UnityEngine;
 
@@ -14,8 +13,7 @@ namespace DataTypes
         // counter for ticks since start
         private int _ticks = 0;
 
-        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies)
-            : base(ImmutableArray.Create(edge))
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {
             _edge = edge;
             _carPrefab = carPrefab;

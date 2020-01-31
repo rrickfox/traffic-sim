@@ -15,5 +15,7 @@ namespace DataTypes
                 edge.vertex = this;
             }
         }
+
+        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
     }
 }

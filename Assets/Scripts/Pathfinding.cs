@@ -38,13 +38,12 @@ public static class Pathfinding
     // recursively iterates over vertices in reverse order to determine path
     private static List<Vertex> DeterminePath(EndPoint start, Vertex end)
     {
-        var path = new List<Vertex>();
+        var path = new LinkedList<Vertex>();
         while (start != end)
         {
-            path.Add(end);
+            path.AddFirst(end);
             end = end.previousVertex;
         }
-        path.Reverse();
-        return path;
+        return path.ToList();
     }
 }

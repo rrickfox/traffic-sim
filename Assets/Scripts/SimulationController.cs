@@ -75,6 +75,7 @@ public class SimulationController : MonoBehaviour
             {
                 car.Move();
             }
+            // move all cars driving on the opposite lanes
             foreach(var car in road.other.cars)
             {
                 car.Move();

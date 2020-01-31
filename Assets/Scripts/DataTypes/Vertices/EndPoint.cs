@@ -41,9 +41,9 @@ namespace DataTypes
 
         public void CreateCar(float lane)
         {
-            var tempCar = new Car(edge, 0, lane);
-            edge.cars.Add(tempCar);
-            _spawner.DisplayCar(tempCar);
+            var newCar = new Car(edge, 0, lane);
+            edge.cars.Add(newCar);
+            _spawner.DisplayCar(newCar);
         }
     }
 }

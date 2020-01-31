@@ -8,9 +8,9 @@ namespace DataTypes
     {
         private ImmutableArray<Edge> _edges;
         // distance value relative to start point of pathfinding
-        public float? pathDistance { get; set; }
+        public float? pathDistance { get; protected set; }
         // current candidate for predecessor in path
-        public Vertex previousVertex { get; set; }
+        public Vertex previousVertex { get; private set; }
         
         public static void StartPathfinding(List<Vertex> vertices)
         {

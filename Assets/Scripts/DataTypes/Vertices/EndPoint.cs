@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Linq;
 using UnityEngine;
 
 namespace DataTypes
@@ -50,7 +51,7 @@ namespace DataTypes
 
         public void DespawnCars()
         {
-            foreach(var car in _edge.cars) 
+            foreach(var car in _edge.cars.ToList()) 
             {
                 if (car.positionOnRoad > _edge.length)
                 {

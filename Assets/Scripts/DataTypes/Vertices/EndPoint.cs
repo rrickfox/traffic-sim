@@ -24,11 +24,11 @@ namespace DataTypes
 
         public void SpawnCars()
         {
-            for(var i = 0; i < _edge.outgoingLanes.Count; i++)
+            for(var lane = 0; lane < _edge.outgoingLanes.Count; lane++)
             {
-                if(_ticks % _spawnFrequencies[i] == 0)
+                if(_ticks % _spawnFrequencies[lane] == 0)
                 {
-                    _spawner.CreateCar(_edge, 0, i);
+                    _spawner.CreateCar(_edge, 0, lane);
                 }
             }
             _ticks++;

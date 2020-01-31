@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq.Extensions;
 using UnityEngine;
 
 namespace DataTypes
@@ -23,7 +24,37 @@ namespace DataTypes
             _roadPrefab = roadPrefab;
             _spawnFrequencies = spawnFrequencies;
         }
+        
+        public void CalculateVertexParameters(List<Vertex> vertices, EndPoint end)
+        {
+            var tempVertices = vertices;
+            pathDistance = 0;
 
+            // calculates pathDistance and corresponding previousVertex for entire graph
+            while (tempVertices.Count != 0)
+            {
+                // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
+                var minVertex = tempVertices.MinBy(v => v.pathDistance).First();
+                minVertex.CheckNeigbourhood();
+                tempVertices.Remove(minVertex);
+            }
+    
+            // creates dictionary for saving path corresponding to two EndPoints
+            routingTable.Add(end, DeterminePath(end));
+        }
+
+        // recursively iterates over vertices in reverse order to determine path
+        private List<Vertex> DeterminePath(Vertex end)
+        {
+            var path = new LinkedList<Vertex>();
+            while (this != end)
+            {
+                path.AddFirst(end);
+                end = end.previousVertex;
+            }
+            return path.ToList();
+        }
+        
         public void SpawnCars()
         {
             for(var lane = 0; lane < _edge.outgoingLanes.Count; lane++)

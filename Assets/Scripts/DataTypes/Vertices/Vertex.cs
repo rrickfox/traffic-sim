@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace DataTypes
 {
@@ -25,7 +26,18 @@ namespace DataTypes
             
             set => _previousVertex = value;
         }
-
+        
+        public static void StartPathfinding(List<Vertex> vertices)
+        {
+            foreach (var start in vertices.OfType<EndPoint>())
+            {
+                foreach (var end in vertices.OfType<EndPoint>().Where(end => end != start))
+                {
+                    start.CalculateVertexParameters(vertices, end);
+                }
+            }
+        }
+        
         // checks neighbourhood for necessary updates in pathfinding attributes
         public void CheckNeigbourhood()
         {

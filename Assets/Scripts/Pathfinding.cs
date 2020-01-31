@@ -15,7 +15,6 @@ public static class Pathfinding
             }
         }
     }
-        
     
     private static void CalculateVertexParameters(List<Vertex> vertices, EndPoint start, EndPoint end)
     {
@@ -42,7 +41,7 @@ public static class Pathfinding
     {
         if (start != tempEnd)
         {
-            path.Append(tempEnd);
+            path.Add(tempEnd);
             DeterminePath(path, start, tempEnd.previousVertex);
         }
 

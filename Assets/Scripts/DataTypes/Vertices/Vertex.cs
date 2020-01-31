@@ -7,9 +7,13 @@ namespace DataTypes
     {
         private ImmutableArray<Edge> _edges;
 
-        public Vertex(IEnumerable<Edge> edges)
+        protected Vertex(IEnumerable<Edge> edges)
         {
             _edges = edges.ToImmutableArray();
+            foreach (var edge in _edges)
+            {
+                edge.vertex = this;
+            }
         }
     }
 }

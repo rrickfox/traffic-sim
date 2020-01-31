@@ -1,4 +1,4 @@
-public class Conversion
+public static class Conversion
 {
     // convert kilometers per hour to units per Timestep
     public static float UnitsPerTimeStepFromKPH(float kilometersPerHour)

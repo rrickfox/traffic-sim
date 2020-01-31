@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using DataTypes;
 
 class CarSpawner : ScriptableObject
@@ -13,14 +12,14 @@ class CarSpawner : ScriptableObject
         _roadPrefab = roadPrefab;
     }
 
-    public void displayCar(Car car)
+    public void DisplayCar(Car car)
     {
-        Vector2 position = car.road.GetPosition(car.positionOnRoad, car.lane);
-        float angle = RoadAngle(car.road);
+        var position = car.road.GetAbsolutePosition(car.positionOnRoad, car.lane);
+        var angle = RoadAngle(car.road);
 
-        Vector3 spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
-        Quaternion rotation = Quaternion.Euler(0, angle, 0);
-        GameObject tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
+        var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
+        var rotation = Quaternion.Euler(0, angle, 0);
+        var tempCar = Instantiate(_carPrefab, spawnPoint, rotation);
         tempCar.name = "Car_" + CarId.id;
         car.carTransform = tempCar.transform;
     }

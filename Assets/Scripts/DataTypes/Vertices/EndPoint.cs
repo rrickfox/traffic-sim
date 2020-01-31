@@ -13,8 +13,7 @@ namespace DataTypes
         private int[] _spawnFrequencies;
         // counter for ticks since start
         private int _ticks = 0;
-        private Dictionary<Vertex, List<Vertex>> _routingTable = new Dictionary<Vertex, List<Vertex>>();
-        public Dictionary<Vertex, List<Vertex>> routingTable => _routingTable;
+        public Dictionary<Vertex, List<Vertex>> routingTable { get; } = new Dictionary<Vertex, List<Vertex>>();
 
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {

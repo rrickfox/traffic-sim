@@ -18,7 +18,7 @@ namespace DataTypes
             {
                 foreach (var end in vertices.OfType<EndPoint>().Where(end => end != start))
                 {
-                    start.CalculateVertexParameters(vertices, end);
+                    start.FindPath(vertices, end);
                 }
             }
         }

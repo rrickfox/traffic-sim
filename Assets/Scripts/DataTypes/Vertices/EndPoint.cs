@@ -24,7 +24,7 @@ namespace DataTypes
             _spawnFrequencies = spawnFrequencies;
         }
         
-        public void CalculateVertexParameters(List<Vertex> vertices, EndPoint end)
+        public void FindPath(List<Vertex> vertices, EndPoint end)
         {
             var tempVertices = vertices;
             pathDistance = 0;
@@ -39,11 +39,11 @@ namespace DataTypes
             }
     
             // creates dictionary for saving path corresponding to two EndPoints
-            routingTable.Add(end, DeterminePath(end));
+            routingTable.Add(end, DetermineFoundPath(end));
         }
 
         // recursively iterates over vertices in reverse order to determine path
-        private List<Vertex> DeterminePath(Vertex end)
+        private List<Vertex> DetermineFoundPath(Vertex end)
         {
             var path = new LinkedList<Vertex>();
             while (this != end)

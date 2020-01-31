@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using MoreLinq;
 
 namespace DataTypes
 {
@@ -12,13 +13,15 @@ namespace DataTypes
         // current candidate for predecessor in path
         public Vertex previousVertex { get; private set; }
         
-        public static void StartPathfinding(List<Vertex> vertices)
+        public static void StartPathfinding(ICollection<Vertex> vertices)
         {
-            foreach (var start in vertices.OfType<EndPoint>())
+            var verticesSet = vertices.ToHashSet();
+            var endPoints = vertices.OfType<EndPoint>().ToList();
+            foreach (var start in endPoints)
             {
-                foreach (var end in vertices.OfType<EndPoint>().Where(end => end != start))
+                foreach (var end in endPoints.Where(end => end != start))
                 {
-                    start.FindPath(vertices, end);
+                    start.FindPath(verticesSet, end);
                 }
             }
         }

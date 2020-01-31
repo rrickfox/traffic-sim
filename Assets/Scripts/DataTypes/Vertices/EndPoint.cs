@@ -24,9 +24,9 @@ namespace DataTypes
             _spawnFrequencies = spawnFrequencies;
         }
         
-        public void FindPath(List<Vertex> vertices, EndPoint end)
+        public void FindPath(IEnumerable<Vertex> vertices, EndPoint end)
         {
-            var tempVertices = vertices;
+            var tempVertices = vertices.ToHashSet();
             pathDistance = 0;
 
             // calculates pathDistance and corresponding previousVertex for entire graph

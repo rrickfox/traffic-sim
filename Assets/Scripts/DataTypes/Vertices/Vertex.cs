@@ -29,7 +29,7 @@ namespace DataTypes
         // checks neighbourhood for necessary updates in pathfinding attributes
         public void CheckNeigbourhood()
         {
-            foreach (var edge in _edges)
+            foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0))
             {
                 var tempDistance = pathDistance + edge.length;
                 if (edge.other.vertex.pathDistance > tempDistance | edge.other.vertex.pathDistance == null)

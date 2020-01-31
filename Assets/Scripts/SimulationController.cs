@@ -21,7 +21,7 @@ public class SimulationController : MonoBehaviour
     private RoadSpawner _roadSpawner;
     private List<Edge> _roads = new List<Edge>();
     private List<EndPoint> _spawnPoints = new List<EndPoint>();
-     
+    
     public void Start()
     {
         _roadSpawner = new RoadSpawner(roadPrefab);
@@ -80,6 +80,6 @@ public class SimulationController : MonoBehaviour
             {
                 car.Move();
             }
-        }
+        } 
     }
 }

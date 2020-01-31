@@ -8,24 +8,9 @@ namespace DataTypes
     {
         private ImmutableArray<Edge> _edges;
         // distance value relative to start point of pathfinding
-        private float? _pathDistance;
-        
-        public float? pathDistance
-        {
-            get => _pathDistance;
-            
-            set => _pathDistance = value;
-        }
-        
+        public float? pathDistance { get; set; }
         // current candidate for predecessor in path
-        private Vertex _previousVertex;
-        
-        public Vertex previousVertex
-        {
-            get => _previousVertex;
-            
-            set => _previousVertex = value;
-        }
+        public Vertex previousVertex { get; set; }
         
         public static void StartPathfinding(List<Vertex> vertices)
         {
@@ -33,11 +18,11 @@ namespace DataTypes
             {
                 foreach (var end in vertices.OfType<EndPoint>().Where(end => end != start))
                 {
-                    start.FindPath(vertices, end);
+                    start.CalculateVertexParameters(vertices, end);
                 }
             }
         }
-        
+
         // checks neighbourhood for necessary updates in pathfinding attributes
         public void CheckNeigbourhood()
         {

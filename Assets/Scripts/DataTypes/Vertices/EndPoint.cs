@@ -14,8 +14,7 @@ namespace DataTypes
         private int[] _spawnFrequencies;
         // counter for ticks since start
         private int _ticks = 0;
-        private Dictionary<Vertex, List<Vertex>> _routingTable = new Dictionary<Vertex, List<Vertex>>();
-        public Dictionary<Vertex, List<Vertex>> routingTable => _routingTable;
+        public Dictionary<Vertex, List<Vertex>> routingTable { get; } = new Dictionary<Vertex, List<Vertex>>();
 
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {
@@ -25,7 +24,7 @@ namespace DataTypes
             _spawnFrequencies = spawnFrequencies;
         }
         
-        public void FindPath(List<Vertex> vertices, EndPoint end)
+        public void CalculateVertexParameters(List<Vertex> vertices, EndPoint end)
         {
             var tempVertices = vertices;
             pathDistance = 0;
@@ -40,11 +39,11 @@ namespace DataTypes
             }
     
             // creates dictionary for saving path corresponding to two EndPoints
-            routingTable.Add(end, DetermineFoundPath(end));
+            routingTable.Add(end, DeterminePath(end));
         }
 
         // recursively iterates over vertices in reverse order to determine path
-        private List<Vertex> DetermineFoundPath(Vertex end)
+        private List<Vertex> DeterminePath(Vertex end)
         {
             var path = new LinkedList<Vertex>();
             while (this != end)

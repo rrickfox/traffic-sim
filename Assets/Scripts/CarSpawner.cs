@@ -12,16 +12,19 @@ class CarSpawner
         _roadPrefab = roadPrefab;
     }
 
-    public void DisplayCar(Car car)
+    public void CreateCar(Edge road, float positionOnRoad, float lane)
     {
-        var position = car.road.GetAbsolutePosition(car.positionOnRoad, car.lane);
+        // construct car
+        var car = new Car(road, 0, lane);
+        
+        // display the car graphically
+        var position = road.GetAbsolutePosition(positionOnRoad, lane);
         var angle = RoadAngle(car.road);
-
         var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
         var rotation = Quaternion.Euler(0, angle, 0);
-        var tempCar = Object.Instantiate(_carPrefab, spawnPoint, rotation);
-        tempCar.name = "Car_" + CarId.id;
-        car.carTransform = tempCar.transform;
+        var carGameObject = Object.Instantiate(_carPrefab, spawnPoint, rotation);
+        carGameObject.name = "Car_" + CarId.id;
+        car.carTransform = carGameObject.transform;
     }
 
     public float RoadAngle(Edge road)

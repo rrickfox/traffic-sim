@@ -28,7 +28,7 @@ namespace DataTypes
             {
                 if(_ticks % _spawnFrequencies[i] == 0)
                 {
-                    CreateCar(i);
+                    _spawner.CreateCar(_edge, 0, i);
                 }
             }
             _ticks++;
@@ -37,12 +37,6 @@ namespace DataTypes
         public void DespawnCars()
         {
             _despawner.RemoveCars();
-        }
-
-        public void CreateCar(float lane)
-        {
-            var newCar = new Car(_edge, 0, lane);
-            _spawner.DisplayCar(newCar);
         }
     }
 }

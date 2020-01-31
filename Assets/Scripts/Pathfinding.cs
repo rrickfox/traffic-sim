@@ -32,19 +32,18 @@ public static class Pathfinding
         }
     
         // creates dictionary for saving path corresponding to two EndPoints
-        var path = new List<Vertex>();
-        start.routingTable.Add(end, DeterminePath(path, start, end));
+        start.routingTable.Add(end, DeterminePath(start, end));
     }
 
     // recursively iterates over vertices in reverse order to determine path
-    private static List<Vertex> DeterminePath(List<Vertex> path, EndPoint start, Vertex tempEnd)
+    private static List<Vertex> DeterminePath(EndPoint start, Vertex end)
     {
-        if (start != tempEnd)
+        var path = new List<Vertex>();
+        while (start != end)
         {
-            path.Add(tempEnd);
-            DeterminePath(path, start, tempEnd.previousVertex);
+            path.Add(end);
+            end = end.previousVertex;
         }
-
         path.Reverse();
         return path;
     }

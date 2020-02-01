@@ -54,9 +54,9 @@ namespace DataTypes
             }
         }
 
-        public Edge GetEdge(Vertex neighbor)
+        public Edge GetEdge(Vertex neighbour)
         {
-            return _edges.FirstOrDefault(edge => edge.other.vertex == neighbor);
+            return _edges.FirstOrDefault(edge => edge.other.vertex == neighbour);
         }
     }
 }

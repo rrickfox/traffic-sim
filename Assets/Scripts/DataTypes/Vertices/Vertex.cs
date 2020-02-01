@@ -45,20 +45,18 @@ namespace DataTypes
         // checks neighbourhood for necessary updates in pathfinding attributes
         public void CheckNeigbourhood()
         {
-            foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0))
+            foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0 
+                                                      && (edge.other.vertex.pathDistance == null || 
+                                                          edge.other.vertex.pathDistance > pathDistance + edge.length)))
             {
-                var tempDistance = pathDistance + edge.length;
-                if (edge.other.vertex.pathDistance > tempDistance | edge.other.vertex.pathDistance == null)
-                {
-                    edge.other.vertex.pathDistance = tempDistance;
-                    edge.other.vertex.previousVertex = this;
-                }
+                edge.other.vertex.pathDistance = pathDistance + edge.length;
+                edge.other.vertex.previousVertex = this;
             }
         }
-                
-        public Edge GetEdge(Vertex neigbour)
+
+        public Edge GetEdge(Vertex neighbor)
         {
-            return _edges.FirstOrDefault(edge => edge.other.vertex == neigbour);
+            return _edges.FirstOrDefault(edge => edge.other.vertex == neighbor);
         }
     }
 }

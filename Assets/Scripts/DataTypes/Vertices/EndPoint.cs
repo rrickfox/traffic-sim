@@ -54,13 +54,11 @@ namespace DataTypes
         {
             if (end.pathDistance != null)
             {
-                var tempEnd = end;
                 var vertexPath = new LinkedList<Vertex>();
                 var edgePath = new List<Edge>();
-                while (this != tempEnd)
+                for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
                 {
                     vertexPath.AddFirst(tempEnd);
-                    tempEnd = tempEnd.previousVertex;
                 }
                 
                 foreach (var vertex in vertexPath)

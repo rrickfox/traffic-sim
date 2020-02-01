@@ -2,10 +2,10 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
-        protected Edge up;
-        protected Edge right;
-        protected Edge down;
-        protected Edge left;
+        private Edge up { get; }
+        private Edge right { get; }
+        private Edge down { get; }
+        private Edge left { get; }
 
         public CrossSection(Edge up, Edge right, Edge down, Edge left)
             : base(up, right, down, left)

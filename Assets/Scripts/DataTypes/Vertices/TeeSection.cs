@@ -2,9 +2,9 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
-        protected Edge throughOrRight;
-        protected Edge throughOrLeft;
-        protected Edge leftOrRight;
+        private Edge throughOrRight { get; }
+        private Edge throughOrLeft { get; }
+        private Edge leftOrRight { get; }
 
         public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
             : base(throughOrRight, throughOrLeft, leftOrRight)

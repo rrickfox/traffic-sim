@@ -4,8 +4,8 @@ using DataTypes;
 
 public class RoadSpawner
 {
-    private GameObject _roadPrefab;
-    private List<GameObject> _roads = new List<GameObject>();
+    private GameObject _roadPrefab { get; }
+    private List<GameObject> _roads { get; } = new List<GameObject>();
     private int _idRoad = 0;
 
     public RoadSpawner(GameObject roadPrefab)

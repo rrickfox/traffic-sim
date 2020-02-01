@@ -52,17 +52,14 @@ namespace DataTypes
         // iterates over vertices in reverse order to determine path and translates it into a path of edges
         private List<Edge> DetermineFoundPath(Vertex end)
         {
-            if (end.pathDistance != null)
+            if (end.pathDistance == null) return null;
+            var vertexPath = new LinkedList<Vertex>();
+            for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
             {
-                var vertexPath = new LinkedList<Vertex>();
-                for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
-                {
-                    vertexPath.AddFirst(tempEnd);
-                }
-                
-                return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
+                vertexPath.AddFirst(tempEnd);
             }
-            return null;
+                
+            return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
         }
         
         public void SpawnCars()

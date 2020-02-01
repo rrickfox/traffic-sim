@@ -47,18 +47,22 @@ namespace DataTypes
         {
             if (end.pathDistance != null)
             {
+                var tempEnd = end;
                 var vertexPath = new LinkedList<Vertex>();
                 var edgePath = new List<Edge>();
-                while (this != end)
+                while (this != tempEnd)
                 {
-                    vertexPath.AddFirst(end);
-                    end = end.previousVertex;
+                    vertexPath.AddFirst(tempEnd);
+                    tempEnd = tempEnd.previousVertex;
                 }
                 
                 foreach (var vertex in vertexPath)
                 {
-                    var index = vertexPath.ToList().IndexOf(vertex);
-                    edgePath.Add(vertex.GetEdge(vertexPath.ToList()[index+1]));
+                    if (vertex != end)
+                    {
+                        var index = vertexPath.ToList().IndexOf(vertex);
+                        edgePath.Add(vertex.GetEdge(vertexPath.ToList()[index+1]));
+                    }
                 }
                 return edgePath;
             }

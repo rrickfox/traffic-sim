@@ -24,7 +24,6 @@ namespace DataTypes
             for(float i = CONSTANTS.BEZIER_RESOLUTION; i <= 1; i += CONSTANTS.BEZIER_RESOLUTION)
             {
                 var newPoint = EvaluateQuadratic(i);
-                length += Vector2.Distance(newPoint, lastPoint);
                 calculatedPoints.Add(newPoint);
                 lastPoint = newPoint;
             }

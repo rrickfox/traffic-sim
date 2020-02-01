@@ -55,21 +55,12 @@ namespace DataTypes
             if (end.pathDistance != null)
             {
                 var vertexPath = new LinkedList<Vertex>();
-                var edgePath = new List<Edge>();
                 for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
                 {
                     vertexPath.AddFirst(tempEnd);
                 }
                 
-                foreach (var vertex in vertexPath)
-                {
-                    if (vertex != end)
-                    {
-                        var index = vertexPath.ToList().IndexOf(vertex);
-                        edgePath.Add(vertex.GetEdge(vertexPath.ToList()[index+1]));
-                    }
-                }
-                return edgePath;
+                return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
             }
             return null;
         }

@@ -37,7 +37,7 @@ namespace DataTypes
                 minVertex.CheckNeigbourhood();
                 tempVertices.Remove(minVertex);
             }
-    
+            
             // creates dictionary for saving path corresponding to end point
             routingTable.Add(end, DetermineFoundPath(end));
         }

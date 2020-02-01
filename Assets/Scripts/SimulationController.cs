@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using DataTypes;
+using MoreLinq;
 using UnityEditor;
 
 // ruft Autos zur Bewegung auf
@@ -43,6 +45,7 @@ public class SimulationController : MonoBehaviour
         var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
         _roads.Add(road);
+        Vertex.StartPathfinding(_spawnPoints.Cast<Vertex>().ToHashSet());
     }
 
     void FixedUpdate()

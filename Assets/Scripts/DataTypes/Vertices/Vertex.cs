@@ -33,6 +33,11 @@ namespace DataTypes
                 foreach (var end in endPoints.Where(end => end != start))
                 {
                     start.FindPath(verticesSet, end);
+                    foreach (var vertex in verticesSet)
+                    {
+                        vertex.pathDistance = null;
+                        vertex.previousVertex = null;
+                    }
                 }
             }
         }

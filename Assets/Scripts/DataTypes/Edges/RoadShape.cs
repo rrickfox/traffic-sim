@@ -13,11 +13,11 @@ namespace DataTypes
         {
             _curves = curves;
 
-            points = CalculateEvenlySpacedPoints();
+            CalculateEvenlySpacedPoints();
             CalculateLength();
         }
 
-        private Vector2[] CalculateEvenlySpacedPoints()
+        private void CalculateEvenlySpacedPoints()
         {
             var tempPoints = new List<Vector2>();
 
@@ -25,7 +25,7 @@ namespace DataTypes
 
             foreach (var curve in _curves)
             {
-                tempPoints.AddRange(curve.points);
+                tempPoints.AddRange(curve.CalculatePoints());
             }
 
             var evenlySpacedPoints = new List<Vector2>();
@@ -48,7 +48,7 @@ namespace DataTypes
                 lastPoint = point;
             }
 
-            return evenlySpacedPoints.ToArray();
+            points = evenlySpacedPoints.ToArray();
         }
 
         public void CalculateLength()

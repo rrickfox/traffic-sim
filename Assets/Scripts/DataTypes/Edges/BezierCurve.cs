@@ -9,16 +9,11 @@ namespace DataTypes
         public Vector2 controlPoint;
         public Vector2 endPoint;
 
-        public float length = 0;
-        public List<Vector2> points;
-
         public BezierCurve(Vector2 startPoint, Vector2 controlPoint, Vector2 endPoint)
         {
             this.startPoint = startPoint;
             this.controlPoint = controlPoint;
             this.endPoint = endPoint;
-
-            points = CalculatePoints();
         }
 
         public List<Vector2> CalculatePoints()

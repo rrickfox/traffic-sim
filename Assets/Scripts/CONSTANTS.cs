@@ -8,7 +8,7 @@ public static class CONSTANTS
     // in unity distance units
     public static readonly float DISTANCE_UNIT = Time.fixedDeltaTime;
     // width of a lane
-    public static readonly float LANE_WIDTH = 2.5f;
+    public static readonly float LANE_WIDTH = 3f;
     // amount of points calculated per beziercurve
     public static readonly float BEZIER_RESOLUTION = 0.01f;
 }

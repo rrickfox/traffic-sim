@@ -6,70 +6,36 @@ namespace DataTypes
     // represents what you can tell about a road if you were to stand at one of its endpoints
     public class Edge
     {
-        // represents how the road would look like from its other endpoint
-        public Edge other { get; private set; }
-        
         // the Vertex from which this edge originates
         public Vertex vertex = null;
-        
+        // represents how the road would look like from its other endpoint
+        public Edge other { get; }
         // the cars on the outgoing side of the road
-        public List<Car> cars = new List<Car>();
-        
-        private RoadShape _shape;
-        // the shape of the road is synchronized between the two RoadViews
-        public RoadShape shape
-        {
-            get => _shape;
-            set => _shape = other._shape = value;
-        }
-
-        private float _length;
-        // the length of the road is synchronized between the two RoadViews
-        public float length
-        {
-            get => _length;
-            // the length gets recalculated automatically and is therefore private
-            private set => _length = other._length = value;
-        }
-
-        private Vector2 _position;
+        public List<Car> cars { get; } = new List<Car>();
+        public RoadShape shape { get; }
         // the coordinates of the end of the road from which you look at the road
-        public Vector2 position
-        {
-            get => _position;
-            set
-            {
-                _position = value;
-                // automatically update the length upon changing one of the endpoint's position
-                length = Vector2.Distance(_position, other._position) / CONSTANTS.DISTANCE_UNIT;
-            }
-        }
-        
-        public float angle => Vector2.SignedAngle(other.position - position, Vector2.right);
-        
-        public List<Lane> outgoingLanes;
+        public Vector2 position { get; }
+        public List<Lane> outgoingLanes { get; }
         // the incomingLanes of this are just the outgoingLanes of the other view
-        public List<Lane> incomingLanes
-        {
-            get => other.outgoingLanes;
-            set => other.outgoingLanes = value;
-        }
+        public List<Lane> incomingLanes => other.outgoingLanes;
+        public float length => Vector2.Distance(position, other.position) / CONSTANTS.DISTANCE_UNIT;
+        public float angle => Vector2.SignedAngle(other.position - position, Vector2.right);
 
         public Edge(RoadShape shape, Vector2 position, Vector2 otherPosition,
             List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
-            other = new Edge(this, otherPosition, incomingLanes);
+            other = new Edge(this, shape, otherPosition, incomingLanes);
             this.shape = shape;
             this.position = position;
             this.outgoingLanes = outgoingLanes;
         }
 
-        // only construct a RoadView with the values that are unique to this view
-        // (the other RoadView needs to take care of the shared values)
-        private Edge(Edge other, Vector2 position, List<Lane> outgoingLanes)
+        // construct an Edge without creating other
+        private Edge(Edge other, RoadShape shape, Vector2 position, List<Lane> outgoingLanes)
         {
             this.other = other;
-            _position = position;
+            this.shape = shape;
+            this.position = position;
             this.outgoingLanes = outgoingLanes;
         }
         

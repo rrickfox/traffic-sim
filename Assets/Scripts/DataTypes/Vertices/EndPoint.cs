@@ -14,7 +14,7 @@ namespace DataTypes
         private int[] _spawnFrequencies;
         // counter for ticks since start
         private int _ticks = 0;
-        public Dictionary<Vertex, List<Vertex>> routingTable { get; } = new Dictionary<Vertex, List<Vertex>>();
+        public Dictionary<Vertex, List<Edge>> routingTable { get; } = new Dictionary<Vertex, List<Edge>>();
         
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {
@@ -30,10 +30,10 @@ namespace DataTypes
             pathDistance = 0;
 
             // calculates pathDistance and corresponding previousVertex for entire graph
-            while (tempVertices.Count != 0)
+            while (tempVertices.Any(v => v.pathDistance != null))
             {
                 // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
-                var minVertex = tempVertices.MinBy(v => v.pathDistance).First();
+                var minVertex = tempVertices.Where(v => v.pathDistance != null).MinBy(v => v.pathDistance).First();
                 minVertex.CheckNeigbourhood();
                 tempVertices.Remove(minVertex);
             }
@@ -42,16 +42,27 @@ namespace DataTypes
             routingTable.Add(end, DetermineFoundPath(end));
         }
 
-        // recursively iterates over vertices in reverse order to determine path
-        private List<Vertex> DetermineFoundPath(Vertex end)
+        // iterates over vertices in reverse order to determine path and translates it into a path of edges
+        private List<Edge> DetermineFoundPath(Vertex end)
         {
-            var path = new LinkedList<Vertex>();
-            while (this != end)
+            if (end.pathDistance != null)
             {
-                path.AddFirst(end);
-                end = end.previousVertex;
+                var vertexPath = new LinkedList<Vertex>();
+                var edgePath = new List<Edge>();
+                while (this != end)
+                {
+                    vertexPath.AddFirst(end);
+                    end = end.previousVertex;
+                }
+                
+                foreach (var vertex in vertexPath)
+                {
+                    var index = vertexPath.ToList().IndexOf(vertex);
+                    edgePath.Add(vertex.GetEdge(vertexPath.ToList()[index+1]));
+                }
+                return edgePath;
             }
-            return path.ToList();
+            return null;
         }
         
         public void SpawnCars()

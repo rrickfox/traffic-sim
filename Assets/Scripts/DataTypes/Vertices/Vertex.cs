@@ -12,7 +12,18 @@ namespace DataTypes
         public float? pathDistance { get; protected set; }
         // current candidate for predecessor in path
         public Vertex previousVertex { get; private set; }
-        
+
+        protected Vertex(IEnumerable<Edge> edges)
+        {
+            _edges = edges.ToImmutableArray();
+            foreach (var edge in _edges)
+            {
+                edge.vertex = this;
+            }
+        }
+
+        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
+
         public static void StartPathfinding(ICollection<Vertex> vertices)
         {
             var verticesSet = vertices.ToHashSet();
@@ -39,16 +50,10 @@ namespace DataTypes
                 }
             }
         }
-        
-        protected Vertex(IEnumerable<Edge> edges)
+                
+        public Edge GetEdge(Vertex neigbour)
         {
-            _edges = edges.ToImmutableArray();
-            foreach (var edge in _edges)
-            {
-                edge.vertex = this;
-            }
+            return _edges.FirstOrDefault(edge => edge.other.vertex == neigbour);
         }
-
-        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
     }
 }

@@ -6,7 +6,7 @@ namespace DataTypes
     public class RoadShape
     {
         private List<BezierCurve> _curves;
-        public Vector2[] points;
+        public RoadPoint[] points;
         public float length = 0;
 
         public RoadShape(List<BezierCurve> curves)
@@ -28,9 +28,9 @@ namespace DataTypes
                 tempPoints.AddRange(curve.CalculatePoints());
             }
 
-            var evenlySpacedPoints = new List<Vector2>();
-            evenlySpacedPoints.Add(tempPoints[0]);
-            var lastPoint = evenlySpacedPoints[0];
+            var evenlySpacedPoints = new List<RoadPoint>();
+            evenlySpacedPoints.Add(new RoadPoint(tempPoints[0], tempPoints[1] - tempPoints[0]));
+            var lastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
 
             foreach(var point in tempPoints)
@@ -41,7 +41,8 @@ namespace DataTypes
                 {
                     var overshootDst = dstSinceLastEvenPoint - CONSTANTS.DISTANCE_UNIT;
                     var newEvenlySpacedPoint = point + (point - lastPoint).normalized * overshootDst;
-                    evenlySpacedPoints.Add(newEvenlySpacedPoint);
+                    var newRoadPoint = new RoadPoint(newEvenlySpacedPoint, (point - lastPoint).normalized);
+                    evenlySpacedPoints.Add(newRoadPoint);
                     dstSinceLastEvenPoint = overshootDst;
                 }
 
@@ -56,7 +57,7 @@ namespace DataTypes
             var lastPoint = points[0];
             foreach(var point in points)
             {
-                length += Vector2.Distance(lastPoint, point);
+                length += Vector2.Distance(lastPoint.position, point.position);
                 lastPoint = point;
             }
 

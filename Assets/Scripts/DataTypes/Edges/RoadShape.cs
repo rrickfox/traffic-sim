@@ -35,6 +35,8 @@ namespace DataTypes
 
             foreach(var point in tempPoints)
             {
+                dstSinceLastEvenPoint += Vector2.Distance(lastPoint, point);
+                
                 while(dstSinceLastEvenPoint >= CONSTANTS.DISTANCE_UNIT)
                 {
                     var overshootDst = dstSinceLastEvenPoint - CONSTANTS.DISTANCE_UNIT;

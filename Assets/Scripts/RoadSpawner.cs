@@ -15,7 +15,7 @@ public class RoadSpawner
 
     public Edge CreateRoad(Vector2 pos1, Vector2 pos2, List<Lane> lanes1To2, List<Lane> lanes2To1)
     {
-        var road = new Edge(new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
+        var road = new Edge(new RoadShape(new List<BezierCurve>(){new BezierCurve(Vector2.zero, Vector2.zero, Vector2.zero)}), pos1, pos2, lanes1To2, lanes2To1);
         // Road length
         var scaleLength = Vector2.Distance(road.position, road.other.position); 
         // Road width

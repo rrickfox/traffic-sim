@@ -24,7 +24,7 @@ namespace DataTypes
             _spawnFrequencies = spawnFrequencies;
         }
         
-        public void FindPath(IEnumerable<Vertex> vertices, EndPoint end)
+        public void FindPath(ICollection<Vertex> vertices, EndPoint end)
         {
             var tempVertices = vertices.ToHashSet();
             pathDistance = 0;
@@ -40,6 +40,13 @@ namespace DataTypes
             
             // creates dictionary for saving path corresponding to end point
             routingTable.Add(end, DetermineFoundPath(end));
+            
+            // reset the temporary properties
+            foreach (var vertex in vertices)
+            {
+                vertex.pathDistance = null;
+                vertex.previousVertex = null;
+            }
         }
 
         // iterates over vertices in reverse order to determine path and translates it into a path of edges

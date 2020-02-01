@@ -9,9 +9,9 @@ namespace DataTypes
     {
         private ImmutableArray<Edge> _edges;
         // distance value relative to start point of pathfinding
-        public float? pathDistance { get; protected set; }
+        public float? pathDistance { get; set; }
         // current candidate for predecessor in path
-        public Vertex previousVertex { get; private set; }
+        public Vertex previousVertex { get; set; }
 
         protected Vertex(IEnumerable<Edge> edges)
         {
@@ -33,11 +33,6 @@ namespace DataTypes
                 foreach (var end in endPoints.Where(end => end != start))
                 {
                     start.FindPath(verticesSet, end);
-                    foreach (var vertex in verticesSet)
-                    {
-                        vertex.pathDistance = null;
-                        vertex.previousVertex = null;
-                    }
                 }
             }
         }

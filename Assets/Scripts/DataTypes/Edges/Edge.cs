@@ -18,25 +18,28 @@ namespace DataTypes
         public List<Lane> outgoingLanes { get; }
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;
-        public float length => Vector2.Distance(position, other.position) / CONSTANTS.DISTANCE_UNIT;
-        public float angle => Vector2.SignedAngle(other.position - position, Vector2.right);
+        public float length { get; }
+        public float angle { get; }
 
         public Edge(RoadShape shape, Vector2 position, Vector2 otherPosition,
             List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
-            other = new Edge(this, shape, otherPosition, incomingLanes);
             this.shape = shape;
             this.position = position;
             this.outgoingLanes = outgoingLanes;
+            length = Vector2.Distance(position, other.position) / CONSTANTS.DISTANCE_UNIT;
+            angle = Vector2.SignedAngle(other.position - position, Vector2.right);
+            other = new Edge(this, otherPosition, incomingLanes);
         }
 
-        // construct an Edge without creating other
-        private Edge(Edge other, RoadShape shape, Vector2 position, List<Lane> outgoingLanes)
+        // construct an Edge where other is already constructed
+        private Edge(Edge other, Vector2 position, List<Lane> outgoingLanes)
         {
             this.other = other;
-            this.shape = shape;
             this.position = position;
             this.outgoingLanes = outgoingLanes;
+            length = this.other.length;
+            angle = this.other.angle;
         }
         
         public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)

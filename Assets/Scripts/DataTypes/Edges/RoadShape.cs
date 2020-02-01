@@ -7,7 +7,7 @@ namespace DataTypes
     {
         private List<BezierCurve> _curves;
         public Vector2[] points;
-        public float length;
+        public float length = 0;
 
         public RoadShape(List<BezierCurve> curves)
         {
@@ -53,10 +53,14 @@ namespace DataTypes
 
         public void CalculateLength()
         {
-            foreach(var curve in _curves)
+            var lastPoint = points[0];
+            foreach(var point in points)
             {
-                length += curve.length;
+                length += Vector2.Distance(lastPoint, point);
+                lastPoint = point;
             }
+
+            length = length / CONSTANTS.DISTANCE_UNIT;
         }
     }
 }

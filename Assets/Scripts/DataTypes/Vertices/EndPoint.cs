@@ -1,49 +1,95 @@
-using System.Collections.Immutable;
+using System.Collections.Generic;
+using System.Linq;
+using MoreLinq.Extensions;
 using UnityEngine;
 
 namespace DataTypes
 {
-    class EndPoint : Vertex
+    public class EndPoint : Vertex
     {
-        protected Edge edge;
-        private CarSpawner _spawner;
-        private CarDepawner _despawner;
+        private Edge _edge;
+        private GameObject _carPrefab;
+        private GameObject _roadPrefab;
         // ticks before a car spawns on a lane (index)
-        private float[] _spawnFrequency;
+        private int[] _spawnFrequencies;
         // counter for ticks since start
         private int _ticks = 0;
-
-        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, float[] spawnFrequency)
-            : base(ImmutableArray.Create(edge))
+        public Dictionary<Vertex, List<Vertex>> routingTable { get; } = new Dictionary<Vertex, List<Vertex>>();
+        
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {
-            this.edge = edge;
-            _spawner = new CarSpawner(carPrefab, roadPrefab);
-            _despawner = new CarDepawner(edge.other);
-            _spawnFrequency = spawnFrequency;
+            _edge = edge;
+            _carPrefab = carPrefab;
+            _roadPrefab = roadPrefab;
+            _spawnFrequencies = spawnFrequencies;
+        }
+        
+        public void FindPath(IEnumerable<Vertex> vertices, EndPoint end)
+        {
+            var tempVertices = vertices.ToHashSet();
+            pathDistance = 0;
+
+            // calculates pathDistance and corresponding previousVertex for entire graph
+            while (tempVertices.Count != 0)
+            {
+                // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
+                var minVertex = tempVertices.MinBy(v => v.pathDistance).First();
+                minVertex.CheckNeigbourhood();
+                tempVertices.Remove(minVertex);
+            }
+    
+            // creates dictionary for saving path corresponding to two EndPoints
+            routingTable.Add(end, DetermineFoundPath(end));
         }
 
-        public void spawnCars()
+        // recursively iterates over vertices in reverse order to determine path
+        private List<Vertex> DetermineFoundPath(Vertex end)
         {
-            for(int i = 0; i < edge.outgoingLanes.Count; i++)
+            var path = new LinkedList<Vertex>();
+            while (this != end)
             {
-                if(_ticks % _spawnFrequency[i] == 0)
+                path.AddFirst(end);
+                end = end.previousVertex;
+            }
+            return path.ToList();
+        }
+        
+        public void SpawnCars()
+        {
+            for(var lane = 0; lane < _edge.outgoingLanes.Count; lane++)
+            {
+                if(_ticks % _spawnFrequencies[lane] == 0)
                 {
-                    createCar(i);
+                    CreateCar(lane);
                 }
             }
             _ticks++;
         }
-
-        public void despawnCars()
+    
+        private void CreateCar(float lane)
         {
-            _despawner.removeCars();
+            // construct car
+            var car = new Car(_edge, 0, lane);
+        
+            // display the car graphically
+            var position = _edge.GetAbsolutePosition(car.positionOnRoad, lane);
+            var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
+            var rotation = Quaternion.Euler(0, _edge.angle, 0);
+            var carGameObject = Object.Instantiate(_carPrefab, spawnPoint, rotation);
+            carGameObject.name = "Car_" + CarId.id;
+            car.carTransform = carGameObject.transform;
         }
 
-        public void createCar(float lane)
+        public void DespawnCars()
         {
-            Car tempCar = new Car(edge, 0, lane);
-            edge.cars.Add(tempCar);
-            _spawner.displayCar(tempCar);
+            foreach(var car in _edge.cars.ToList()) 
+            {
+                if (car.positionOnRoad > _edge.length)
+                {
+                    Object.Destroy(car.carTransform.gameObject);
+                    _edge.cars.Remove(car);
+                }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+
 namespace DataTypes
 { 
     public class Car
@@ -12,6 +13,7 @@ namespace DataTypes
         public Car(Edge road, float positionOnRoad, float lane)
         {
             this.road = road;
+            this.road.cars.Add(this);
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
         }
@@ -19,7 +21,7 @@ namespace DataTypes
         public void Move()
         {
             positionOnRoad += speed;
-            Vector2 position = road.GetPosition(positionOnRoad, lane);
+            var position = road.GetAbsolutePosition(positionOnRoad, lane);
             carTransform.position = new Vector3(position.x, carTransform.position.y, position.y);
         }
 

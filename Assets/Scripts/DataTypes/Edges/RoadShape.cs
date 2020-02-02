@@ -15,7 +15,6 @@ namespace DataTypes
             _curves = curves;
 
             CalculateEvenlySpacedPoints();
-            CalculateLength();
         }
 
         // calculates points in regular intervals
@@ -46,25 +45,16 @@ namespace DataTypes
                     var newRoadPoint = new RoadPoint(newEvenlySpacedPoint, (point - lastPoint).normalized);
                     evenlySpacedPoints.Add(newRoadPoint);
                     dstSinceLastEvenPoint = overshootDst;
+
+                    length++;
                 }
 
                 lastPoint = point;
             }
 
+            length += dstSinceLastEvenPoint / CONSTANTS.DISTANCE_UNIT;
+
             points = evenlySpacedPoints.ToArray();
-        }
-
-        // calculate length of roadShape
-        public void CalculateLength()
-        {
-            var lastPoint = points[0];
-            foreach(var point in points)
-            {
-                length += Vector2.Distance(lastPoint.position, point.position);
-                lastPoint = point;
-            }
-
-            length = length / CONSTANTS.DISTANCE_UNIT;
         }
     }
 }

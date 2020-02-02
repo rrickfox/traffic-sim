@@ -37,9 +37,9 @@ namespace DataTypes
                 position: new Vector3(middlePoint.x, 0, middlePoint.y),
                 rotation: Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0)
             );
-            gameObject.transform.localScale = new Vector3(
+            transform.localScale = new Vector3(
                 x: Vector2.Distance(this.position, other.position), // road length
-                y: gameObject.transform.localScale.y, 
+                y: transform.localScale.y, 
                 z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
             );
             gameObject.name = $"Road({gameObject.GetInstanceID()})";

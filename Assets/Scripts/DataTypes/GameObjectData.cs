@@ -8,11 +8,13 @@ namespace DataTypes
         where TThis : GameObjectData<TThis, TBehaviour>
     {
         public GameObject gameObject { get; private set; }
+        public Transform transform { get; private set; }
         public TBehaviour behaviour { get; private set; }
 
         protected void CreateGameObject(GameObject prefab, Vector3 position, Quaternion rotation)
         {
             gameObject = UnityEngine.Object.Instantiate(prefab, position, rotation);
+            transform = gameObject.transform;
             behaviour = gameObject.AddComponent<TBehaviour>();
             behaviour.Initialize((TThis)this);
         }

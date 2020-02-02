@@ -72,24 +72,10 @@ namespace DataTypes
             {
                 if(_ticks % _spawnFrequencies[lane] == 0)
                 {
-                    CreateCar(lane);
+                    new Car(_carPrefab, _edge, 0, lane);
                 }
             }
             _ticks++;
-        }
-    
-        private void CreateCar(float lane)
-        {
-            // construct car
-            var car = new Car(_edge, 0, lane);
-        
-            // display the car graphically
-            var position = _edge.GetAbsolutePosition(car.positionOnRoad, lane);
-            var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
-            var rotation = Quaternion.Euler(0, _edge.angle, 0);
-            var carGameObject = Object.Instantiate(_carPrefab, spawnPoint, rotation);
-            carGameObject.name = "Car_" + CarId.id;
-            car.carTransform = carGameObject.transform;
         }
 
         public void DespawnCars()
@@ -98,7 +84,7 @@ namespace DataTypes
             {
                 if (car.positionOnRoad > _edge.length)
                 {
-                    Object.Destroy(car.carTransform.gameObject);
+                    car.Dispose();
                     _edge.cars.Remove(car);
                 }
             }

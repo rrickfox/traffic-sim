@@ -32,6 +32,7 @@ namespace DataTypes
             var evenlySpacedPoints = new List<RoadPoint>();
             evenlySpacedPoints.Add(new RoadPoint(tempPoints[0], (tempPoints[1] - tempPoints[0]).normalized));
             var lastPoint = tempPoints[0];
+            var secondLastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
 
             foreach(var point in tempPoints)
@@ -49,10 +50,12 @@ namespace DataTypes
                     length++;
                 }
 
+                secondLastPoint = lastPoint;
                 lastPoint = point;
             }
 
             length += dstSinceLastEvenPoint / CONSTANTS.DISTANCE_UNIT;
+            evenlySpacedPoints.Add(new RoadPoint(lastPoint, (secondLastPoint - lastPoint).normalized));
 
             points = evenlySpacedPoints.ToArray();
         }

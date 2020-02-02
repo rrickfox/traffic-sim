@@ -12,6 +12,8 @@ namespace DataTypes
             _throughOrRight = throughOrRight;
             _throughOrLeft = throughOrLeft;
             _leftOrRight = leftOrRight;
+            
+            CreateGameObject();
         }
     }
 

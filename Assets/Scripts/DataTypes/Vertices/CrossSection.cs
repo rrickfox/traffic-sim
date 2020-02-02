@@ -14,6 +14,8 @@ namespace DataTypes
             _right = right;
             _down = down;
             _left = left;
+            
+            CreateGameObject();
         }
     }
     

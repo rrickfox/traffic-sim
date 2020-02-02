@@ -6,6 +6,7 @@ namespace DataTypes
     {
         private Roundabout(IEnumerable<Edge> edges) : base(edges)
         {
+            CreateGameObject();
         }
     }
 

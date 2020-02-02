@@ -21,6 +21,8 @@ namespace DataTypes
             {
                 edge.vertex = this;
             }
+            
+            CreateGameObject();
         }
 
         protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }

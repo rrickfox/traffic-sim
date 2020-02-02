@@ -29,7 +29,7 @@ namespace DataTypes
             }
 
             var evenlySpacedPoints = new List<RoadPoint>();
-            evenlySpacedPoints.Add(new RoadPoint(tempPoints[0], tempPoints[1] - tempPoints[0]));
+            evenlySpacedPoints.Add(new RoadPoint(tempPoints[0], (tempPoints[1] - tempPoints[0]).normalized));
             var lastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
 

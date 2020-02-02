@@ -42,7 +42,6 @@ namespace DataTypes
                 y: transform.localScale.y, 
                 z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
             );
-            gameObject.name = $"Road({gameObject.GetInstanceID()})";
         }
 
         // construct an Edge where other is already constructed

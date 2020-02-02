@@ -23,7 +23,6 @@ namespace DataTypes
                 position: new Vector3(position.x, prefab.transform.localScale.y / 2 + prefab.transform.localScale.y / 2, position.y),
                 rotation: Quaternion.Euler(0, road.angle, 0)
             );
-            gameObject.name = $"Car({gameObject.GetInstanceID()})";
         }
 
         public void Move()

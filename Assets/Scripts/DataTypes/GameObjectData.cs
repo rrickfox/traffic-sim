@@ -25,6 +25,8 @@ namespace DataTypes
 
         private void PostGameObjectCreation()
         {
+            // set default name
+            gameObject.name = $"{typeof(TThis)} ({gameObject.GetInstanceID()})";
             transform = gameObject.transform;
             behaviour = gameObject.AddComponent<TBehaviour>();
             behaviour.Initialize((TThis)this);

@@ -27,8 +27,8 @@ namespace DataTypes
             this.shape = shape;
             this.position = position;
             this.outgoingLanes = outgoingLanes;
-            length = Vector2.Distance(position, other.position) / CONSTANTS.DISTANCE_UNIT;
-            angle = Vector2.SignedAngle(other.position - position, Vector2.right);
+            length = Vector2.Distance(position, otherPosition) / CONSTANTS.DISTANCE_UNIT;
+            angle = Vector2.SignedAngle(otherPosition - position, Vector2.right);
             other = new Edge(this, otherPosition, incomingLanes);
         }
 

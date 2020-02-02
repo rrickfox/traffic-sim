@@ -11,17 +11,15 @@ namespace DataTypes
         private GameObject _carPrefab { get; }
         private GameObject _roadPrefab { get; }
         // ticks before a car spawns on a lane (index)
-        private int[] _spawnFrequencies { get; }
-        // counter for ticks since start
-        private int _ticks = 0;
+        private Frequencies _frequencies { get; }
         public Dictionary<Vertex, List<Edge>> routingTable { get; } = new Dictionary<Vertex, List<Edge>>();
         
-        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
+        public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, Frequencies frequencies) : base(edge)
         {
             _edge = edge;
             _carPrefab = carPrefab;
             _roadPrefab = roadPrefab;
-            _spawnFrequencies = spawnFrequencies;
+            _frequencies = frequencies;
         }
         
         public void FindPath(ICollection<Vertex> vertices, EndPoint end)
@@ -68,14 +66,10 @@ namespace DataTypes
         
         public void SpawnCars()
         {
-            for(var lane = 0; lane < _edge.outgoingLanes.Count; lane++)
+            foreach (var lane in _frequencies.CurrentActiveIndices())
             {
-                if(_ticks % _spawnFrequencies[lane] == 0)
-                {
-                    new Car(_carPrefab, _edge, 0, lane);
-                }
+                new Car(_carPrefab, _edge, 0, lane);
             }
-            _ticks++;
         }
 
         public void DespawnCars()

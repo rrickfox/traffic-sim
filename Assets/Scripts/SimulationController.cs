@@ -29,8 +29,8 @@ public class SimulationController : MonoBehaviour
         var lanes2To1 = new List<Lane> { new Lane(new HashSet<LaneType> {LaneType.Through}) };
         
         // spawn frequency
-        var frequencyLanes1To2 = new[] { lane1To2 };
-        var frequencyLanes2To1 = new[] { lane2To1 };
+        var frequencyLanes1To2 = new Frequencies(new[] {lane1To2});
+        var frequencyLanes2To1 = new Frequencies(new[] {lane2To1});
 
         // Road create..
         var road = new Edge(roadPrefab, new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);

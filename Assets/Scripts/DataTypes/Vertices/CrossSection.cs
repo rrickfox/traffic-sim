@@ -2,18 +2,18 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
-        private Edge up { get; }
-        private Edge right { get; }
-        private Edge down { get; }
-        private Edge left { get; }
+        private Edge _up { get; }
+        private Edge _right { get; }
+        private Edge _down { get; }
+        private Edge _left { get; }
 
         public CrossSection(Edge up, Edge right, Edge down, Edge left)
             : base(up, right, down, left)
         {
-            this.up = up;
-            this.right = right;
-            this.down = down;
-            this.left = left;
+            _up = up;
+            _right = right;
+            _down = down;
+            _left = left;
         }
     }
 }

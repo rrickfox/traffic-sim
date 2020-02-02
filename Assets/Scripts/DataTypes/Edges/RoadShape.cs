@@ -9,6 +9,7 @@ namespace DataTypes
         public RoadPoint[] points;
         public float length = 0;
 
+        // create RoadShape from list of curves
         public RoadShape(List<BezierCurve> curves)
         {
             _curves = curves;
@@ -17,6 +18,7 @@ namespace DataTypes
             CalculateLength();
         }
 
+        // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {
             var tempPoints = new List<Vector2>();
@@ -52,6 +54,7 @@ namespace DataTypes
             points = evenlySpacedPoints.ToArray();
         }
 
+        // calculate length of roadShape
         public void CalculateLength()
         {
             var lastPoint = points[0];

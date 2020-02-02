@@ -2,17 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using MoreLinq.Extensions;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace DataTypes
 {
-    public class EndPoint : Vertex
+    public class EndPoint : Vertex<EndPoint, EndPointBehaviour>
     {
         private Edge _edge { get; }
         private GameObject _carPrefab { get; }
         private GameObject _roadPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
-        public Dictionary<Vertex, List<Edge>> routingTable { get; } = new Dictionary<Vertex, List<Edge>>();
+        public Dictionary<IVertex, List<Edge>> routingTable { get; } = new Dictionary<IVertex, List<Edge>>();
         
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, Frequencies frequencies) : base(edge)
         {
@@ -20,9 +21,11 @@ namespace DataTypes
             _carPrefab = carPrefab;
             _roadPrefab = roadPrefab;
             _frequencies = frequencies;
+            
+            CreateGameObject();
         }
         
-        public void FindPath(ICollection<Vertex> vertices, EndPoint end)
+        public void FindPath(ICollection<IVertex> vertices, EndPoint end)
         {
             var tempVertices = vertices.ToHashSet();
             pathDistance = 0;
@@ -48,13 +51,13 @@ namespace DataTypes
         }
 
         // iterates over vertices in reverse order to determine path and translates it into a path of edges
-        private List<Edge> DetermineFoundPath(Vertex end)
+        private List<Edge> DetermineFoundPath(IVertex end)
         {
             // return null if no path could be found
             if (end.pathDistance == null) return null;
             
             // build the path of all vertices
-            var vertexPath = new LinkedList<Vertex>();
+            var vertexPath = new LinkedList<IVertex>();
             for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
             {
                 vertexPath.AddFirst(tempEnd);
@@ -79,6 +82,15 @@ namespace DataTypes
                 car.Dispose();
                 _edge.cars.Remove(car);
             }
+        }
+    }
+
+    public class EndPointBehaviour : VertexBehaviour<EndPoint>
+    {
+        private void FixedUpdate()
+        {
+            _data.SpawnCars();
+            _data.DespawnCars();
         }
     }
 }

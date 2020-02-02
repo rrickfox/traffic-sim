@@ -4,9 +4,7 @@ using System.Linq;
 using DataTypes;
 using MoreLinq;
 
-// ruft Autos zur Bewegung auf
-// -> hat einzige Update-Funktion ("interne Zeit")
-// erstellt Straße (vorläufig)
+// erstellt alle Objekte manuell (vorläufig)
 public class SimulationController : MonoBehaviour
 {
     public GameObject roadPrefab;
@@ -41,28 +39,6 @@ public class SimulationController : MonoBehaviour
         var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
         _roads.Add(road);
-        Vertex.StartPathfinding(_spawnPoints.Cast<Vertex>().ToHashSet());
-    }
-
-    void FixedUpdate()
-    {
-        CheckForSpawn();
-        CheckForDespawn();
-    }
-
-    public void CheckForSpawn()
-    {
-        foreach(var vertex in _spawnPoints)
-        {
-            vertex.SpawnCars();
-        }
-    }
-
-    public void CheckForDespawn()
-    {
-        foreach(var vertex in _spawnPoints)
-        {
-            vertex.DespawnCars();
-        }
+        Pathfinding.StartPathfinding(_spawnPoints.Cast<IVertex>().ToHashSet());
     }
 }

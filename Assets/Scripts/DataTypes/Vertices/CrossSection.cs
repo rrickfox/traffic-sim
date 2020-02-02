@@ -1,6 +1,6 @@
 namespace DataTypes
 {
-    public class CrossSection : Vertex
+    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
     {
         private Edge _up { get; }
         private Edge _right { get; }
@@ -16,4 +16,6 @@ namespace DataTypes
             _left = left;
         }
     }
+    
+    public class CrossSectionBehaviour : VertexBehaviour<CrossSection> { }
 }

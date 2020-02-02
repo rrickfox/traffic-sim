@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class LinkedBehaviour<T> : MonoBehaviour
+    public class LinkedBehaviour<TData> : MonoBehaviour
     {
-        protected T _data { get; private set; }
+        protected TData _data { get; private set; }
 
-        public void Initialize(T data)
+        public void Initialize(TData data)
         {
             _data = data;
         }

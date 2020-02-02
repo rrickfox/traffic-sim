@@ -7,7 +7,7 @@ namespace DataTypes
     public class Edge : GameObjectData<Edge, EdgeBehaviour>
     {
         // the Vertex from which this edge originates
-        public Vertex vertex = null;
+        public IVertex vertex = null;
         // represents how the road would look like from its other endpoint
         public Edge other { get; }
         // the cars on the outgoing side of the road

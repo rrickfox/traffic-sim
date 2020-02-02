@@ -20,14 +20,11 @@ public class SimulationController : MonoBehaviour
     public int lane1To2 = 100;
     public int lane2To1 = 100;
 
-    private RoadSpawner _roadSpawner;
     private List<Edge> _roads = new List<Edge>();
     private List<EndPoint> _spawnPoints = new List<EndPoint>();
     
     public void Start()
     {
-        _roadSpawner = new RoadSpawner(roadPrefab);
-        
         var lanes1To2 = new List<Lane> { new Lane(new HashSet<LaneType> {LaneType.Through}) };
         var lanes2To1 = new List<Lane> { new Lane(new HashSet<LaneType> {LaneType.Through}) };
         
@@ -36,7 +33,7 @@ public class SimulationController : MonoBehaviour
         var frequencyLanes2To1 = new[] { lane2To1 };
 
         // Road create..
-        var road = _roadSpawner.CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
+        var road = new Edge(roadPrefab, new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
 
         // EndPoint creation
         var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);

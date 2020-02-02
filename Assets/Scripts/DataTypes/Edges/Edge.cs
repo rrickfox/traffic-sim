@@ -4,7 +4,7 @@ using UnityEngine;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge
+    public class Edge : GameObjectData<Edge, EdgeBehaviour>
     {
         // the Vertex from which this edge originates
         public Vertex vertex = null;
@@ -21,15 +21,28 @@ namespace DataTypes
         public float length { get; }
         public float angle { get; }
 
-        public Edge(RoadShape shape, Vector2 position, Vector2 otherPosition,
+        public Edge(GameObject prefab, RoadShape shape, Vector2 position, Vector2 otherPosition,
             List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
             this.shape = shape;
             this.position = position;
             this.outgoingLanes = outgoingLanes;
-            length = Vector2.Distance(position, other.position) / CONSTANTS.DISTANCE_UNIT;
-            angle = Vector2.SignedAngle(other.position - position, Vector2.right);
+            length = Vector2.Distance(position, otherPosition) / CONSTANTS.DISTANCE_UNIT;
+            angle = Vector2.SignedAngle(otherPosition - position, Vector2.right);
             other = new Edge(this, otherPosition, incomingLanes);
+            
+            var middlePoint = (other.position - this.position) * 0.5f + this.position;
+            CreateGameObject(
+                prefab: prefab,
+                position: new Vector3(middlePoint.x, 0, middlePoint.y),
+                rotation: Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0)
+            );
+            gameObject.transform.localScale = new Vector3(
+                x: Vector2.Distance(this.position, other.position), // road length
+                y: gameObject.transform.localScale.y, 
+                z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
+            );
+            gameObject.name = $"Road({gameObject.GetInstanceID()})";
         }
 
         // construct an Edge where other is already constructed
@@ -56,4 +69,6 @@ namespace DataTypes
             return absolutePosition;
         }
     }
+
+    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

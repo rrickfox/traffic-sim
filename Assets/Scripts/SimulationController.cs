@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes;
-using MoreLinq;
+using static Pathfinding.Pathfinding;
 
 // erstellt alle Objekte manuell (vorläufig)
 public class SimulationController : MonoBehaviour
@@ -39,6 +39,6 @@ public class SimulationController : MonoBehaviour
         var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
         _roads.Add(road);
-        Pathfinding.StartPathfinding(_spawnPoints.Cast<IVertex>().ToHashSet());
+        StartPathfinding(_spawnPoints.Cast<IVertex>().ToList());
     }
 }

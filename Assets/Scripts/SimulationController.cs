@@ -47,7 +47,6 @@ public class SimulationController : MonoBehaviour
     void FixedUpdate()
     {
         CheckForSpawn();
-        MoveCars();
         CheckForDespawn();
     }
 
@@ -64,22 +63,6 @@ public class SimulationController : MonoBehaviour
         foreach(var vertex in _spawnPoints)
         {
             vertex.DespawnCars();
-        }
-    }
-
-    public void MoveCars()
-    {
-        foreach(var road in _roads)
-        {
-            foreach(var car in road.cars)
-            {
-                car.Move();
-            }
-            // move all cars driving on the opposite lanes
-            foreach(var car in road.other.cars)
-            {
-                car.Move();
-            }
         }
     }
 }

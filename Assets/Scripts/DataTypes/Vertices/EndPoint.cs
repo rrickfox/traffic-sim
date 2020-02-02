@@ -80,7 +80,7 @@ namespace DataTypes
 
         public void DespawnCars()
         {
-            foreach (var car in _edge.cars.ToList().Where(car => car.positionOnRoad > _edge.length))
+            foreach (var car in _edge.cars.ToList().Where(car => car.positionOnRoad >= _edge.length))
             {
                 car.Dispose();
                 _edge.cars.Remove(car);

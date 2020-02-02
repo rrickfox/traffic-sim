@@ -54,7 +54,7 @@ namespace DataTypes
                 lastPoint = point;
             }
 
-            length += dstSinceLastEvenPoint / CONSTANTS.DISTANCE_UNIT;
+            length++;
             evenlySpacedPoints.Add(new RoadPoint(lastPoint, (secondLastPoint - lastPoint).normalized));
 
             points = evenlySpacedPoints.ToArray();

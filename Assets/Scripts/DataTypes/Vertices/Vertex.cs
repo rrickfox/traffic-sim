@@ -7,7 +7,7 @@ namespace DataTypes
 {
     public class Vertex
     {
-        private ImmutableArray<Edge> _edges;
+        private ImmutableArray<Edge> _edges { get; }
         // distance value relative to start point of pathfinding
         public float? pathDistance { get; set; }
         // current candidate for predecessor in path

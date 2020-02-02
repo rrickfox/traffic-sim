@@ -7,11 +7,11 @@ namespace DataTypes
 {
     public class EndPoint : Vertex
     {
-        private Edge _edge;
-        private GameObject _carPrefab;
-        private GameObject _roadPrefab;
+        private Edge _edge { get; }
+        private GameObject _carPrefab { get; }
+        private GameObject _roadPrefab { get; }
         // ticks before a car spawns on a lane (index)
-        private int[] _spawnFrequencies;
+        private int[] _spawnFrequencies { get; }
         // counter for ticks since start
         private int _ticks = 0;
         public Dictionary<Vertex, List<Edge>> routingTable { get; } = new Dictionary<Vertex, List<Edge>>();

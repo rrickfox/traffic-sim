@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class Car : GameObjectData<CarBehaviour>
+    public class Car : GameObjectData<Car, CarBehaviour>
     {
         public Edge road { get; private set; }
         public float positionOnRoad { get; private set; }

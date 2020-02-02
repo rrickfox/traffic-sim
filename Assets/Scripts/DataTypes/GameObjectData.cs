@@ -3,7 +3,9 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class GameObjectData<TBehaviour> : IDisposable where TBehaviour : MonoBehaviour
+    public class GameObjectData<TThis, TBehaviour> : IDisposable
+        where TBehaviour : LinkedBehaviour<TThis>
+        where TThis : GameObjectData<TThis, TBehaviour>
     {
         public GameObject gameObject { get; private set; }
         public TBehaviour behaviour { get; private set; }
@@ -12,6 +14,7 @@ namespace DataTypes
         {
             gameObject = UnityEngine.Object.Instantiate(prefab, position, rotation);
             behaviour = gameObject.AddComponent<TBehaviour>();
+            behaviour.Initialize((TThis)this);
         }
 
         public void Dispose()

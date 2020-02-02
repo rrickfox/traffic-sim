@@ -4,10 +4,10 @@ namespace DataTypes
 { 
     public class Car
     {
-        public Edge road;
-        public float positionOnRoad;
-        public float lane;
-        public float speed = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
+        public Edge road { get; private set; }
+        public float positionOnRoad { get; private set; }
+        public float lane { get; private set; }
+        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
         public Transform carTransform;
 
         public Car(Edge road, float positionOnRoad, float lane)

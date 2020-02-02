@@ -7,14 +7,14 @@ namespace DataTypes
 {
     public class EndPoint : Vertex
     {
-        private Edge _edge;
-        private GameObject _carPrefab;
-        private GameObject _roadPrefab;
+        private Edge _edge { get; }
+        private GameObject _carPrefab { get; }
+        private GameObject _roadPrefab { get; }
         // ticks before a car spawns on a lane (index)
-        private int[] _spawnFrequencies;
+        private int[] _spawnFrequencies { get; }
         // counter for ticks since start
         private int _ticks = 0;
-        public Dictionary<Vertex, List<Vertex>> routingTable { get; } = new Dictionary<Vertex, List<Vertex>>();
+        public Dictionary<Vertex, List<Edge>> routingTable { get; } = new Dictionary<Vertex, List<Edge>>();
         
         public EndPoint(Edge edge, GameObject carPrefab, GameObject roadPrefab, int[] spawnFrequencies) : base(edge)
         {
@@ -24,34 +24,46 @@ namespace DataTypes
             _spawnFrequencies = spawnFrequencies;
         }
         
-        public void FindPath(IEnumerable<Vertex> vertices, EndPoint end)
+        public void FindPath(ICollection<Vertex> vertices, EndPoint end)
         {
             var tempVertices = vertices.ToHashSet();
             pathDistance = 0;
 
             // calculates pathDistance and corresponding previousVertex for entire graph
-            while (tempVertices.Count != 0)
+            while (tempVertices.Any(v => v.pathDistance != null))
             {
                 // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
-                var minVertex = tempVertices.MinBy(v => v.pathDistance).First();
+                var minVertex = tempVertices.Where(v => v.pathDistance != null).MinBy(v => v.pathDistance).First();
                 minVertex.CheckNeigbourhood();
                 tempVertices.Remove(minVertex);
             }
-    
-            // creates dictionary for saving path corresponding to two EndPoints
+            
+            // creates dictionary for saving path corresponding to end point
             routingTable.Add(end, DetermineFoundPath(end));
+            
+            // reset the temporary properties
+            foreach (var vertex in vertices)
+            {
+                vertex.pathDistance = null;
+                vertex.previousVertex = null;
+            }
         }
 
-        // recursively iterates over vertices in reverse order to determine path
-        private List<Vertex> DetermineFoundPath(Vertex end)
+        // iterates over vertices in reverse order to determine path and translates it into a path of edges
+        private List<Edge> DetermineFoundPath(Vertex end)
         {
-            var path = new LinkedList<Vertex>();
-            while (this != end)
+            // return null if no path could be found
+            if (end.pathDistance == null) return null;
+            
+            // build the path of all vertices
+            var vertexPath = new LinkedList<Vertex>();
+            for (var tempEnd = end; tempEnd != this; tempEnd = tempEnd.previousVertex)
             {
-                path.AddFirst(end);
-                end = end.previousVertex;
+                vertexPath.AddFirst(tempEnd);
             }
-            return path.ToList();
+            
+            // return the edges connecting the vertices in the path
+            return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
         }
         
         public void SpawnCars()

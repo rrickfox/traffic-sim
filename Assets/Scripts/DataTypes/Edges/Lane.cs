@@ -11,7 +11,7 @@ namespace DataTypes
 
     public class Lane
     {
-        public HashSet<LaneType> types;
+        public HashSet<LaneType> types { get; }
 
         public Lane(HashSet<LaneType> types)
         {

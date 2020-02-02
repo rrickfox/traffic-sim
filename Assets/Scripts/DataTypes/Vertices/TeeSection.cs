@@ -2,16 +2,16 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
-        protected Edge throughOrRight;
-        protected Edge throughOrLeft;
-        protected Edge leftOrRight;
+        private Edge _throughOrRight { get; }
+        private Edge _throughOrLeft { get; }
+        private Edge _leftOrRight { get; }
 
         public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
             : base(throughOrRight, throughOrLeft, leftOrRight)
         {
-            this.throughOrRight = throughOrRight;
-            this.throughOrLeft = throughOrLeft;
-            this.leftOrRight = leftOrRight;
+            _throughOrRight = throughOrRight;
+            _throughOrLeft = throughOrLeft;
+            _leftOrRight = leftOrRight;
         }
     }
 }

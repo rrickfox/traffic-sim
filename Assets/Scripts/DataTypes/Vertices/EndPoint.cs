@@ -86,7 +86,8 @@ namespace DataTypes
             // display the car graphically
             var position = _edge.GetAbsolutePosition(car.positionOnRoad, lane);
             var spawnPoint = new Vector3(position.x, _roadPrefab.transform.localScale.y / 2 + _carPrefab.transform.localScale.y / 2, position.y);
-            var rotation = Quaternion.Euler(0, _edge.angle, 0);
+            var angle = Vector2.SignedAngle(_edge.originPoint.forward, Vector2.right);
+            var rotation = Quaternion.Euler(0, angle, 0);
             var carGameObject = Object.Instantiate(_carPrefab, spawnPoint, rotation);
             carGameObject.name = "Car_" + CarId.id;
             car.carTransform = carGameObject.transform;

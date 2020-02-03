@@ -45,12 +45,12 @@ namespace DataTypes
             absolutePosition.forward = (absolutePosition.forward * (positionOnRoad - index) + shape.points[index + 1].forward * (1 - (positionOnRoad - index))).normalized;
 
             // set offset to the right to accomodate different lanes
-            var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
+            var perpendicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
             var inverse = absolutePosition.forward * -1;
 
-            absolutePosition.position += Vector2.Perpendicular(inverse) * perpandicularOffset;
+            absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
 
             return absolutePosition;
         }

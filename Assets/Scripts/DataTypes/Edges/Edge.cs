@@ -14,7 +14,7 @@ namespace DataTypes
         public List<Car> cars { get; } = new List<Car>();
         public RoadShape shape { get; }
         // the coordinates of the end of the road from which you look at the road
-        public Vector2 originPoint => shape.points[0].position;
+        public RoadPoint originPoint => shape.points[0];
         public List<Lane> outgoingLanes { get; }
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;

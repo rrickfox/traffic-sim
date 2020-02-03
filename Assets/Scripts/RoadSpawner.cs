@@ -17,14 +17,14 @@ public class RoadSpawner
     {
         var road = new Edge(new RoadShape(new List<BezierCurve>(){new BezierCurve(Vector2.zero, Vector2.zero, Vector2.zero)}), pos1, pos2, lanes1To2, lanes2To1);
         // Road length
-        var scaleLength = Vector2.Distance(road.position, road.other.position); 
+        var scaleLength = Vector2.Distance(road.originPoint.position, road.other.originPoint.position); 
         // Road width
         var scaleWidth = (road.outgoingLanes.Count + road.incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
         // 
-        var middlePoint = (road.other.position - road.position) * 0.5f + road.position;
+        var middlePoint = (road.other.originPoint.position - road.originPoint.position) * 0.5f + road.originPoint.position;
         // Road spawnpoint
         var spawnPoint = new Vector3(middlePoint.x, 0, middlePoint.y);
-        var rotation = Quaternion.Euler(0, Vector2.SignedAngle(road.other.position - road.position, Vector2.right), 0);
+        var rotation = Quaternion.Euler(0, Vector2.SignedAngle(road.other.originPoint.position - road.originPoint.position, Vector2.right), 0);
         
         var roadVisual = Object.Instantiate(_roadPrefab, spawnPoint, rotation);
         roadVisual.transform.localScale = new Vector3(scaleLength, roadVisual.transform.localScale.y, scaleWidth);

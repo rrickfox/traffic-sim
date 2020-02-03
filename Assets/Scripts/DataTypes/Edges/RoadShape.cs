@@ -86,8 +86,15 @@ namespace DataTypes
             }
 
             reverseCurves.Reverse();
+            
+            var reversePoints = new List<RoadPoint>();
+            foreach (var point in points)
+            {
+                reversePoints.Add(point.Invert());
+            }
+            reversePoints.Reverse();
 
-            return new RoadShape(reverseCurves, points.Reverse().ToArray(), points[0], length);
+            return new RoadShape(reverseCurves, reversePoints.ToArray(), points[0].Invert(), length);
         }
     }
 }

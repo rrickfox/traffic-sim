@@ -12,5 +12,10 @@ namespace DataTypes
             this.position = position;
             this.forward = forward;
         }
+
+        public RoadPoint Invert()
+        {
+            return new RoadPoint(position, forward * -1);
+        }
     }
 }

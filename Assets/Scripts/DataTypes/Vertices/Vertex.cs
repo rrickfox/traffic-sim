@@ -17,7 +17,7 @@ namespace DataTypes
         protected Vertex(IEnumerable<Edge> edges)
         {
             this.edges = edges.ToImmutableArray();
-            foreach (var edge in edges)
+            foreach (var edge in this.edges)
             {
                 edge.vertex = this;
             }

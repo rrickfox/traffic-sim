@@ -35,7 +35,7 @@ namespace DataTypes
             this.shape = other.shape.Inverse();
         }
         
-        public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
+        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
         {
             var index = Mathf.FloorToInt(positionOnRoad);
             var absolutePosition = shape.points[index];
@@ -51,7 +51,7 @@ namespace DataTypes
 
             absolutePosition.position += Vector2.Perpendicular(inverse) * perpandicularOffset;
 
-            return absolutePosition.position;
+            return absolutePosition;
         }
     }
 }

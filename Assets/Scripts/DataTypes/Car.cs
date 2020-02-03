@@ -21,8 +21,9 @@ namespace DataTypes
         public void Move()
         {
             positionOnRoad += speed;
-            var position = road.GetAbsolutePosition(positionOnRoad, lane);
-            carTransform.position = new Vector3(position.x, carTransform.position.y, position.y);
+            var roadPoint = road.GetAbsolutePosition(positionOnRoad, lane);
+            carTransform.position = new Vector3(roadPoint.position.x, carTransform.position.y, roadPoint.position.y);
+            carTransform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
         public void Accelerate(float acceleration)

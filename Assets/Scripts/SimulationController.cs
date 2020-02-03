@@ -35,6 +35,10 @@ public class SimulationController : MonoBehaviour
         var frequencyLanes1To2 = new[] { lane1To2 };
         var frequencyLanes2To1 = new[] { lane2To1 };
 
+        // road Shape
+        var curve = new BezierCurve(pos1, Vector2.zero, pos2);
+        var shape = new RoadShape(new List<BezierCurve>(){curve});
+
         // Road create..
         var road = _roadSpawner.CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
 

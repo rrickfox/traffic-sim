@@ -10,5 +10,5 @@ public static class CONSTANTS
     // width of a lane
     public static readonly float LANE_WIDTH = 3f;
     // amount of points calculated per beziercurve
-    public static readonly float BEZIER_RESOLUTION = 0.01f;
+    public static readonly float BEZIER_RESOLUTION = 0.001f;
 }

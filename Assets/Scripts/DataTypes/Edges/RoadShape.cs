@@ -52,17 +52,22 @@ namespace DataTypes
                 
                 while(dstSinceLastEvenPoint >= CONSTANTS.DISTANCE_UNIT)
                 {
-                    var overshootDst = dstSinceLastEvenPoint - CONSTANTS.DISTANCE_UNIT;
-                    var newEvenlySpacedPoint = point + (point - lastPoint).normalized * overshootDst;
+                    dstSinceLastEvenPoint -= CONSTANTS.DISTANCE_UNIT;
+                    var newEvenlySpacedPoint = lastPoint + (point - lastPoint).normalized * CONSTANTS.DISTANCE_UNIT;
                     var newRoadPoint = new RoadPoint(newEvenlySpacedPoint, (point - lastPoint).normalized);
                     evenlySpacedPoints.Add(newRoadPoint);
-                    dstSinceLastEvenPoint = overshootDst;
 
                     length++;
+                    
+                    secondLastPoint = lastPoint;
+                    lastPoint = newEvenlySpacedPoint;
                 }
 
-                secondLastPoint = lastPoint;
-                lastPoint = point;
+                if(dstSinceLastEvenPoint == 0)
+                {
+                    secondLastPoint = lastPoint;
+                    lastPoint = point;
+                }
             }
 
             length += dstSinceLastEvenPoint / CONSTANTS.DISTANCE_UNIT;

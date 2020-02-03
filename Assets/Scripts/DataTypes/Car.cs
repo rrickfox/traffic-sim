@@ -39,7 +39,7 @@ namespace DataTypes
         {
             positionOnRoad += speed;
             var position = GetAbsolutePosition();
-            gameObject.transform.position = new Vector3(position.x, gameObject.transform.position.y, position.y);
+            transform.position = new Vector3(position.x, transform.position.y, position.y);
         }
 
         public void Accelerate(float acceleration)

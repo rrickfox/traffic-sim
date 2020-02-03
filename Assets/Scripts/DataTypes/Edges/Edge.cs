@@ -37,6 +37,7 @@ namespace DataTypes
         
         public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
         {
+            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length - 1);
             var index = Mathf.FloorToInt(positionOnRoad);
             var absolutePosition = shape.points[index];
 

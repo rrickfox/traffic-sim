@@ -18,7 +18,7 @@ namespace DataTypes
         public List<Lane> outgoingLanes { get; }
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;
-        public float length { get; }
+        public float length => shape.length;
         public float angle { get; }
 
         public Edge(RoadShape shape, Vector2 otherPosition,
@@ -26,7 +26,6 @@ namespace DataTypes
         {
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
-            length = Vector2.Distance(originPoint, otherPosition) / CONSTANTS.DISTANCE_UNIT;
             angle = Vector2.SignedAngle(otherPosition - originPoint, Vector2.right);
             other = new Edge(this, incomingLanes);
         }
@@ -37,7 +36,6 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
-            length = this.other.length;
             angle = this.other.angle;
         }
         

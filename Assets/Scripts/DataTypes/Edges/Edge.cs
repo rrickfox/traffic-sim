@@ -41,8 +41,8 @@ namespace DataTypes
             var index = Mathf.FloorToInt(positionOnRoad);
             var absolutePosition = shape.points[index];
 
-            absolutePosition.position += Vector2.Lerp(absolutePosition.position, shape.points[index + 1].position, positionOnRoad - index);
-            absolutePosition.forward += Vector2.Lerp(absolutePosition.forward, shape.points[index + 1].forward, positionOnRoad - index);
+            absolutePosition.position += (shape.points[index + 1].position - absolutePosition.position).normalized * (positionOnRoad - index) * CONSTANTS.DISTANCE_UNIT;
+            absolutePosition.forward = (absolutePosition.forward * (positionOnRoad - index) + shape.points[index + 1].forward * (1 - (positionOnRoad - index))).normalized;
 
             // set offset to the right to accomodate different lanes
             var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;

@@ -41,16 +41,21 @@ namespace DataTypes
         
         public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
         {
-            var absolutePosition = Vector2.Lerp(this.originPoint, other.originPoint, positionOnRoad / length);
+            var index = Mathf.FloorToInt(positionOnRoad);
+            var absolutePosition = shape.points[index];
+
+            absolutePosition.position += Vector2.Lerp(absolutePosition.position, shape.points[index + 1].position, positionOnRoad - index);
+            absolutePosition.forward += Vector2.Lerp(absolutePosition.forward, shape.points[index + 1].forward, positionOnRoad - index);
+
             // set offset to the right to accomodate different lanes
             var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var inverse = (other.originPoint - this.originPoint).normalized * -1;
+            var inverse = absolutePosition.forward * -1;
 
-            absolutePosition += Vector2.Perpendicular(inverse) * perpandicularOffset;
+            absolutePosition.position += Vector2.Perpendicular(inverse) * perpandicularOffset;
 
-            return absolutePosition;
+            return absolutePosition.position;
         }
     }
 }

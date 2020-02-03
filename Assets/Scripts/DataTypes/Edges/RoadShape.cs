@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataTypes
 {
@@ -68,6 +69,19 @@ namespace DataTypes
             endingPoint = new RoadPoint(lastPoint, (secondLastPoint - lastPoint).normalized);
 
             points = evenlySpacedPoints.ToArray();
+        }
+
+        public RoadShape Inverse()
+        {
+            var reverseCurves = _curves.ToList();
+            reverseCurves.Reverse();
+
+            foreach (var curve in reverseCurves)
+            {
+                curve.Revert();
+            }
+
+            return new RoadShape(reverseCurves, points.Reverse().ToArray(), points[0], length);
         }
     }
 }

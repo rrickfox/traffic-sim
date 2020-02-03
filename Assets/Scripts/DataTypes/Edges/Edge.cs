@@ -32,11 +32,11 @@ namespace DataTypes
             other = new Edge(this, otherPosition, incomingLanes);
 
             var middlePoint = (other.position - this.position) * 0.5f + this.position;
-            transform.position = new Vector3(middlePoint.x, 0, middlePoint.y);
+            transform.position = new Vector3(middlePoint.x, CONSTANTS.ROAD_HEIGHT / 2, middlePoint.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0);
             transform.localScale = new Vector3(
                 x: Vector2.Distance(this.position, other.position), // road length
-                y: transform.localScale.y, 
+                y: CONSTANTS.ROAD_HEIGHT, 
                 z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
             );
         }

@@ -17,7 +17,7 @@ namespace DataTypes
             this.lane = lane;
 
             var position = GetAbsolutePosition();
-            transform.position = new Vector3(position.x, prefab.transform.localScale.y / 2 + prefab.transform.localScale.y / 2, position.y);
+            transform.position = new Vector3(position.x, CONSTANTS.ROAD_HEIGHT + prefab.transform.localScale.y / 2, position.y);
             transform.rotation = Quaternion.Euler(0, road.angle, 0);
         }
         

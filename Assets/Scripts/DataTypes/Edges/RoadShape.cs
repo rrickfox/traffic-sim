@@ -7,6 +7,7 @@ namespace DataTypes
     {
         private List<BezierCurve> _curves;
         public RoadPoint[] points;
+        public RoadPoint endingPoint;
         public float length = 0;
 
         // create RoadShape from list of curves
@@ -54,8 +55,8 @@ namespace DataTypes
                 lastPoint = point;
             }
 
-            length++;
-            evenlySpacedPoints.Add(new RoadPoint(lastPoint, (secondLastPoint - lastPoint).normalized));
+            length += dstSinceLastEvenPoint / CONSTANTS.DISTANCE_UNIT;
+            endingPoint = new RoadPoint(lastPoint, (secondLastPoint - lastPoint).normalized);
 
             points = evenlySpacedPoints.ToArray();
         }

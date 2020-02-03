@@ -73,13 +73,14 @@ namespace DataTypes
 
         public RoadShape Inverse()
         {
-            var reverseCurves = _curves.ToList();
-            reverseCurves.Reverse();
+            var reverseCurves = new List<BezierCurve>();
 
             foreach (var curve in reverseCurves)
             {
-                curve.Revert();
+                reverseCurves.Add(curve.Revert());
             }
+
+            reverseCurves.Reverse();
 
             return new RoadShape(reverseCurves, points.Reverse().ToArray(), points[0], length);
         }

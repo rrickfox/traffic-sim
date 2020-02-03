@@ -154,8 +154,9 @@ MonoBehaviour:
     type: 3}
   carPrefab: {fileID: 5327732160065177629, guid: 4c7ad48a12bdff64ea058f9783da6062,
     type: 3}
-  pos1: {x: -140, y: 0}
-  pos2: {x: 140, y: 0}
+  startPoint: {x: -140, y: -50}
+  controlPoint: {x: 0, y: 100}
+  endPoint: {x: 140, y: -50}
   lane1To2: 100
   lane2To1: 100
 --- !u!4 &431655176

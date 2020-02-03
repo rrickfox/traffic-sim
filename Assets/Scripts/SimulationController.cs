@@ -13,8 +13,9 @@ public class SimulationController : MonoBehaviour
     public GameObject carPrefab;
 
     // Point1, Point2
-    public Vector2 pos1 = new Vector2(-140, 0);
-    public Vector2 pos2 = new Vector2(140, 0);
+    public Vector2 startPoint = new Vector2(-140, -50);
+    public Vector2 controlPoint = new Vector2(0, 50);
+    public Vector2 endPoint = new Vector2(140, -50);
 
     // spawn frequency
     public int lane1To2 = 100;
@@ -36,7 +37,7 @@ public class SimulationController : MonoBehaviour
         var frequencyLanes2To1 = new[] { lane2To1 };
 
         // road Shape
-        var curve = new BezierCurve(pos1, Vector2.zero, pos2);
+        var curve = new BezierCurve(startPoint, controlPoint, endPoint);
         var shape = new RoadShape(new List<BezierCurve>(){curve});
 
         // Road create..

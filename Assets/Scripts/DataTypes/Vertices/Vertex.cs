@@ -28,5 +28,5 @@ namespace DataTypes
         protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
     }
 
-    public class VertexBehaviour<TData> : LinkedBehaviour<TData> { }
+    public class VertexBehaviour<TData> : LinkedBehaviour<TData> where TData : IVertex { }
 }

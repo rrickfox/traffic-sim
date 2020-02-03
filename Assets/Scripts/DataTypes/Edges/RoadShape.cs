@@ -18,6 +18,15 @@ namespace DataTypes
             CalculateEvenlySpacedPoints();
         }
 
+        // create a RoadShape from existing parameters
+        public RoadShape(List<BezierCurve> curves, RoadPoint[] points, RoadPoint endingPoint, float length)
+        {
+            _curves = curves;
+            this.points = points;
+            this.endingPoint = endingPoint;
+            this.length = length;
+        }
+
         // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {

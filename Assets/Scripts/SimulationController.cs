@@ -40,7 +40,7 @@ public class SimulationController : MonoBehaviour
         var shape = new RoadShape(new List<BezierCurve>(){curve});
 
         // Road create..
-        var road = _roadSpawner.CreateRoad(pos1, pos2, lanes1To2, lanes2To1);
+        var road = _roadSpawner.CreateRoad(shape, lanes1To2, lanes2To1);
 
         // EndPoint creation
         var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);

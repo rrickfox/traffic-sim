@@ -22,7 +22,7 @@ namespace DataTypes
         public float angle { get; }
 
         public Edge(GameObject prefab, RoadShape shape, Vector2 position, Vector2 otherPosition,
-            List<Lane> outgoingLanes, List<Lane> incomingLanes)
+            List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;
             this.position = position;
@@ -30,13 +30,10 @@ namespace DataTypes
             length = Vector2.Distance(position, otherPosition) / CONSTANTS.DISTANCE_UNIT;
             angle = Vector2.SignedAngle(otherPosition - position, Vector2.right);
             other = new Edge(this, otherPosition, incomingLanes);
-            
+
             var middlePoint = (other.position - this.position) * 0.5f + this.position;
-            CreateGameObject(
-                prefab: prefab,
-                position: new Vector3(middlePoint.x, 0, middlePoint.y),
-                rotation: Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0)
-            );
+            transform.position = new Vector3(middlePoint.x, 0, middlePoint.y);
+            transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0);
             transform.localScale = new Vector3(
                 x: Vector2.Distance(this.position, other.position), // road length
                 y: transform.localScale.y, 
@@ -52,20 +49,6 @@ namespace DataTypes
             this.outgoingLanes = outgoingLanes;
             length = this.other.length;
             angle = this.other.angle;
-        }
-        
-        public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
-        {
-            var absolutePosition = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
-            // set offset to the right to accomodate different lanes
-            var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
-
-            // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var inverse = (other.position - this.position).normalized * -1;
-
-            absolutePosition += Vector2.Perpendicular(inverse) * perpandicularOffset;
-
-            return absolutePosition;
         }
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public partial class EndPoint : Vertex<EndPoint, EndPointBehaviour>
+    public class EndPoint : InvisibleVertex<EndPoint, EndPointBehaviour>
     {
         private Edge _edge { get; }
         private GameObject _carPrefab { get; }
@@ -19,8 +19,6 @@ namespace DataTypes
             _carPrefab = carPrefab;
             _roadPrefab = roadPrefab;
             _frequencies = frequencies;
-            
-            CreateGameObject();
         }
 
         public void SpawnCars()

@@ -20,13 +20,11 @@ namespace DataTypes
         public IEnumerable<Vector2> CalculatePoints()
         {
             var calculatedPoints = new List<Vector2>();
-            var lastPoint = startPoint;
 
             for(var i = CONSTANTS.BEZIER_RESOLUTION; i <= 1; i += CONSTANTS.BEZIER_RESOLUTION)
             {
                 var newPoint = EvaluateQuadratic(i);
                 calculatedPoints.Add(newPoint);
-                lastPoint = newPoint;
             }
 
             return calculatedPoints;

@@ -39,9 +39,6 @@ namespace DataTypes
             return Vector2.Lerp(p0, p1, t);
         }
 
-        public BezierCurve Revert()
-        {
-            return new BezierCurve(endPoint, controlPoint, startPoint);
-        }
+        public BezierCurve Revert() => new BezierCurve(endPoint, controlPoint, startPoint);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using DataTypes;
+using Utility;
 
 public class PointPlacer : MonoBehaviour
 {

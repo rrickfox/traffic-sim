@@ -80,7 +80,7 @@ namespace DataTypes
         {
             var reverseCurves = new List<BezierCurve>();
 
-            foreach (var curve in reverseCurves)
+            foreach (var curve in _curves)
             {
                 reverseCurves.Add(curve.Revert());
             }

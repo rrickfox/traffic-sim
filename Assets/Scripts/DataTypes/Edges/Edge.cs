@@ -36,16 +36,19 @@ namespace DataTypes
             this.shape = other.shape.Inverse();
         }
         
+        // retrieves position and forward vector of car on road when given relative position on road and lane
         public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
         {
+            // get first estimation of position from saved array of points
             positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length - 1);
             var index = Mathf.FloorToInt(positionOnRoad);
             var absolutePosition = shape.points[index];
 
+            // linearly interpolate between precalculated points
             absolutePosition.position += (shape.points[index + 1].position - absolutePosition.position).normalized * (positionOnRoad - index) * CONSTANTS.DISTANCE_UNIT;
             absolutePosition.forward = (absolutePosition.forward * (positionOnRoad - index) + shape.points[index + 1].forward * (1 - (positionOnRoad - index))).normalized;
 
-            // set offset to the right to accomodate different lanes
+            // set offset to the right to accommodate different lanes
             var perpendicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()

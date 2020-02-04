@@ -17,6 +17,7 @@ namespace DataTypes
             this.endPoint = endPoint;
         }
 
+        // calculates points on a bezier curve, not necessarily with same distance
         public IEnumerable<Vector2> CalculatePoints()
         {
             var calculatedPoints = new List<Vector2>();
@@ -30,6 +31,7 @@ namespace DataTypes
             return calculatedPoints;
         }
 
+        // function to calculate a single point on a bezier curve
         private Vector2 EvaluateQuadratic(float t)
         {
             var p0 = Vector2.Lerp(startPoint, controlPoint, t);
@@ -38,6 +40,7 @@ namespace DataTypes
             return Vector2.Lerp(p0, p1, t);
         }
 
+        // invert the direction of this curve
         public BezierCurve Revert() => new BezierCurve(endPoint, controlPoint, startPoint);
     }
 }

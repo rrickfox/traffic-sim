@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
+    // saves absolute position and forward vector of a point on a bezier curve
     public struct RoadPoint
     {
         public Vector2 position;
@@ -13,6 +14,7 @@ namespace DataTypes
             this.forward = forward;
         }
 
+        // inverts the forward vector
         public RoadPoint Invert() => new RoadPoint(position, forward * -1);
     }
 }

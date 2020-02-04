@@ -16,12 +16,12 @@ namespace DataTypes
             this.endPoint = endPoint;
         }
 
-        public List<Vector2> CalculatePoints()
+        public IEnumerable<Vector2> CalculatePoints()
         {
-            List<Vector2> calculatedPoints = new List<Vector2>();
+            var calculatedPoints = new List<Vector2>();
             var lastPoint = startPoint;
 
-            for(float i = CONSTANTS.BEZIER_RESOLUTION; i <= 1; i += CONSTANTS.BEZIER_RESOLUTION)
+            for(var i = CONSTANTS.BEZIER_RESOLUTION; i <= 1; i += CONSTANTS.BEZIER_RESOLUTION)
             {
                 var newPoint = EvaluateQuadratic(i);
                 calculatedPoints.Add(newPoint);

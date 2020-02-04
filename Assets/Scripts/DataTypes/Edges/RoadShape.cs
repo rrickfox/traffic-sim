@@ -20,7 +20,7 @@ namespace DataTypes
         }
 
         // create a RoadShape from existing parameters
-        public RoadShape(List<BezierCurve> curves, RoadPoint[] points, RoadPoint endingPoint, float length)
+        private RoadShape(List<BezierCurve> curves, RoadPoint[] points, RoadPoint endingPoint, float length)
         {
             _curves = curves;
             this.points = points;
@@ -31,17 +31,17 @@ namespace DataTypes
         // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {
-            var tempPoints = new List<Vector2>();
-
-            tempPoints.Add(_curves[0].startPoint);
-
+            var tempPoints = new List<Vector2> {_curves[0].startPoint};
+            
             foreach (var curve in _curves)
             {
                 tempPoints.AddRange(curve.CalculatePoints());
             }
 
-            var evenlySpacedPoints = new List<RoadPoint>();
-            evenlySpacedPoints.Add(new RoadPoint(tempPoints[0], (tempPoints[1] - tempPoints[0]).normalized));
+            var evenlySpacedPoints = new List<RoadPoint>
+            {
+                new RoadPoint(tempPoints[0], (tempPoints[1] - tempPoints[0]).normalized)
+            };
             var lastPoint = tempPoints[0];
             var secondLastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
@@ -78,23 +78,10 @@ namespace DataTypes
 
         public RoadShape Inverse()
         {
-            var reverseCurves = new List<BezierCurve>();
+            var reverseCurves = _curves.Select(curve => curve.Revert()).Reverse().ToList();
+            var reversePoints = points.Select(point => point.Invert()).Reverse().ToArray();
 
-            foreach (var curve in _curves)
-            {
-                reverseCurves.Add(curve.Revert());
-            }
-
-            reverseCurves.Reverse();
-            
-            var reversePoints = new List<RoadPoint>();
-            foreach (var point in points)
-            {
-                reversePoints.Add(point.Invert());
-            }
-            reversePoints.Reverse();
-
-            return new RoadShape(reverseCurves, reversePoints.ToArray(), points[0].Invert(), length);
+            return new RoadShape(reverseCurves, reversePoints, reversePoints.Last(), length);
         }
     }
 }

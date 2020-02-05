@@ -5,10 +5,10 @@ using Utility;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge
+    public class Edge : GameObjectData<Edge, EdgeBehaviour>
     {
         // the Vertex from which this edge originates
-        public Vertex vertex = null;
+        public IVertex vertex = null;
         // represents how the road would look like from its other endpoint
         public Edge other { get; }
         // the cars on the outgoing side of the road
@@ -22,8 +22,8 @@ namespace DataTypes
         public float length { get; }
         public float angle { get; }
 
-        public Edge(RoadShape shape, Vector2 position, Vector2 otherPosition,
-            List<Lane> outgoingLanes, List<Lane> incomingLanes)
+        public Edge(GameObject prefab, RoadShape shape, Vector2 position, Vector2 otherPosition,
+            List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;
             this.position = position;
@@ -31,6 +31,15 @@ namespace DataTypes
             length = Vector2.Distance(position, otherPosition) / CONSTANTS.DISTANCE_UNIT;
             angle = Vector2.SignedAngle(otherPosition - position, Vector2.right);
             other = new Edge(this, otherPosition, incomingLanes);
+
+            var middlePoint = (other.position - this.position) * 0.5f + this.position;
+            transform.position = new Vector3(middlePoint.x, CONSTANTS.ROAD_HEIGHT / 2, middlePoint.y);
+            transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0);
+            transform.localScale = new Vector3(
+                x: Vector2.Distance(this.position, other.position), // road length
+                y: CONSTANTS.ROAD_HEIGHT, 
+                z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
+            );
         }
 
         // construct an Edge where other is already constructed
@@ -42,19 +51,7 @@ namespace DataTypes
             length = this.other.length;
             angle = this.other.angle;
         }
-        
-        public Vector2 GetAbsolutePosition(float positionOnRoad, float lane)
-        {
-            var absolutePosition = Vector2.Lerp(this.position, other.position, positionOnRoad / length);
-            // set offset to the right to accomodate different lanes
-            var perpandicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
-
-            // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var inverse = (other.position - this.position).normalized * -1;
-
-            absolutePosition += Vector2.Perpendicular(inverse) * perpandicularOffset;
-
-            return absolutePosition;
-        }
     }
+
+    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

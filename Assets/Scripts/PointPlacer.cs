@@ -5,14 +5,19 @@ using Utility;
 
 public class PointPlacer : MonoBehaviour
 {
-    public Vector2 startPoint = new Vector2(-70, -35);
-    public Vector2 controlPoint = new Vector2(-70, 35);
-    public Vector2 endPoint = new Vector2(70, 35);
-    
     void Start()
     {
-        var curve = new BezierCurve(startPoint, controlPoint, endPoint);
-        var shape = new RoadShape(new List<BezierCurve> {curve});
+        var p0_s = new Vector2(-140, -70);
+        var p0_c = new Vector2(-140, 0);
+        var p0_e = new Vector2(0, 0);
+
+        var p1_s = new Vector2(0, 0);
+        var p1_c = new Vector2(140, 0);
+        var p1_e = new Vector2(140, 70);
+        
+        var curve_0 = new BezierCurve(p0_s, p0_c, p0_e);
+        var curve_1 = new BezierCurve(p1_s, p1_c, p1_e);
+        var shape = new RoadShape(new List<BezierCurve> {curve_0, curve_1});
 
         foreach(var p in shape.points)
         {

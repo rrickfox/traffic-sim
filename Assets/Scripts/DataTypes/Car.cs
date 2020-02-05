@@ -42,6 +42,7 @@ namespace DataTypes
         public void Move()
         {
             positionOnRoad += speed;
+            SetPosition();
         }
 
         private void SetPosition()

@@ -21,11 +21,16 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public float length => shape.length;
 
-        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
+        private GameObject prefab;
+
+        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base()
         {
+            this.prefab = prefab;
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
             other = new Edge(this, incomingLanes);
+
+            Display();
         }
 
         // construct an Edge where other is already constructed
@@ -34,6 +39,24 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+        }
+
+        private void Display()
+        {
+            for(int i = 0; i < shape.points.Length; i++)
+            {
+                var roadPoint = shape.points[i];
+                var spawnPoint = new Vector3(roadPoint.position.x, 0.025f, roadPoint.position.y);
+                var rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
+
+                var roadSegment = Object.Instantiate(prefab, spawnPoint, rotation);
+                roadSegment.transform.parent = transform;
+                roadSegment.name = gameObject.name + "_Segment_" + i;
+
+                var scaleWidth = (outgoingLanes.Count + incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
+
+                roadSegment.transform.localScale = new Vector3(roadSegment.transform.localScale.x, roadSegment.transform.localScale.y, scaleWidth);
+            }
         }
     }
 

@@ -46,7 +46,7 @@ namespace Pathfinding
         }
         
         // checks neighbourhood for necessary updates in pathfinding attributes
-        private static void CheckNeigbourhood(this IVertex self)
+        private static void CheckNeighbourhood(this IVertex self)
         {
             var pathDistance = self.GetPathDistance();
             foreach (var edge in self.edges.Where(edge => edge.outgoingLanes.Count > 0))
@@ -69,7 +69,7 @@ namespace Pathfinding
             {
                 // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
                 var minVertex = tempVertices.Where(v => v.GetPathDistance() != null).MinBy(v => v.GetPathDistance()).First();
-                minVertex.CheckNeigbourhood();
+                minVertex.CheckNeighbourhood();
                 tempVertices.Remove(minVertex);
             }
 

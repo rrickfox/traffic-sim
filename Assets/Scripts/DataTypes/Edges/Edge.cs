@@ -5,10 +5,10 @@ using Utility;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge
+    public class Edge : GameObjectData<Edge, EdgeBehaviour>
     {
         // the Vertex from which this edge originates
-        public Vertex vertex = null;
+        public IVertex vertex = null;
         // represents how the road would look like from its other endpoint
         public Edge other { get; }
         // the cars on the outgoing side of the road
@@ -21,7 +21,7 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public float length => shape.length;
 
-        public Edge(RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
+        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
@@ -35,24 +35,7 @@ namespace DataTypes
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
         }
-        
-        // retrieves position and forward vector of car on road when given relative position on road and lane
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
-        {
-            // get first estimation of position from saved array of points
-            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.RoundToInt(positionOnRoad);
-            var absolutePosition = shape.points[index];
-
-            // set offset to the right to accommodate different lanes
-            var perpendicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
-
-            // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var inverse = absolutePosition.forward * -1;
-
-            absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
-
-            return absolutePosition;
-        }
     }
+
+    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

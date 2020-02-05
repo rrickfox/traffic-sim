@@ -1,57 +1,50 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using MoreLinq;
+using UnityEngine;
 
 namespace DataTypes
 {
-    public class Vertex
+    public interface IVertex
     {
-        private ImmutableArray<Edge> _edges { get; }
-        // distance value relative to start point of pathfinding
-        public float? pathDistance { get; set; }
-        // current candidate for predecessor in path
-        public Vertex previousVertex { get; set; }
+        ImmutableArray<Edge> edges { get; }
+    }
+    
+    public class BaseVertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
+        where TBehaviour : VertexBehaviour<TThis>
+        where TThis : BaseVertex<TThis, TBehaviour>
+    {
+        public ImmutableArray<Edge> edges { get; private set; }
 
-        protected Vertex(IEnumerable<Edge> edges)
+        protected BaseVertex(IEnumerable<Edge> edges) => SetEdges(edges);
+        protected BaseVertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab) => SetEdges(edges);
+        
+        private void SetEdges(IEnumerable<Edge> edges)
         {
-            _edges = edges.ToImmutableArray();
-            foreach (var edge in _edges)
+            this.edges = edges.ToImmutableArray();
+            foreach (var edge in this.edges)
             {
                 edge.vertex = this;
             }
         }
-
-        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
-
-        public static void StartPathfinding(ICollection<Vertex> vertices)
-        {
-            var verticesSet = vertices.ToHashSet();
-            var endPoints = vertices.OfType<EndPoint>().ToList();
-            foreach (var start in endPoints)
-            {
-                foreach (var end in endPoints.Where(end => end != start))
-                {
-                    start.FindPath(verticesSet, end);
-                }
-            }
-        }
-
-        // checks neighbourhood for necessary updates in pathfinding attributes
-        public void CheckNeighbourhood()
-        {
-            foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0 
-                                                      && (edge.other.vertex.pathDistance == null || 
-                                                          edge.other.vertex.pathDistance > pathDistance + edge.length)))
-            {
-                edge.other.vertex.pathDistance = pathDistance + edge.length;
-                edge.other.vertex.previousVertex = this;
-            }
-        }
-
-        public Edge GetEdge(Vertex neighbour)
-        {
-            return _edges.FirstOrDefault(edge => edge.other.vertex == neighbour);
-        }
     }
+    
+    public class InvisibleVertex<TThis, TBehaviour> : BaseVertex<TThis, TBehaviour>
+        where TBehaviour : VertexBehaviour<TThis>
+        where TThis : BaseVertex<TThis, TBehaviour>
+    {
+        protected InvisibleVertex(IEnumerable<Edge> edges) : base(edges) { }
+        protected InvisibleVertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
+    }
+
+    public class VisualVertex<TThis, TBehaviour> : BaseVertex<TThis, TBehaviour>
+        where TBehaviour : VertexBehaviour<TThis>
+        where TThis : VisualVertex<TThis, TBehaviour>
+    {
+        protected GameObject _prefab { get; }
+
+        protected VisualVertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab, edges) => _prefab = prefab;
+        protected VisualVertex(GameObject prefab, params Edge[] edges) : this(prefab, edges.ToImmutableArray()) { }
+    }
+
+    public class VertexBehaviour<TData> : LinkedBehaviour<TData> where TData : IVertex { }
 }

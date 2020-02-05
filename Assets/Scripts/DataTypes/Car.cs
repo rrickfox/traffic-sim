@@ -21,7 +21,7 @@ namespace DataTypes
         }
         
         // retrieves position and forward vector of car on road when given relative position on road and lane
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
+        public RoadPoint GetAbsolutePosition()
         {
             // get first estimation of position from saved array of points
             positionOnRoad = Mathf.Clamp(positionOnRoad, 0, road.length);
@@ -47,7 +47,7 @@ namespace DataTypes
 
         private void SetPosition()
         {
-            var roadPoint = GetAbsolutePosition(positionOnRoad, lane);
+            var roadPoint = GetAbsolutePosition();
             transform.position = new Vector3(roadPoint.position.x, transform.position.y, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }

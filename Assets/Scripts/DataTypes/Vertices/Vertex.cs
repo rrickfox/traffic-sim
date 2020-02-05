@@ -38,7 +38,7 @@ namespace DataTypes
         }
 
         // checks neighbourhood for necessary updates in pathfinding attributes
-        public void CheckNeigbourhood()
+        public void CheckNeighbourhood()
         {
             foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0 
                                                       && (edge.other.vertex.pathDistance == null || 

@@ -32,9 +32,9 @@ namespace DataTypes
             // calculates pathDistance and corresponding previousVertex for entire graph
             while (tempVertices.Any(v => v.pathDistance != null))
             {
-                // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
+                // finds vertex with lowest pathDistance, updates its neighbourhood and removes it from tempVertices
                 var minVertex = tempVertices.Where(v => v.pathDistance != null).MinBy(v => v.pathDistance).First();
-                minVertex.CheckNeigbourhood();
+                minVertex.CheckNeighbourhood();
                 tempVertices.Remove(minVertex);
             }
             

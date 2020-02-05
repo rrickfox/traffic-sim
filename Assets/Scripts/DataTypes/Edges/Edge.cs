@@ -41,21 +41,8 @@ namespace DataTypes
         {
             // get first estimation of position from saved array of points
             positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.FloorToInt(positionOnRoad);
+            var index = Mathf.RoundToInt(positionOnRoad);
             var absolutePosition = shape.points[index];
-
-            // if positionOnRoad is behind last evenly spaced Point, then other rules apply
-            if(index == shape.points.Length - 1)
-            {
-                // linearly interpolate between point and lastPoint
-                absolutePosition.position += (shape.endingPoint.position - absolutePosition.position).normalized * (positionOnRoad - index) * CONSTANTS.DISTANCE_UNIT;
-                absolutePosition.forward = (absolutePosition.forward * (positionOnRoad - index) + shape.endingPoint.forward * (1 - (positionOnRoad - index))).normalized;
-            } else
-            {
-                // linearly interpolate between precalculated points
-                absolutePosition.position += (shape.points[index + 1].position - absolutePosition.position).normalized * (positionOnRoad - index) * CONSTANTS.DISTANCE_UNIT;
-                absolutePosition.forward = (absolutePosition.forward * (positionOnRoad - index) + shape.points[index + 1].forward * (1 - (positionOnRoad - index))).normalized;
-            }
 
             // set offset to the right to accommodate different lanes
             var perpendicularOffset = (((this.outgoingLanes.Count + other.outgoingLanes.Count) / 2) - this.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;

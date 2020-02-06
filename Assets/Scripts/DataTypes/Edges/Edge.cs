@@ -49,6 +49,7 @@ namespace DataTypes
             var vertexIndex = 0;
             var triangleIndex = 0;
 
+            // calculate Vertices along the Mesh with needed offset and creating Triangles using the Vertices
             for (int i = 0; i < shape.points.Length; i++)
             {
                 var p = shape.points[i];
@@ -84,26 +85,11 @@ namespace DataTypes
                 uv = uvs
             };
 
+            // spawn the road and apply Mesh and Material with adapted tiling
             var road = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
             road.GetComponent<MeshFilter>().mesh = mesh;
             var tiling = shape.length * CONSTANTS.DISTANCE_UNIT * 0.1f;
             road.GetComponent<MeshRenderer>().sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
-
-            /*
-            for (int i = 0; i < shape.points.Length; i++)
-            {
-                var roadPoint = shape.points[i];
-                var spawnPoint = new Vector3(roadPoint.position.x, 0.025f, roadPoint.position.y);
-                var rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
-
-                var roadSegment = Object.Instantiate(prefab, spawnPoint, rotation);
-                roadSegment.transform.parent = transform;
-                roadSegment.name = gameObject.name + "_Segment_" + i;
-
-                var scaleWidth = (outgoingLanes.Count + incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
-
-                roadSegment.transform.localScale = new Vector3(roadSegment.transform.localScale.x, roadSegment.transform.localScale.y, scaleWidth);
-            }*/
         }
     }
 

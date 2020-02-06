@@ -11,8 +11,9 @@ public class SimulationController : MonoBehaviour
     public GameObject carPrefab;
 
     // Point1, Point2
-    public Vector2 pos1 = new Vector2(-140, 0);
-    public Vector2 pos2 = new Vector2(140, 0);
+    public Vector2 startPoint = new Vector2(-140, -50);
+    public Vector2 controlPoint = new Vector2(0, 50);
+    public Vector2 endPoint = new Vector2(140, -50);
 
     // spawn frequency
     public int lane1To2 = 100;
@@ -30,8 +31,12 @@ public class SimulationController : MonoBehaviour
         var frequencyLanes1To2 = new Frequencies(new[] {lane1To2});
         var frequencyLanes2To1 = new Frequencies(new[] {lane2To1});
 
+        // road Shape
+        var curve = new BezierCurve(startPoint, controlPoint, endPoint);
+        var shape = new RoadShape(new List<BezierCurve>(){curve});
+
         // Road create..
-        var road = new Edge(roadPrefab, new RoadShape(), pos1, pos2, lanes1To2, lanes2To1);
+        var road = new Edge(roadPrefab, shape, lanes1To2, lanes2To1);
 
         // EndPoint creation
         var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);

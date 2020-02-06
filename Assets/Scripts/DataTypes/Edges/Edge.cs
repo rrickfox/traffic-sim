@@ -15,41 +15,48 @@ namespace DataTypes
         public List<Car> cars { get; } = new List<Car>();
         public RoadShape shape { get; }
         // the coordinates of the end of the road from which you look at the road
-        public Vector2 position { get; }
+        public RoadPoint originPoint => shape.points[0];
         public List<Lane> outgoingLanes { get; }
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;
-        public float length { get; }
-        public float angle { get; }
+        public float length => shape.length;
 
-        public Edge(GameObject prefab, RoadShape shape, Vector2 position, Vector2 otherPosition,
-            List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
+        private GameObject prefab;
+
+        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base()
         {
+            this.prefab = prefab;
             this.shape = shape;
-            this.position = position;
             this.outgoingLanes = outgoingLanes;
-            length = Vector2.Distance(position, otherPosition) / CONSTANTS.DISTANCE_UNIT;
-            angle = Vector2.SignedAngle(otherPosition - position, Vector2.right);
-            other = new Edge(this, otherPosition, incomingLanes);
+            other = new Edge(this, incomingLanes);
 
-            var middlePoint = (other.position - this.position) * 0.5f + this.position;
-            transform.position = new Vector3(middlePoint.x, CONSTANTS.ROAD_HEIGHT / 2, middlePoint.y);
-            transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(other.position - this.position, Vector2.right), 0);
-            transform.localScale = new Vector3(
-                x: Vector2.Distance(this.position, other.position), // road length
-                y: CONSTANTS.ROAD_HEIGHT, 
-                z: (this.outgoingLanes.Count + this.incomingLanes.Count) * CONSTANTS.LANE_WIDTH // road width
-            );
+            Display();
         }
 
         // construct an Edge where other is already constructed
-        private Edge(Edge other, Vector2 position, List<Lane> outgoingLanes)
+        private Edge(Edge other, List<Lane> outgoingLanes)
         {
             this.other = other;
-            this.position = position;
             this.outgoingLanes = outgoingLanes;
-            length = this.other.length;
-            angle = this.other.angle;
+            this.shape = other.shape.Inverse();
+        }
+
+        private void Display()
+        {
+            for(int i = 0; i < shape.points.Length; i++)
+            {
+                var roadPoint = shape.points[i];
+                var spawnPoint = new Vector3(roadPoint.position.x, 0.025f, roadPoint.position.y);
+                var rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
+
+                var roadSegment = Object.Instantiate(prefab, spawnPoint, rotation);
+                roadSegment.transform.parent = transform;
+                roadSegment.name = gameObject.name + "_Segment_" + i;
+
+                var scaleWidth = (outgoingLanes.Count + incomingLanes.Count) * CONSTANTS.LANE_WIDTH;
+
+                roadSegment.transform.localScale = new Vector3(roadSegment.transform.localScale.x, roadSegment.transform.localScale.y, scaleWidth);
+            }
         }
     }
 

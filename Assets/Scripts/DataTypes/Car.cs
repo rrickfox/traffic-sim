@@ -17,30 +17,39 @@ namespace DataTypes
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
 
-            var position = GetAbsolutePosition();
-            transform.position = new Vector3(position.x, CONSTANTS.ROAD_HEIGHT + prefab.transform.localScale.y / 2, position.y);
-            transform.rotation = Quaternion.Euler(0, road.angle, 0);
+            SetPosition();
         }
         
-        public Vector2 GetAbsolutePosition()
+        // retrieves position and forward vector of car on road when given relative position on road and lane
+        public RoadPoint GetAbsolutePosition()
         {
-            var result = Vector2.Lerp(road.position, road.other.position, positionOnRoad / road.length);
-            // set offset to the right to accomodate different lanes
-            var perpandicularOffset = ((road.outgoingLanes.Count + road.incomingLanes.Count) / 2 - road.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
+            // get first estimation of position from saved array of points
+            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, road.length);
+            var index = Mathf.RoundToInt(positionOnRoad);
+            var absolutePosition = road.shape.points[index];
+
+            // set offset to the right to accommodate different lanes
+            var perpendicularOffset = (((road.outgoingLanes.Count + road.incomingLanes.Count) / 2) - road.outgoingLanes.Count + 0.5f + lane) * CONSTANTS.LANE_WIDTH;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
-            var inverse = (road.other.position - road.position).normalized * -1;
+            var inverse = absolutePosition.forward * -1;
 
-            result += Vector2.Perpendicular(inverse) * perpandicularOffset;
+            absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
 
-            return result;
+            return absolutePosition;
         }
 
         public void Move()
         {
             positionOnRoad += speed;
-            var position = GetAbsolutePosition();
-            transform.position = new Vector3(position.x, transform.position.y, position.y);
+            SetPosition();
+        }
+
+        private void SetPosition()
+        {
+            var roadPoint = GetAbsolutePosition();
+            transform.position = new Vector3(roadPoint.position.x, transform.position.y, roadPoint.position.y);
+            transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
         public void Accelerate(float acceleration)

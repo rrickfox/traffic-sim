@@ -23,7 +23,7 @@ namespace DataTypes
 
         private GameObject prefab;
 
-        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base()
+        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.prefab = prefab;
             this.shape = shape;
@@ -88,11 +88,10 @@ namespace DataTypes
                 uv = uvs
             };
 
-            // spawn the road and apply Mesh and Material with adapted tiling
-            var road = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
-            road.GetComponent<MeshFilter>().mesh = mesh;
+            // apply Mesh and Material with adapted tiling
+            gameObject.GetComponent<MeshFilter>().mesh = mesh;
             var tiling = shape.length * CONSTANTS.DISTANCE_UNIT / 12f;
-            road.GetComponent<MeshRenderer>().sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
+            gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
     }
 

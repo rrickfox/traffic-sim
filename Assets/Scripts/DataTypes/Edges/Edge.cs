@@ -53,16 +53,19 @@ namespace DataTypes
             for (int i = 0; i < shape.points.Length; i++)
             {
                 var p = shape.points[i];
+                // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
                 var newPosLeft = p.position + left * CONSTANTS.LANE_WIDTH * incomingLanes.Count;
                 var newPosRight = p.position - left * CONSTANTS.LANE_WIDTH * outgoingLanes.Count;
-                vertices[vertexIndex] = new Vector3(newPosLeft.x, 0.025f, newPosLeft.y);
-                vertices[vertexIndex + 1] = new Vector3(newPosRight.x, 0.025f, newPosRight.y);
+                vertices[vertexIndex] = new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y);
+                vertices[vertexIndex + 1] = new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y);
 
-                var relativPos = i / (float)(shape.points.Length - 1);
-                uvs[vertexIndex] = new Vector2(0f, relativPos);
-                uvs[vertexIndex + 1] = new Vector2(1f, relativPos);
+                // uv-coordinates
+                var relativePos = i / (float)(shape.points.Length - 1);
+                uvs[vertexIndex] = new Vector2(0f, relativePos);
+                uvs[vertexIndex + 1] = new Vector2(1f, relativePos);
 
+                // create Triangles from one point to the next
                 if (i < shape.points.Length - 1)
                 {
                     triangles[triangleIndex] = vertexIndex;
@@ -88,7 +91,7 @@ namespace DataTypes
             // spawn the road and apply Mesh and Material with adapted tiling
             var road = Object.Instantiate(prefab, Vector3.zero, Quaternion.identity);
             road.GetComponent<MeshFilter>().mesh = mesh;
-            var tiling = shape.length * CONSTANTS.DISTANCE_UNIT * 0.1f;
+            var tiling = shape.length * CONSTANTS.DISTANCE_UNIT / 12f;
             road.GetComponent<MeshRenderer>().sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
     }

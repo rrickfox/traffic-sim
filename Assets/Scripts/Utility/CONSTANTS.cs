@@ -21,5 +21,9 @@ namespace Utility
         public static readonly float LINE_WIDTH = 0.2f;
         // width of the line at the border of a road
         public static readonly float BORDER_LINE_WIDTH = 0.3f;
+        // ratio of length of space to length of line
+        public static readonly float LINE_RATIO = 2f;
+        // length of line segment (line + space)
+        public static readonly float LINE_LENGTH = 12f;
     }
 }

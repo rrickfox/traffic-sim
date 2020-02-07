@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public interface IVertex
+    public interface IVertex : IGameObjectData
     {
         ImmutableArray<Edge> edges { get; }
     }

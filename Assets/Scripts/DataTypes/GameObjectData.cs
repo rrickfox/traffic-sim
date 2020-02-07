@@ -4,14 +4,21 @@ using Utility;
 
 namespace DataTypes
 {
-    public class GameObjectData<TThis, TBehaviour> : IDisposable
+    public interface IGameObjectData : IDisposable
+    {
+        GameObject prefab { get; }
+        GameObject gameObject { get; }
+        Transform transform { get; }
+    }
+    
+    public class GameObjectData<TThis, TBehaviour> : IGameObjectData
         where TBehaviour : LinkedBehaviour<TThis>
         where TThis : GameObjectData<TThis, TBehaviour>
     {
         public GameObject prefab { get; }
         public GameObject gameObject { get; }
-        public Transform transform { get; private set; }
-        public TBehaviour behaviour { get; private set; }
+        public Transform transform { get; }
+        public TBehaviour behaviour { get; }
 
         protected GameObjectData(GameObject prefab)
         {

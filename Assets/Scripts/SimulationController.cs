@@ -39,9 +39,9 @@ public class SimulationController : MonoBehaviour
         var road = new Edge(roadPrefab, shape, lanes1To2, lanes2To1);
 
         // EndPoint creation
-        var pointA = new EndPoint(road, carPrefab, roadPrefab, frequencyLanes1To2);
+        var pointA = new EndPoint(road, carPrefab, frequencyLanes1To2);
         _spawnPoints.Add(pointA);
-        var pointB = new EndPoint(road.other, carPrefab, roadPrefab, frequencyLanes2To1);
+        var pointB = new EndPoint(road.other, carPrefab, frequencyLanes2To1);
         _spawnPoints.Add(pointB);
         _roads.Add(road);
         StartPathfinding(_spawnPoints.Cast<IVertex>().ToList());

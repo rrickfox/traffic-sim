@@ -80,16 +80,9 @@ namespace DataTypes
                 vertexIndex += 2;
                 triangleIndex += 6;
             }
-
-            var mesh = new Mesh
-            {
-                vertices = vertices,
-                triangles = triangles,
-                uv = uvs
-            };
-
+            
             // apply Mesh and Material with adapted tiling
-            gameObject.GetComponent<MeshFilter>().mesh = mesh;
+            gameObject.GetComponent<MeshFilter>().mesh = new Mesh {vertices=vertices, triangles=triangles, uv=uvs};
             var tiling = shape.length * CONSTANTS.DISTANCE_UNIT / 12f;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }

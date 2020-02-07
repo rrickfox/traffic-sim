@@ -15,5 +15,11 @@ namespace Utility
         public static readonly float BEZIER_RESOLUTION = 0.001f;
         // height of road Objects
         public static readonly float ROAD_HEIGHT = 0.05f;
+        // width of the middle line on the road
+        public static readonly float MIDDLE_LINE_WIDTH = 0.2f;
+        // width of the standard line
+        public static readonly float LINE_WIDTH = 0.2f;
+        // width of the line at the border of a road
+        public static readonly float BORDER_LINE_WIDTH = 0.3f;
     }
 }

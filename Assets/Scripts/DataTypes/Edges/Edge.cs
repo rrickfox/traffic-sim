@@ -53,8 +53,8 @@ namespace DataTypes
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * CONSTANTS.LANE_WIDTH * incomingLanes.Count;
-                var newPosRight = p.position - left * CONSTANTS.LANE_WIDTH * outgoingLanes.Count;
+                var newPosLeft = p.position + left * ((CONSTANTS.LANE_WIDTH + CONSTANTS.LINE_WIDTH) * incomingLanes.Count + CONSTANTS.MIDDLE_LINE_WIDTH / 2 + CONSTANTS.BORDER_LINE_WIDTH);
+                var newPosRight = p.position - left * ((CONSTANTS.LANE_WIDTH + CONSTANTS.LINE_WIDTH) * outgoingLanes.Count + CONSTANTS.MIDDLE_LINE_WIDTH / 2 + CONSTANTS.BORDER_LINE_WIDTH);
                 meshVertices.Add(new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y));
 

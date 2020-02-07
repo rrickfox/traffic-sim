@@ -22,11 +22,8 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public float length => shape.length;
 
-        private GameObject prefab;
-
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
-            this.prefab = prefab;
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
             other = new Edge(this, incomingLanes);

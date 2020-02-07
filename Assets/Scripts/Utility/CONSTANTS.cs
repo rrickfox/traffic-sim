@@ -15,5 +15,6 @@ namespace Utility
         public static readonly float BEZIER_RESOLUTION = 0.001f;
         // height of road Objects
         public static readonly float ROAD_HEIGHT = 0.05f;
+        public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
     }
 }

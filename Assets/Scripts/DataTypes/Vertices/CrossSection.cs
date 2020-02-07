@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class CrossSection : VisualVertex<CrossSection, CrossSectionBehaviour>
+    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
     {
         private Edge _up { get; }
         private Edge _right { get; }

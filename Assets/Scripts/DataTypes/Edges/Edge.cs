@@ -81,7 +81,110 @@ namespace DataTypes
                 uv = uvs.ToArray()
             };
             var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / 12f);
+
+            var texture = GetTexture();
+
+            gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
+        }
+
+        private Texture2D GetTexture()
+        {
+            var widthMultiplier = 100f;
+            var heightMultiplier = 100f;
+
+            // number of lines dividing lanes in same direction
+            // 0 when no lanes or one lane
+            var lineCountIncoming = (incomingLanes.Count > 1) ? incomingLanes.Count - 1 : 0;
+            var lineCountOutgoing = (outgoingLanes.Count > 1) ? outgoingLanes.Count - 1 : 0;
+
+            // texture contains (left to right):
+            // border, road and lines, middle, road and lines, border
+            var textureWidth = Mathf.RoundToInt((CONSTANTS.MIDDLE_LINE_WIDTH + 2 * CONSTANTS.BORDER_LINE_WIDTH + CONSTANTS.LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) + CONSTANTS.LINE_WIDTH * (lineCountIncoming + lineCountOutgoing)) * widthMultiplier);
+            var textureHeight = Mathf.RoundToInt((CONSTANTS.LINE_RATIO + 1) * heightMultiplier);
+            var texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, true);
+
+            var colorsWithLine = GetColorRow(widthMultiplier, true);
+            var colorsWithoutLine = GetColorRow(widthMultiplier, false);
+            
+            for(int y = 0; y < textureHeight; y++)
+            {
+                for(int x = 0; x < textureWidth; x++)
+                {
+                    // check wether y is above oder below the line segment
+                    // section with line is in the middle of the texture
+                    if(y < (CONSTANTS.LINE_RATIO / 2) * heightMultiplier || y >= (CONSTANTS.LINE_RATIO / 2 + 1) * heightMultiplier)
+                    {
+                        texture.SetPixel(x, y, colorsWithoutLine[x]);
+                    } else
+                    {
+                        texture.SetPixel(x, y, colorsWithLine[x]);
+                    }
+                }
+            }
+
+            texture.Apply();
+
+            return texture;
+        }
+
+        private Color[] GetColorRow(float widthMultiplier, bool lines)
+        {
+            var colorRow = new List<Color>();
+            for(var i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * widthMultiplier, i); i++)
+            {
+                colorRow.Add(COLORS.BORDER_LINE);
+            }
+            for(var j = 0; j < incomingLanes.Count; j++)
+            {
+                if(j > 0)
+                {
+                    for(var i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * widthMultiplier, i); i++)
+                    {
+                        if(lines)
+                        {
+                            colorRow.Add(COLORS.LINE);
+                        } else
+                        {
+                            colorRow.Add(COLORS.ROAD);
+                        }
+                    }
+                }
+                for(var i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * widthMultiplier, i); i++)
+                {
+                    colorRow.Add(COLORS.ROAD);
+                }
+            }
+            for(int i = 0; !Mathf.Approximately(CONSTANTS.MIDDLE_LINE_WIDTH * widthMultiplier, i); i++)
+            {
+                colorRow.Add(COLORS.MIDDLE_LINE);
+            }
+            for(int j = 0; j < outgoingLanes.Count; j++)
+            {
+                if(j > 0)
+                {
+                    for(int i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * widthMultiplier, i); i++)
+                    {
+                        if(lines)
+                        {
+                            colorRow.Add(COLORS.LINE);
+                        } else
+                        {
+                            colorRow.Add(COLORS.ROAD);
+                        }
+                    }
+                }
+                for(int i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * widthMultiplier, i); i++)
+                {
+                    colorRow.Add(COLORS.ROAD);
+                }
+            }
+            for(int i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * widthMultiplier, i); i++)
+            {
+                colorRow.Add(COLORS.BORDER_LINE);
+            }
+
+            return colorRow.ToArray();
         }
     }
 

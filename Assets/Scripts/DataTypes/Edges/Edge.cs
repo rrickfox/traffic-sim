@@ -91,7 +91,7 @@ namespace DataTypes
             // apply Mesh and Material with adapted tiling
             gameObject.GetComponent<MeshFilter>().mesh = mesh;
             var tiling = shape.length * CONSTANTS.DISTANCE_UNIT / 12f;
-            gameObject.GetComponent<MeshRenderer>().sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
+            gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
     }
 

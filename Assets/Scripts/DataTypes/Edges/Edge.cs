@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utility;
 
@@ -43,46 +44,42 @@ namespace DataTypes
 
         private void Display()
         {
-            var meshVertices = new Vector3[shape.points.Length * 2];
-            var uvs = new Vector2[meshVertices.Length];
-            var triangles = new int[2 * (shape.points.Length - 1) * 3];
-            var meshVertexIndex = 0;
-            var triangleIndex = 0;
+            var meshVertices = new List<Vector3>();
+            var uvs = new List<Vector2>();
 
             // calculate Vertices along the Mesh with needed offset and creating Triangles using the Vertices
-            for (int i = 0; i < shape.points.Length; i++)
+            for (var i = 0; i < shape.points.Length; i++)
             {
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
                 var newPosLeft = p.position + left * CONSTANTS.LANE_WIDTH * incomingLanes.Count;
                 var newPosRight = p.position - left * CONSTANTS.LANE_WIDTH * outgoingLanes.Count;
-                meshVertices[meshVertexIndex] = new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y);
-                meshVertices[meshVertexIndex + 1] = new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y);
+                meshVertices.Add(new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y));
+                meshVertices.Add(new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y));
 
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
-                uvs[meshVertexIndex] = new Vector2(0f, relativePos);
-                uvs[meshVertexIndex + 1] = new Vector2(1f, relativePos);
-
-                // create Triangles from one point to the next
-                if (i < shape.points.Length - 1)
-                {
-                    triangles[triangleIndex] = meshVertexIndex;
-                    triangles[triangleIndex + 1] = meshVertexIndex + 2;
-                    triangles[triangleIndex + 2] = meshVertexIndex + 1;
-
-                    triangles[triangleIndex + 3] = meshVertexIndex + 1;
-                    triangles[triangleIndex + 4] = meshVertexIndex + 2;
-                    triangles[triangleIndex + 5] = meshVertexIndex + 3;
-                }
-
-                meshVertexIndex += 2;
-                triangleIndex += 6;
+                uvs.Add(new Vector2(0f, relativePos));
+                uvs.Add(new Vector2(1f, relativePos));
             }
             
+            var triangles =
+                Enumerable.Range(0, shape.points.Length - 2)
+                .Select(i => 2 * i)
+                .Aggregate(
+                    Enumerable.Empty<int>(),
+                    // create Triangles from one point to the next
+                    (ints, i) => ints.Concat(new []{i, i+2, i + 1, i + 1, i + 2, i + 3})
+                );
+
             // apply Mesh and Material with adapted tiling
-            gameObject.GetComponent<MeshFilter>().mesh = new Mesh {vertices=meshVertices, triangles=triangles, uv=uvs};
+            gameObject.GetComponent<MeshFilter>().mesh = new Mesh
+            {
+                vertices = meshVertices.ToArray(),
+                triangles = triangles.ToArray(),
+                uv = uvs.ToArray()
+            };
             var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / 12f);
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }

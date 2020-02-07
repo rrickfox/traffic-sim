@@ -83,7 +83,7 @@ namespace DataTypes
             
             // apply Mesh and Material with adapted tiling
             gameObject.GetComponent<MeshFilter>().mesh = new Mesh {vertices=meshVertices, triangles=triangles, uv=uvs};
-            var tiling = shape.length * CONSTANTS.DISTANCE_UNIT / 12f;
+            var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / 12f);
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
     }

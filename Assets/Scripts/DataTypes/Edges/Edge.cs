@@ -45,13 +45,29 @@ namespace DataTypes
             var uvs = new List<Vector2>();
 
             // calculate Vertices along the Mesh with needed offset and creating Triangles using the Vertices
+
+            // number of lines dividing lanes in same direction
+            // 0 when no lanes or one lane
+            var lineCountIncoming = (incomingLanes.Count > 1) ? incomingLanes.Count - 1 : 0;
+            var lineCountOutgoing = (outgoingLanes.Count > 1) ? outgoingLanes.Count - 1 : 0;
+
+            var leftOffset = CONSTANTS.LANE_WIDTH * incomingLanes.Count
+                + CONSTANTS.LINE_WIDTH * lineCountIncoming
+                + CONSTANTS.MIDDLE_LINE_WIDTH / 2
+                + CONSTANTS.BORDER_LINE_WIDTH;
+
+            var rightOffset = CONSTANTS.LANE_WIDTH * outgoingLanes.Count
+                + CONSTANTS.LINE_WIDTH * lineCountOutgoing
+                + CONSTANTS.MIDDLE_LINE_WIDTH / 2
+                + CONSTANTS.BORDER_LINE_WIDTH;
+
             for (var i = 0; i < shape.points.Length; i++)
             {
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * ((CONSTANTS.LANE_WIDTH + CONSTANTS.LINE_WIDTH) * incomingLanes.Count + CONSTANTS.MIDDLE_LINE_WIDTH / 2 + CONSTANTS.BORDER_LINE_WIDTH);
-                var newPosRight = p.position - left * ((CONSTANTS.LANE_WIDTH + CONSTANTS.LINE_WIDTH) * outgoingLanes.Count + CONSTANTS.MIDDLE_LINE_WIDTH / 2 + CONSTANTS.BORDER_LINE_WIDTH);
+                var newPosLeft = p.position + left * leftOffset;
+                var newPosRight = p.position - left * rightOffset;
                 meshVertices.Add(new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y));
 

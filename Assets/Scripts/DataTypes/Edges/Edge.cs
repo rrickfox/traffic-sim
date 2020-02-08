@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utility;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -75,12 +76,12 @@ namespace DataTypes
 
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
-                var relativeInnerPos = CONSTANTS.ROAD_HEIGHT / (
-                    CONSTANTS.MIDDLE_LINE_WIDTH // middle line
-                    + 2 * CONSTANTS.BORDER_LINE_WIDTH // borders
-                    + 2 * CONSTANTS.ROAD_HEIGHT // sides
-                    + CONSTANTS.LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
-                    + CONSTANTS.LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
+                var relativeInnerPos = ROAD_HEIGHT / (
+                    MIDDLE_LINE_WIDTH // middle line
+                    + 2 * BORDER_LINE_WIDTH // borders
+                    + 2 * ROAD_HEIGHT // sides
+                    + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
+                    + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
                 );
                 uvs.Add(new Vector2(relativeInnerPos, relativePos));
                 uvs.Add(new Vector2(1 - relativeInnerPos, relativePos));

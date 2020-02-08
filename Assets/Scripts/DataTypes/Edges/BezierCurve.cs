@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Utility;
 using static Utility.CONSTANTS;
 
 namespace DataTypes

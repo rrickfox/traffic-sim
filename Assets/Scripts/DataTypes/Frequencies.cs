@@ -17,7 +17,7 @@ namespace DataTypes
         public IEnumerable<int> CurrentActiveIndices()
         {
             var oldTicks = _ticks++;
-            return _frequencies.Where(frequency => oldTicks % frequency == 0).Select((frequency, index) => index);
+            return _frequencies.Select((frequency, index) => new {frequency, index}).Where(f => oldTicks % f.frequency == 0).Select(f => f.index);
         }
     }
 }

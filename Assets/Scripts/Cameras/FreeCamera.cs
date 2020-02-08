@@ -5,7 +5,8 @@ namespace Cameras
     public class FreeCamera : MonoBehaviour
     {
         [Header("Fly Settings")]
-        public float flySpeed = 0.1f;
+        public float flySpeed = 0.5f;
+        public bool moveOnEdges = false;
         [Header("Rotation Settings")]
         public float turnSpeed = 1f;
         public float maxTurnAngle = 90f;
@@ -62,7 +63,7 @@ namespace Cameras
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
             // Moving if mouse is near to the edge of the game window
-            if (!Input.GetMouseButton(1))
+            if (!Input.GetMouseButton(1) && moveOnEdges)
             {
                 if (Input.mousePosition.x < 5)
                     _newPosition -= transform.right * flySpeed * Mathf.Clamp((5f - Input.mousePosition.x) / 5f, 0f, 1f);

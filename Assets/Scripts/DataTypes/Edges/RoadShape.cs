@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -54,12 +54,12 @@ namespace DataTypes
                 dstSinceLastEvenPoint += Vector2.Distance(lastPoint, point);
                 
                 // checks for overshoot
-                while(dstSinceLastEvenPoint >= CONSTANTS.DISTANCE_UNIT)
+                while(dstSinceLastEvenPoint >= DISTANCE_UNIT)
                 {
-                    dstSinceLastEvenPoint -= CONSTANTS.DISTANCE_UNIT;
+                    dstSinceLastEvenPoint -= DISTANCE_UNIT;
 
                     // goes from lastPoint to this point, with DISTANCE_UNIT length
-                    var newEvenlySpacedPoint = lastPoint + (point - lastPoint).normalized * CONSTANTS.DISTANCE_UNIT;
+                    var newEvenlySpacedPoint = lastPoint + (point - lastPoint).normalized * DISTANCE_UNIT;
                     var newRoadPoint = new RoadPoint(newEvenlySpacedPoint, (point - lastPoint).normalized);
                     evenlySpacedPoints.Add(newRoadPoint);
 

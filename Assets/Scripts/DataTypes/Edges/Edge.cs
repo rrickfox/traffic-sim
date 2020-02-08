@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -50,10 +50,10 @@ namespace DataTypes
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * CONSTANTS.LANE_WIDTH * incomingLanes.Count;
-                var newPosRight = p.position - left * CONSTANTS.LANE_WIDTH * outgoingLanes.Count;
-                meshVertices.Add(new Vector3(newPosLeft.x, CONSTANTS.ROAD_HEIGHT, newPosLeft.y));
-                meshVertices.Add(new Vector3(newPosRight.x, CONSTANTS.ROAD_HEIGHT, newPosRight.y));
+                var newPosLeft = p.position + left * LANE_WIDTH * incomingLanes.Count;
+                var newPosRight = p.position - left * LANE_WIDTH * outgoingLanes.Count;
+                meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
+                meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
 
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
@@ -77,7 +77,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / 12f);
+            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / 12f);
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
     }

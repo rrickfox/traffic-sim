@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -34,7 +34,7 @@ namespace DataTypes
         }
         
         // construct using an empty prefab
-        protected GameObjectData() : this(CONSTANTS.EMPTY_PREFAB) { }
+        protected GameObjectData() : this(EMPTY_PREFAB) { }
         
         public void Dispose() => UnityEngine.Object.Destroy(gameObject);
     }

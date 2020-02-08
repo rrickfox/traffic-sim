@@ -5,9 +5,10 @@ namespace Cameras
     public class FreeCamera : MonoBehaviour
     {
         [Header("Fly Settings")]
-        public float flySpeed = 0.1f;
+        public float flySpeed = 0.5f;
+        public bool moveOnEdges = false;
         [Header("Rotation Settings")]
-        public float turnSpeed = 1f;
+        public float turnSpeed = 5f;
         public float maxTurnAngle = 90f;
         public float minTurnAngle = 20f;
         [Header("Zoom Settings")]
@@ -44,12 +45,9 @@ namespace Cameras
             if (Input.GetMouseButton(1))
             {
                 transform.Rotate(0f, Input.GetAxis("Mouse X") * turnSpeed, 0f);
-                if (_cam.transform.rotation.eulerAngles.x <= maxTurnAngle && _cam.transform.rotation.eulerAngles.x >= minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, -1 * Input.GetAxis("Mouse Y") * turnSpeed);
-                if (_cam.transform.rotation.eulerAngles.x < minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, minTurnAngle - _cam.transform.rotation.eulerAngles.x);
-                if (_cam.transform.rotation.eulerAngles.x > maxTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, maxTurnAngle - _cam.transform.rotation.eulerAngles.x);
+                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * turnSpeed;
+                targetRotation = Mathf.Clamp(targetRotation, minTurnAngle, maxTurnAngle);
+                _cam.transform.RotateAround(transform.position, _cam.transform.right, targetRotation - _cam.transform.rotation.eulerAngles.x);
             }
         }
 
@@ -62,7 +60,7 @@ namespace Cameras
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
             // Moving if mouse is near to the edge of the game window
-            if (!Input.GetMouseButton(1))
+            if (!Input.GetMouseButton(1) && moveOnEdges)
             {
                 if (Input.mousePosition.x < 5)
                     _newPosition -= transform.right * flySpeed * Mathf.Clamp((5f - Input.mousePosition.x) / 5f, 0f, 1f);

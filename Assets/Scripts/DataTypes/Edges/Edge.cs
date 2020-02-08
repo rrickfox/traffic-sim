@@ -117,7 +117,7 @@ namespace DataTypes
             {
                 for(var x = 0; x < textureWidth; x++)
                 {
-                    // check wether y is above oder below the line segment
+                    // check whether y is above oder below the line segment
                     // section with line is in the middle of the texture
                     if(y < (CONSTANTS.LINE_RATIO / 2) * heightMultiplier || y >= (CONSTANTS.LINE_RATIO / 2 + 1) * heightMultiplier)
                     {

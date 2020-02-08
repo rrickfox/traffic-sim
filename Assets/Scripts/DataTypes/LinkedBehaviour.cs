@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class LinkedBehaviour<TData> : MonoBehaviour
+    public class LinkedBehaviour<TData> : MonoBehaviour where TData : IGameObjectData
     {
         protected TData _data { get; private set; }
 

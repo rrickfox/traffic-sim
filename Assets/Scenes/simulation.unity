@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44658017, g: 0.49641502, b: 0.57482153, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -150,9 +150,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f2ae315dc4ddb429e0125eeeac1f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadPrefab: {fileID: 8832777517996270473, guid: dd65774c1417627499ef86c1652c43b5,
+  roadPrefab: {fileID: 8832777517996270473, guid: 76e4e1bf918c09beb8186a8b8ab57847,
     type: 3}
-  carPrefab: {fileID: 5327732160065177629, guid: 4c7ad48a12bdff64ea058f9783da6062,
+  carPrefab: {fileID: 5327732160065177629, guid: d27139d3848b850f9a967b68a2aa83f4,
     type: 3}
   startPoint: {x: -140, y: -50}
   controlPoint: {x: 0, y: 100}
@@ -446,7 +446,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8cd3f34fbe6b1df4a83059fecaed3658, type: 2}
+  - {fileID: 2100000, guid: f96f7bae979881fd29d4bd2e912c8386, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class EndPoint : InvisibleVertex<EndPoint, EndPointBehaviour>
+    public class EndPoint : Vertex<EndPoint, EndPointBehaviour>
     {
         private Edge _edge { get; }
         private GameObject _carPrefab { get; }

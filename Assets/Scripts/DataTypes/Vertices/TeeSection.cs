@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class TeeSection : VisualVertex<TeeSection, TeeSectionBehaviour>
+    public class TeeSection : Vertex<TeeSection, TeeSectionBehaviour>
     {
         private Edge _throughOrRight { get; }
         private Edge _throughOrLeft { get; }

@@ -113,9 +113,9 @@ namespace DataTypes
             var colorsWithLine = GetColorRow(true).ToArray();
             var colorsWithoutLine = GetColorRow(false).ToArray();
             
-            for(int y = 0; y < textureHeight; y++)
+            for(var y = 0; y < textureHeight; y++)
             {
-                for(int x = 0; x < textureWidth; x++)
+                for(var x = 0; x < textureWidth; x++)
                 {
                     // check wether y is above oder below the line segment
                     // section with line is in the middle of the texture
@@ -154,25 +154,25 @@ namespace DataTypes
                     yield return COLORS.ROAD;
                 }
             }
-            for(int i = 0; i < (int) (CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+            for(var i = 0; i < (int) (CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
                 yield return COLORS.MIDDLE_LINE;
             }
-            for(int j = 0; j < outgoingLanes.Count; j++)
+            for(var j = 0; j < outgoingLanes.Count; j++)
             {
                 if(j > 0)
                 {
-                    for(int i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+                    for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                     {
                         yield return lines ? COLORS.LINE : COLORS.ROAD;
                     }
                 }
-                for(int i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+                for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                 {
                     yield return COLORS.ROAD;
                 }
             }
-            for(int i = 0;  i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+            for(var i = 0;  i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
                 yield return COLORS.BORDER_LINE;
             }

@@ -90,8 +90,8 @@ namespace DataTypes
 
         private Texture2D GetTexture()
         {
-            var widthMultiplier = 100f;
-            var heightMultiplier = 100f;
+            const float widthMultiplier = 100f;
+            const float heightMultiplier = 100f;
 
             // number of lines dividing lanes in same direction
             // 0 when no lanes or one lane

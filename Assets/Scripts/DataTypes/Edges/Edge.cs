@@ -100,7 +100,14 @@ namespace DataTypes
 
             // texture contains (left to right):
             // border, road and lines, middle, road and lines, border
-            var textureWidth = Mathf.RoundToInt((CONSTANTS.MIDDLE_LINE_WIDTH + 2 * CONSTANTS.BORDER_LINE_WIDTH + CONSTANTS.LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) + CONSTANTS.LINE_WIDTH * (lineCountIncoming + lineCountOutgoing)) * widthMultiplier);
+            var textureWidth = Mathf.RoundToInt(
+                widthMultiplier * (
+                    CONSTANTS.MIDDLE_LINE_WIDTH // middle line
+                    + 2 * CONSTANTS.BORDER_LINE_WIDTH // borders
+                    + CONSTANTS.LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
+                    + CONSTANTS.LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
+                )
+            );
             var textureHeight = Mathf.RoundToInt((CONSTANTS.LINE_RATIO + 1) * heightMultiplier);
             var texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, true);
 

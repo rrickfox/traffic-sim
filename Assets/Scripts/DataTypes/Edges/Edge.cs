@@ -117,15 +117,14 @@ namespace DataTypes
             {
                 for(var x = 0; x < textureWidth; x++)
                 {
-                    // check whether y is above oder below the line segment
-                    // section with line is in the middle of the texture
-                    if(y < (CONSTANTS.LINE_RATIO / 2) * heightMultiplier || y >= (CONSTANTS.LINE_RATIO / 2 + 1) * heightMultiplier)
-                    {
-                        texture.SetPixel(x, y, colorsWithoutLine[x]);
-                    } else
-                    {
-                        texture.SetPixel(x, y, colorsWithLine[x]);
-                    }
+                    texture.SetPixel(
+                        x: x,
+                        y: y,
+                        // check whether y is above oder below the line segment in the middle of the texture
+                        color: y < (CONSTANTS.LINE_RATIO / 2) * heightMultiplier || y >= (CONSTANTS.LINE_RATIO / 2 + 1) * heightMultiplier 
+                            ? colorsWithoutLine[x]
+                            : colorsWithLine[x]
+                    );
                 }
             }
 

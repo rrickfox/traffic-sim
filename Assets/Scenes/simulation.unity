@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44658017, g: 0.49641502, b: 0.57482153, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -533,7 +533,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5c2c51a05d12746a2b1cf873890eb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flySpeed: 0.1
+  flySpeed: 0.5
+  moveOnEdges: 0
   turnSpeed: 1
   maxTurnAngle: 89
   minTurnAngle: 20

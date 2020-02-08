@@ -32,7 +32,7 @@ namespace Utility
             MathUtils.DecimalPlaces(LINE_WIDTH), 
             MathUtils.DecimalPlaces(BORDER_LINE_WIDTH),
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
-            MathUtils.DecimalPlaces(LANE_WIDTH)) + 1);
+            MathUtils.DecimalPlaces(LANE_WIDTH)));
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
     }
 }

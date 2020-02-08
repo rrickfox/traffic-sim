@@ -108,15 +108,15 @@ namespace DataTypes
             };
             var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / CONSTANTS.LINE_LENGTH);
 
-            var texture = GetTexture();
+            var texture = GetTexture(tiling);
 
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
 
-        private Texture2D GetTexture()
+        private Texture2D GetTexture(int tiling)
         {
-            const float heightMultiplier = 100f;
+            float heightMultiplier = Mathf.Clamp(100 * tiling, 100, 500);
 
             // number of lines dividing lanes in same direction
             // 0 when no lanes or one lane

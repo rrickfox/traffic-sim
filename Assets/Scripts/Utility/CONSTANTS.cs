@@ -14,7 +14,7 @@ namespace Utility
         // number of points calculated on a bezier curve
         public static readonly float BEZIER_RESOLUTION = 0.001f;
         // height of road Objects
-        public static readonly float ROAD_HEIGHT = 0.05f;
+        public static readonly float ROAD_HEIGHT = 0.15f;
 
         // width of the middle line on the road
         public static readonly float MIDDLE_LINE_WIDTH = 0.2f;
@@ -30,7 +30,8 @@ namespace Utility
         public static readonly float WIDTH_MULTIPLIER = Mathf.Pow(10, Mathf.Max(
             MathUtils.DecimalPlaces(MIDDLE_LINE_WIDTH), 
             MathUtils.DecimalPlaces(LINE_WIDTH), 
-            MathUtils.DecimalPlaces(BORDER_LINE_WIDTH), 
+            MathUtils.DecimalPlaces(BORDER_LINE_WIDTH),
+            MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)) + 1);
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
     }

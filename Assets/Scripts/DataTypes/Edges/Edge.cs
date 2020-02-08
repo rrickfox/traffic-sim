@@ -90,7 +90,6 @@ namespace DataTypes
 
         private Texture2D GetTexture()
         {
-            const float widthMultiplier = 100f;
             const float heightMultiplier = 100f;
 
             // number of lines dividing lanes in same direction
@@ -101,7 +100,7 @@ namespace DataTypes
             // texture contains (left to right):
             // border, road and lines, middle, road and lines, border
             var textureWidth = Mathf.RoundToInt(
-                widthMultiplier * (
+                CONSTANTS.WIDTH_MULTIPLIER * (
                     CONSTANTS.MIDDLE_LINE_WIDTH // middle line
                     + 2 * CONSTANTS.BORDER_LINE_WIDTH // borders
                     + CONSTANTS.LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
@@ -111,8 +110,8 @@ namespace DataTypes
             var textureHeight = Mathf.RoundToInt((CONSTANTS.LINE_RATIO + 1) * heightMultiplier);
             var texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, true);
 
-            var colorsWithLine = GetColorRow(widthMultiplier, true);
-            var colorsWithoutLine = GetColorRow(widthMultiplier, false);
+            var colorsWithLine = GetColorRow(true);
+            var colorsWithoutLine = GetColorRow(false);
             
             for(int y = 0; y < textureHeight; y++)
             {
@@ -135,10 +134,10 @@ namespace DataTypes
             return texture;
         }
 
-        private Color[] GetColorRow(float widthMultiplier, bool lines)
+        private Color[] GetColorRow(bool lines)
         {
             var colorRow = new List<Color>();
-            for(var i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * widthMultiplier, i); i++)
+            for(var i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
             {
                 colorRow.Add(COLORS.BORDER_LINE);
             }
@@ -146,7 +145,7 @@ namespace DataTypes
             {
                 if(j > 0)
                 {
-                    for(var i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * widthMultiplier, i); i++)
+                    for(var i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
                     {
                         if(lines)
                         {
@@ -157,12 +156,12 @@ namespace DataTypes
                         }
                     }
                 }
-                for(var i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * widthMultiplier, i); i++)
+                for(var i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
                 {
                     colorRow.Add(COLORS.ROAD);
                 }
             }
-            for(int i = 0; !Mathf.Approximately(CONSTANTS.MIDDLE_LINE_WIDTH * widthMultiplier, i); i++)
+            for(int i = 0; !Mathf.Approximately(CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
             {
                 colorRow.Add(COLORS.MIDDLE_LINE);
             }
@@ -170,7 +169,7 @@ namespace DataTypes
             {
                 if(j > 0)
                 {
-                    for(int i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * widthMultiplier, i); i++)
+                    for(int i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
                     {
                         if(lines)
                         {
@@ -181,12 +180,12 @@ namespace DataTypes
                         }
                     }
                 }
-                for(int i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * widthMultiplier, i); i++)
+                for(int i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
                 {
                     colorRow.Add(COLORS.ROAD);
                 }
             }
-            for(int i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * widthMultiplier, i); i++)
+            for(int i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
             {
                 colorRow.Add(COLORS.BORDER_LINE);
             }

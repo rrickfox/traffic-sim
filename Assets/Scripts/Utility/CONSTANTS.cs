@@ -15,6 +15,7 @@ namespace Utility
         public static readonly float BEZIER_RESOLUTION = 0.001f;
         // height of road Objects
         public static readonly float ROAD_HEIGHT = 0.05f;
+
         // width of the middle line on the road
         public static readonly float MIDDLE_LINE_WIDTH = 0.2f;
         // width of the standard line
@@ -25,5 +26,11 @@ namespace Utility
         public static readonly float LINE_RATIO = 2f;
         // length of line segment (line + space)
         public static readonly float LINE_LENGTH = 12f;
+        // value which determines width of texture
+        public static readonly float WIDTH_MULTIPLIER = Mathf.Pow(10, Mathf.Max(
+            MathUtils.DecimalPlaces(MIDDLE_LINE_WIDTH), 
+            MathUtils.DecimalPlaces(LINE_WIDTH), 
+            MathUtils.DecimalPlaces(BORDER_LINE_WIDTH), 
+            MathUtils.DecimalPlaces(LANE_WIDTH)) + 1);
     }
 }

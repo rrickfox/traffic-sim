@@ -8,7 +8,7 @@ namespace Cameras
         public float flySpeed = 0.5f;
         public bool moveOnEdges = false;
         [Header("Rotation Settings")]
-        public float turnSpeed = 1f;
+        public float turnSpeed = 5f;
         public float maxTurnAngle = 90f;
         public float minTurnAngle = 20f;
         [Header("Zoom Settings")]
@@ -45,12 +45,9 @@ namespace Cameras
             if (Input.GetMouseButton(1))
             {
                 transform.Rotate(0f, Input.GetAxis("Mouse X") * turnSpeed, 0f);
-                if (_cam.transform.rotation.eulerAngles.x <= maxTurnAngle && _cam.transform.rotation.eulerAngles.x >= minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, -1 * Input.GetAxis("Mouse Y") * turnSpeed);
-                if (_cam.transform.rotation.eulerAngles.x < minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, minTurnAngle - _cam.transform.rotation.eulerAngles.x);
-                if (_cam.transform.rotation.eulerAngles.x > maxTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, maxTurnAngle - _cam.transform.rotation.eulerAngles.x);
+                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * turnSpeed;
+                targetRotation = Mathf.Clamp(targetRotation, minTurnAngle, maxTurnAngle);
+                _cam.transform.RotateAround(transform.position, _cam.transform.right, targetRotation - _cam.transform.rotation.eulerAngles.x);
             }
         }
 

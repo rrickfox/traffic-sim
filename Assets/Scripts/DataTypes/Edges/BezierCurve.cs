@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -20,7 +20,7 @@ namespace DataTypes
         // calculates points on a bezier curve, not necessarily with same distance
         public IEnumerable<Vector2> CalculatePoints()
         {
-            for(var i = CONSTANTS.BEZIER_RESOLUTION; i <= 1; i += CONSTANTS.BEZIER_RESOLUTION)
+            for(var i = BEZIER_RESOLUTION; i <= 1; i += BEZIER_RESOLUTION)
             {
                 yield return EvaluateQuadratic(i);
             }

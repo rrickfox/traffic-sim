@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using DataTypes;
-using Utility;
+using static Utility.CONSTANTS;
 
 public class PointPlacer : MonoBehaviour
 {
@@ -31,8 +31,8 @@ public class PointPlacer : MonoBehaviour
         {
             var p = shape.points[i];
             var left = new Vector2(-p.forward.y, p.forward.x);
-            var newPosLeft = p.position + left * CONSTANTS.LANE_WIDTH;
-            var newPosRight = p.position - left * CONSTANTS.LANE_WIDTH;
+            var newPosLeft = p.position + left * LANE_WIDTH;
+            var newPosRight = p.position - left * LANE_WIDTH;
             vertices[vertexIndex] = new Vector3(newPosLeft.x, 0.025f, newPosLeft.y);
             vertices[vertexIndex + 1] = new Vector3(newPosRight.x, 0.025f, newPosRight.y);
 
@@ -66,7 +66,7 @@ public class PointPlacer : MonoBehaviour
         g.GetComponent<MeshFilter>().mesh = mesh;
         var mr = g.GetComponent<MeshRenderer>();
         mr.sharedMaterial = material;
-        var tiling = shape.length * CONSTANTS.DISTANCE_UNIT * 0.1f;
+        var tiling = shape.length * DISTANCE_UNIT * 0.1f;
         mr.sharedMaterial.SetTextureScale("_MainTex", new Vector2(1, tiling));
     }
 }

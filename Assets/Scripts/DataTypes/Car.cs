@@ -1,5 +1,6 @@
 using UnityEngine;
 using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -29,7 +30,7 @@ namespace DataTypes
             var absolutePosition = road.shape.points[index];
 
             // set offset to the right to accommodate different lanes
-            var perpendicularOffset = lane * (CONSTANTS.LANE_WIDTH + CONSTANTS.LINE_WIDTH) + 0.5f * CONSTANTS.LANE_WIDTH + CONSTANTS.MIDDLE_LINE_WIDTH / 2f;
+            var perpendicularOffset = lane * (LANE_WIDTH + LINE_WIDTH) + 0.5f * LANE_WIDTH + MIDDLE_LINE_WIDTH / 2f;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
             var inverse = absolutePosition.forward * -1;

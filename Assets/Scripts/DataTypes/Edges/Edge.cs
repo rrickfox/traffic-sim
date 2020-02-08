@@ -110,8 +110,8 @@ namespace DataTypes
             var textureHeight = Mathf.RoundToInt((CONSTANTS.LINE_RATIO + 1) * heightMultiplier);
             var texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, true);
 
-            var colorsWithLine = GetColorRow(true);
-            var colorsWithoutLine = GetColorRow(false);
+            var colorsWithLine = GetColorRow(true).ToArray();
+            var colorsWithoutLine = GetColorRow(false).ToArray();
             
             for(int y = 0; y < textureHeight; y++)
             {
@@ -134,12 +134,11 @@ namespace DataTypes
             return texture;
         }
 
-        private Color[] GetColorRow(bool lines)
+        private IEnumerable<Color> GetColorRow(bool lines)
         {
-            var colorRow = new List<Color>();
             for(var i = 0; i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
-                colorRow.Add(COLORS.BORDER_LINE);
+                yield return COLORS.BORDER_LINE;
             }
             for(var j = 0; j < incomingLanes.Count; j++)
             {
@@ -147,23 +146,17 @@ namespace DataTypes
                 {
                     for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                     {
-                        if(lines)
-                        {
-                            colorRow.Add(COLORS.LINE);
-                        } else
-                        {
-                            colorRow.Add(COLORS.ROAD);
-                        }
+                        yield return lines ? COLORS.LINE : COLORS.ROAD;
                     }
                 }
                 for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                 {
-                    colorRow.Add(COLORS.ROAD);
+                    yield return COLORS.ROAD;
                 }
             }
             for(int i = 0; i < (int) (CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
-                colorRow.Add(COLORS.MIDDLE_LINE);
+                yield return COLORS.MIDDLE_LINE;
             }
             for(int j = 0; j < outgoingLanes.Count; j++)
             {
@@ -171,26 +164,18 @@ namespace DataTypes
                 {
                     for(int i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                     {
-                        if(lines)
-                        {
-                            colorRow.Add(COLORS.LINE);
-                        } else
-                        {
-                            colorRow.Add(COLORS.ROAD);
-                        }
+                        yield return lines ? COLORS.LINE : COLORS.ROAD;
                     }
                 }
                 for(int i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                 {
-                    colorRow.Add(COLORS.ROAD);
+                    yield return COLORS.ROAD;
                 }
             }
             for(int i = 0;  i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
-                colorRow.Add(COLORS.BORDER_LINE);
+                yield return COLORS.BORDER_LINE;
             }
-
-            return colorRow.ToArray();
         }
     }
 

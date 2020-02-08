@@ -136,46 +136,25 @@ namespace DataTypes
 
         private IEnumerable<Color> GetColorRow(bool lines)
         {
-            for(var i = 0; i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+            IEnumerable<Color> RepeatWidth(float width) => Enumerable.Repeat(COLORS.BORDER_LINE, (int) (width * CONSTANTS.WIDTH_MULTIPLIER));
+            
+            IEnumerable<Color> GetLanesColorRow(int laneCount)
             {
-                yield return COLORS.BORDER_LINE;
-            }
-            for(var j = 0; j < incomingLanes.Count; j++)
-            {
-                if(j > 0)
+                for(var j = 0; j < laneCount; j++)
                 {
-                    for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-                    {
-                        yield return lines ? COLORS.LINE : COLORS.ROAD;
-                    }
-                }
-                for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-                {
-                    yield return COLORS.ROAD;
+                    if(j > 0)
+                        for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+                            yield return lines ? COLORS.LINE : COLORS.ROAD;
+                    for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
+                        yield return COLORS.ROAD;
                 }
             }
-            for(var i = 0; i < (int) (CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-            {
-                yield return COLORS.MIDDLE_LINE;
-            }
-            for(var j = 0; j < outgoingLanes.Count; j++)
-            {
-                if(j > 0)
-                {
-                    for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-                    {
-                        yield return lines ? COLORS.LINE : COLORS.ROAD;
-                    }
-                }
-                for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-                {
-                    yield return COLORS.ROAD;
-                }
-            }
-            for(var i = 0;  i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
-            {
-                yield return COLORS.BORDER_LINE;
-            }
+            
+            foreach(var color in RepeatWidth(CONSTANTS.BORDER_LINE_WIDTH)) yield return color; // left border
+            foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
+            foreach(var color in RepeatWidth(CONSTANTS.MIDDLE_LINE_WIDTH)) yield return color; // middle line
+            foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
+            foreach(var color in RepeatWidth(CONSTANTS.BORDER_LINE_WIDTH)) yield return color; // right border
         }
     }
 

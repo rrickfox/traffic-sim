@@ -45,13 +45,29 @@ namespace DataTypes
             var uvs = new List<Vector2>();
 
             // calculate Vertices along the Mesh with needed offset and creating Triangles using the Vertices
+
+            // number of lines dividing lanes in same direction
+            // 0 when no lanes or one lane
+            var lineCountIncoming = (incomingLanes.Count > 1) ? incomingLanes.Count - 1 : 0;
+            var lineCountOutgoing = (outgoingLanes.Count > 1) ? outgoingLanes.Count - 1 : 0;
+
+            var leftOffset = LANE_WIDTH * incomingLanes.Count
+                + LINE_WIDTH * lineCountIncoming
+                + MIDDLE_LINE_WIDTH / 2
+                + BORDER_LINE_WIDTH;
+
+            var rightOffset = LANE_WIDTH * outgoingLanes.Count
+                + LINE_WIDTH * lineCountOutgoing
+                + MIDDLE_LINE_WIDTH / 2
+                + BORDER_LINE_WIDTH;
+
             for (var i = 0; i < shape.points.Length; i++)
             {
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * LANE_WIDTH * incomingLanes.Count;
-                var newPosRight = p.position - left * LANE_WIDTH * outgoingLanes.Count;
+                var newPosLeft = p.position + left * leftOffset;
+                var newPosRight = p.position - left * rightOffset;
                 meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
 
@@ -77,8 +93,80 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / 12f);
+            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / LINE_LENGTH);
+
+            var texture = GetTexture();
+
+            gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
+        }
+
+        private Texture2D GetTexture()
+        {
+            const float heightMultiplier = 100f;
+
+            // number of lines dividing lanes in same direction
+            // 0 when no lanes or one lane
+            var lineCountIncoming = (incomingLanes.Count > 1) ? incomingLanes.Count - 1 : 0;
+            var lineCountOutgoing = (outgoingLanes.Count > 1) ? outgoingLanes.Count - 1 : 0;
+
+            // texture contains (left to right):
+            // border, road and lines, middle, road and lines, border
+            var textureWidth = Mathf.RoundToInt(
+                WIDTH_MULTIPLIER * (
+                    MIDDLE_LINE_WIDTH // middle line
+                    + 2 * BORDER_LINE_WIDTH // borders
+                    + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
+                    + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
+                )
+            );
+            var textureHeight = Mathf.RoundToInt((LINE_RATIO + 1) * heightMultiplier);
+            var texture = new Texture2D(textureWidth, textureHeight, TextureFormat.RGBA32, true);
+
+            var colorsWithLine = GetColorRow(true).ToArray();
+            var colorsWithoutLine = GetColorRow(false).ToArray();
+            
+            for(var y = 0; y < textureHeight; y++)
+            {
+                for(var x = 0; x < textureWidth; x++)
+                {
+                    texture.SetPixel(
+                        x: x,
+                        y: y,
+                        // check whether y is above oder below the line segment in the middle of the texture
+                        color: y < (LINE_RATIO / 2) * heightMultiplier || y >= (LINE_RATIO / 2 + 1) * heightMultiplier 
+                            ? colorsWithoutLine[x]
+                            : colorsWithLine[x]
+                    );
+                }
+            }
+
+            texture.Apply();
+
+            return texture;
+        }
+
+        private IEnumerable<Color> GetColorRow(bool lines)
+        {
+            IEnumerable<Color> RepeatWidth(float width) => Enumerable.Repeat(COLORS.BORDER_LINE, (int) (width * WIDTH_MULTIPLIER));
+            
+            IEnumerable<Color> GetLanesColorRow(int laneCount)
+            {
+                for(var j = 0; j < laneCount; j++)
+                {
+                    if(j > 0)
+                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER); i++)
+                            yield return lines ? COLORS.LINE : COLORS.ROAD;
+                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER); i++)
+                        yield return COLORS.ROAD;
+                }
+            }
+            
+            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH)) yield return color; // left border
+            foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
+            foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH)) yield return color; // middle line
+            foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
+            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH)) yield return color; // right border
         }
     }
 

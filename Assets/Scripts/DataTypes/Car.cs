@@ -30,7 +30,7 @@ namespace DataTypes
             var absolutePosition = road.shape.points[index];
 
             // set offset to the right to accommodate different lanes
-            var perpendicularOffset = (((road.outgoingLanes.Count + road.incomingLanes.Count) / 2) - road.outgoingLanes.Count + 0.5f + lane) * LANE_WIDTH;
+            var perpendicularOffset = lane * (LANE_WIDTH + LINE_WIDTH) + 0.5f * LANE_WIDTH + MIDDLE_LINE_WIDTH / 2f;
 
             // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
             var inverse = absolutePosition.forward * -1;

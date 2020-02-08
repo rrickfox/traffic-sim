@@ -137,7 +137,7 @@ namespace DataTypes
         private Color[] GetColorRow(bool lines)
         {
             var colorRow = new List<Color>();
-            for(var i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+            for(var i = 0; i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
                 colorRow.Add(COLORS.BORDER_LINE);
             }
@@ -145,7 +145,7 @@ namespace DataTypes
             {
                 if(j > 0)
                 {
-                    for(var i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+                    for(var i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                     {
                         if(lines)
                         {
@@ -156,12 +156,12 @@ namespace DataTypes
                         }
                     }
                 }
-                for(var i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+                for(var i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                 {
                     colorRow.Add(COLORS.ROAD);
                 }
             }
-            for(int i = 0; !Mathf.Approximately(CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+            for(int i = 0; i < (int) (CONSTANTS.MIDDLE_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
                 colorRow.Add(COLORS.MIDDLE_LINE);
             }
@@ -169,7 +169,7 @@ namespace DataTypes
             {
                 if(j > 0)
                 {
-                    for(int i = 0; !Mathf.Approximately(CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+                    for(int i = 0; i < (int) (CONSTANTS.LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                     {
                         if(lines)
                         {
@@ -180,12 +180,12 @@ namespace DataTypes
                         }
                     }
                 }
-                for(int i = 0; !Mathf.Approximately(CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+                for(int i = 0; i < (int) (CONSTANTS.LANE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
                 {
                     colorRow.Add(COLORS.ROAD);
                 }
             }
-            for(int i = 0; !Mathf.Approximately(CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER, i); i++)
+            for(int i = 0;  i < (int) (CONSTANTS.BORDER_LINE_WIDTH * CONSTANTS.WIDTH_MULTIPLIER); i++)
             {
                 colorRow.Add(COLORS.BORDER_LINE);
             }

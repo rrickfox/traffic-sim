@@ -93,7 +93,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / 12f);
+            var tiling = Mathf.RoundToInt(shape.length * CONSTANTS.DISTANCE_UNIT / CONSTANTS.LINE_LENGTH);
 
             var texture = GetTexture();
 

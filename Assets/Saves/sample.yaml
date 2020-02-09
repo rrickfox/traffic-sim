@@ -1,87 +1,56 @@
 # version of the yaml parser
 # needed when changes are made to the parsing
-version : "1.0"
+version: 1.0
+
 # a list of edges
 # vertices reference an edge by an id
-edges: 
-  -
-    # roadShape
-    # contains a list of bezierCurves
-    shape:
-      -
+edges:
+  - !edge &e1a
+    shape: &s1
+      # roadShape
+      # contains a list of bezierCurves
+      - !bezier
         # bezierCurves save start, control and endpoint
-        start:
-          x: -140
-          y: -50
-        control:
-          x: 0
-          y: 50
-        end:
-          x: 140
-          y: -50
-    # incoming and outgoing lanes
+        start: !point {x: -140, y: -50}
+        control: !point {x: 0, y: 50}
+        end: !point {x: 140, y: -50}
     lanes:
-      # contains a list of lane objects
-      outgoing:
-        -
-          # lane objects contain a hashset of lanetypes
-          - trough
-      incoming:
-        -
-          - trough
-  - 
+      # contains a list of outgoing lane objects
+      - !lane [through]  # lane objects contain a hashset of lane types
+    other:
+      !edge &e1b
+      shape: *s1
+      lanes:
+        - !lane [through]
+      other: *e1a
+  - !road &e2a
     shape:
-      -
-        start:
-          x: -50
-          y: 50
-        control:
-          x: 0
-          y: 50
-        end:
-          x: 50
-          y: 50
+      !shape &s2
+      - !bezier
+        start: !point {x: -50, y: 50}
+        control: !point {x: 0, y: 50}
+        end: !point {x: 50, y: 50}
     lanes:
-      outgoing:
-        -
-          - trough
-        -
-          - trough
-      incoming:
-        -
-          - trough
+      - !lane [through]
+      - !lane [through]
+    other:
+      !edge &e2b
+      shape: *s2
+      lanes:
+        - !lane [through]
+      other: *e2a
+
 # a list of vertices
 vertices:
-  -
-    type: endpoint
-    edges:
-      -
-        id: 0
-        other: false
-    frequencies:
-      - 100
-  -
-    type: endpoint
-    edges:
-      -
-        id: 0
-        other: true
-    frequencies:
-      - 100
-  -
-    type: endpoint
-    edges:
-      -
-        id: 1
-        other: false
-    frequencies:
-      - 100
-      - 66
-  -
-    type: endpoint
-    edges:
-      -
-        id: 1
-        other: true
-    frequencies:
-      - 100
+  - !endpoint
+    edge: *e1a
+    frequencies: [100]
+  - !endpoint
+    edge: *e1b
+    frequencies: [100]
+  - !endpoint
+    edge: *e2a
+    frequencies: [100, 66]
+  - !endpoint
+    edge: *e2b
+    frequencies: [100]

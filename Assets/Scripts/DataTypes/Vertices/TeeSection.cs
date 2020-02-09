@@ -1,19 +1,21 @@
-using System.Collections.Immutable;
+using UnityEngine;
 
 namespace DataTypes
 {
-    public class TeeSection : Vertex
+    public class TeeSection : Vertex<TeeSection, TeeSectionBehaviour>
     {
-        protected Anchor throughOrRightAnchor;
-        protected Anchor throughOrLeftAnchor;
-        protected Anchor leftOrRightAnchor;
+        private Edge _throughOrRight { get; }
+        private Edge _throughOrLeft { get; }
+        private Edge _leftOrRight { get; }
 
-        public TeeSection(Anchor throughOrRightAnchor, Anchor throughOrLeftAnchor, Anchor leftOrRightAnchor)
-            : base(ImmutableArray.Create(throughOrRightAnchor, throughOrLeftAnchor, leftOrRightAnchor))
+        public TeeSection(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
+            : base(prefab, throughOrRight, throughOrLeft, leftOrRight)
         {
-            this.throughOrRightAnchor = throughOrRightAnchor;
-            this.throughOrLeftAnchor = throughOrLeftAnchor;
-            this.leftOrRightAnchor = leftOrRightAnchor;
+            _throughOrRight = throughOrRight;
+            _throughOrLeft = throughOrLeft;
+            _leftOrRight = leftOrRight;
         }
     }
+
+    public class TeeSectionBehaviour : VertexBehaviour<TeeSection> { }
 }

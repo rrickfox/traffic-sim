@@ -1,21 +1,23 @@
-using System.Collections.Immutable;
+using UnityEngine;
 
 namespace DataTypes
 {
-    public class CrossSection : Vertex
+    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
     {
-        protected Anchor upAnchor;
-        protected Anchor rightAnchor;
-        protected Anchor downAnchor;
-        protected Anchor leftAnchor;
+        private Edge _up { get; }
+        private Edge _right { get; }
+        private Edge _down { get; }
+        private Edge _left { get; }
 
-        public CrossSection(Anchor upAnchor, Anchor rightAnchor, Anchor downAnchor, Anchor leftAnchor)
-            : base(ImmutableArray.Create(upAnchor, rightAnchor, downAnchor, leftAnchor))
+        public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
+            : base(prefab, up, right, down, left)
         {
-            this.upAnchor = upAnchor;
-            this.rightAnchor = rightAnchor;
-            this.downAnchor = downAnchor;
-            this.leftAnchor = leftAnchor;
+            _up = up;
+            _right = right;
+            _down = down;
+            _left = left;
         }
     }
+    
+    public class CrossSectionBehaviour : VertexBehaviour<CrossSection> { }
 }

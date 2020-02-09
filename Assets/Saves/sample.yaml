@@ -6,7 +6,8 @@ version: 1.0
 # vertices reference an edge by an id
 edges:
   - !edge &e1a
-    shape: &s1
+    shape:
+      !shape &s1
       # roadShape
       # contains a list of bezierCurves
       - !bezier

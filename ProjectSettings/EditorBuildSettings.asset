@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/menu.unity
+    guid: fdd3cea4da369a5438a7dcd9aeef3036
+  - enabled: 1
+    path: Assets/Scenes/simulation.unity
+    guid: d070fb6e21b12c84bae5e1d06fd544c0
+  - enabled: 1
+    path: Assets/Scenes/bezier.unity
+    guid: e04c12f90c1b6864fa761570b0ef79c6
   m_configObjects: {}

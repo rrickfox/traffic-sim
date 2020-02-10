@@ -71,20 +71,33 @@ namespace DataTypes
                 var newPosRight = p.position - left * rightOffset;
                 meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
+                meshVertices.Add(new Vector3(newPosLeft.x, 0, newPosLeft.y));
+                meshVertices.Add(new Vector3(newPosRight.x, 0, newPosRight.y));
 
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
+                var relativeInnerPos = ROAD_HEIGHT / (
+                    MIDDLE_LINE_WIDTH // middle line
+                    + 2 * BORDER_LINE_WIDTH // borders
+                    + 2 * ROAD_HEIGHT // sides
+                    + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
+                    + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
+                );
+                uvs.Add(new Vector2(relativeInnerPos, relativePos));
+                uvs.Add(new Vector2(1 - relativeInnerPos, relativePos));
                 uvs.Add(new Vector2(0f, relativePos));
                 uvs.Add(new Vector2(1f, relativePos));
             }
             
             var triangles =
-                Enumerable.Range(0, shape.points.Length - 2)
-                .Select(i => 2 * i)
+                Enumerable.Range(0, shape.points.Length - 4)
+                .Select(i => 4 * i)
                 .Aggregate(
                     Enumerable.Empty<int>(),
                     // create Triangles from one point to the next
-                    (ints, i) => ints.Concat(new []{i, i+2, i + 1, i + 1, i + 2, i + 3})
+                    (ints, i) => ints.Concat(new []{i, i + 4, i + 1, i + 1, i + 4, i + 5, // middle triangles
+                        i + 2, i + 6, i, i, i + 6, i + 4, // left side
+                        i + 1, i + 5, i + 3, i + 3, i + 5, i + 7}) // right side
                 );
 
             // apply Mesh and Material with adapted tiling
@@ -96,15 +109,15 @@ namespace DataTypes
             };
             var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / LINE_LENGTH);
 
-            var texture = GetTexture();
+            var texture = GetTexture(tiling);
 
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", new Vector2(1, tiling));
         }
 
-        private Texture2D GetTexture()
+        private Texture2D GetTexture(int tiling)
         {
-            const float heightMultiplier = 100f;
+            float heightMultiplier = Mathf.Clamp(100 * tiling, 100, 500);
 
             // number of lines dividing lanes in same direction
             // 0 when no lanes or one lane
@@ -117,6 +130,7 @@ namespace DataTypes
                 WIDTH_MULTIPLIER * (
                     MIDDLE_LINE_WIDTH // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
+                    + 2 * ROAD_HEIGHT // sides
                     + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
                     + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
                 )
@@ -149,7 +163,7 @@ namespace DataTypes
 
         private IEnumerable<Color> GetColorRow(bool lines)
         {
-            IEnumerable<Color> RepeatWidth(float width) => Enumerable.Repeat(COLORS.BORDER_LINE, (int) (width * WIDTH_MULTIPLIER));
+            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER));
             
             IEnumerable<Color> GetLanesColorRow(int laneCount)
             {
@@ -163,11 +177,13 @@ namespace DataTypes
                 }
             }
             
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH)) yield return color; // left border
+            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // left side
+            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // left border
             foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
-            foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH)) yield return color; // middle line
+            foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) yield return color; // middle line
             foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH)) yield return color; // right border
+            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // right border
+            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // right side
         }
     }
 

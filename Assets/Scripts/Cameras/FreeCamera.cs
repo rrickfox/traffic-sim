@@ -64,6 +64,9 @@ namespace Cameras
             _newPosition += transform.forward * Input.GetAxis("Vertical") * flySpeed;
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
+            if (_newPosition != transform.position)
+                _following = false;
+
             // Moving if mouse is near to the edge of the game window
             if (!Input.GetMouseButton(1))
             {

@@ -21,14 +21,19 @@ namespace Cameras
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
-        public Transform _targetCar;
-        public bool _following;
+        Transform _targetCar;
+        bool _following;
 
         // Setting camera right, focus the center
         void Start()
         {
             _cam = Camera.main;
             _cam.transform.LookAt(transform.position);
+        }
+
+        private void Update()
+        {
+            SelectCar();
         }
 
         void FixedUpdate()
@@ -100,7 +105,21 @@ namespace Cameras
         {
             if (_targetCar != null && _following)
             {
-                transform.position = _targetCar.position;
+                transform.position = Vector3.MoveTowards(transform.position,_targetCar.position,1000f);
+            }
+        }
+
+        // selects a Car with left mouse button to follow
+        void SelectCar()
+        {
+            if (Input.GetMouseButtonDown(0)) {
+                _following = false;
+                // shoots a ray to get a car located at the mousePosition
+                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))
+                {
+                    _following = true;
+                    _targetCar = hit.transform;
+                }
             }
         }
 

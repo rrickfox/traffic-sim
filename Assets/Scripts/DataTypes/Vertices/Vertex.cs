@@ -1,57 +1,35 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using MoreLinq;
+using UnityEngine;
 
 namespace DataTypes
 {
-    public class Vertex
+    public interface IVertex : IGameObjectData
     {
-        private ImmutableArray<Edge> _edges { get; }
-        // distance value relative to start point of pathfinding
-        public float? pathDistance { get; set; }
-        // current candidate for predecessor in path
-        public Vertex previousVertex { get; set; }
-
-        protected Vertex(IEnumerable<Edge> edges)
+        ImmutableArray<Edge> edges { get; }
+    }
+    
+    public class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
+        where TBehaviour : VertexBehaviour<TThis>
+        where TThis : Vertex<TThis, TBehaviour>
+    {
+        public ImmutableArray<Edge> edges { get; private set; }
+        
+        protected Vertex(IEnumerable<Edge> edges) => SetEdges(edges);
+        protected Vertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab) => SetEdges(edges);
+        // constructor aliases using a variable amount of parameters instead of an enumerable
+        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
+        protected Vertex(GameObject prefab, params Edge[] edges) : this(prefab, edges.ToImmutableArray()) { }
+        
+        private void SetEdges(IEnumerable<Edge> edges)
         {
-            _edges = edges.ToImmutableArray();
-            foreach (var edge in _edges)
+            this.edges = edges.ToImmutableArray();
+            foreach (var edge in this.edges)
             {
                 edge.vertex = this;
             }
         }
-
-        protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
-
-        public static void StartPathfinding(ICollection<Vertex> vertices)
-        {
-            var verticesSet = vertices.ToHashSet();
-            var endPoints = vertices.OfType<EndPoint>().ToList();
-            foreach (var start in endPoints)
-            {
-                foreach (var end in endPoints.Where(end => end != start))
-                {
-                    start.FindPath(verticesSet, end);
-                }
-            }
-        }
-
-        // checks neighbourhood for necessary updates in pathfinding attributes
-        public void CheckNeigbourhood()
-        {
-            foreach (var edge in _edges.Where(edge => edge.outgoingLanes.Count > 0 
-                                                      && (edge.other.vertex.pathDistance == null || 
-                                                          edge.other.vertex.pathDistance > pathDistance + edge.length)))
-            {
-                edge.other.vertex.pathDistance = pathDistance + edge.length;
-                edge.other.vertex.previousVertex = this;
-            }
-        }
-
-        public Edge GetEdge(Vertex neighbour)
-        {
-            return _edges.FirstOrDefault(edge => edge.other.vertex == neighbour);
-        }
     }
+
+    public class VertexBehaviour<TData> : LinkedBehaviour<TData> where TData : IVertex { }
 }

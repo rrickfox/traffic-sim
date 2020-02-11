@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44658017, g: 0.49641502, b: 0.57482153, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -150,14 +150,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2f2ae315dc4ddb429e0125eeeac1f3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadPrefab: {fileID: 8832777517996270473, guid: dd65774c1417627499ef86c1652c43b5,
+  roadPrefab: {fileID: 8832777517996270473, guid: 76e4e1bf918c09beb8186a8b8ab57847,
     type: 3}
-  carPrefab: {fileID: 5327732160065177629, guid: 4c7ad48a12bdff64ea058f9783da6062,
+  carPrefab: {fileID: 5327732160065177629, guid: d27139d3848b850f9a967b68a2aa83f4,
     type: 3}
-  pos1: {x: -140, y: 0}
-  pos2: {x: 140, y: 0}
+  startPoint: {x: -140, y: -50}
+  controlPoint: {x: 0, y: 100}
+  endPoint: {x: 140, y: -50}
   lane1To2: 100
   lane2To1: 100
+--- !u!4 &431655176
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -169,7 +171,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &680370309
 GameObject:
@@ -309,7 +311,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &963194225
 GameObject:
@@ -444,7 +446,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8cd3f34fbe6b1df4a83059fecaed3658, type: 2}
+  - {fileID: 2100000, guid: f96f7bae979881fd29d4bd2e912c8386, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -531,7 +533,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5c2c51a05d12746a2b1cf873890eb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flySpeed: 0.1
+  flySpeed: 0.5
+  moveOnEdges: 0
   turnSpeed: 1
   maxTurnAngle: 89
   minTurnAngle: 20

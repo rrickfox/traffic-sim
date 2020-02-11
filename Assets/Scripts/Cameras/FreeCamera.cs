@@ -21,6 +21,8 @@ namespace Cameras
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
+        public Transform _targetCar;
+        public bool _following;
 
         // Setting camera right, focus the center
         void Start()
@@ -33,6 +35,7 @@ namespace Cameras
         {
             if (!_cam.enabled)
                 return;
+            Follow();
             Rotate();
             Move();
             Zoom();
@@ -87,6 +90,15 @@ namespace Cameras
             _camDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
             _camDistance = Mathf.Clamp(_camDistance, minZoom, maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
+        }
+
+        // follows a target Car
+        void Follow()
+        {
+            if (_targetCar != null && _following)
+            {
+                transform.position = _targetCar.position;
+            }
         }
 
         // Visualisation of border

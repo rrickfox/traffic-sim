@@ -18,7 +18,7 @@ namespace DataTypes
         public RoadShape shape { get; }
         // the coordinates of the end of the road from which you look at the road
         public RoadPoint originPoint => shape.points[0];
-        public List<Lane> outgoingLanes { get; }
+        public List<Lane> outgoingLanes { get; private set;}
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;
         public float length => shape.length;
@@ -203,6 +203,15 @@ namespace DataTypes
             absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
 
             return absolutePosition;
+        }
+
+        // set LaneType of all lanes to Through
+        public void ResetOutgoingLaneTypes()
+        {
+            foreach (var lane in outgoingLanes)
+            {
+                lane.ResetLaneTypes(LaneType.Through);
+            }
         }
     }
 

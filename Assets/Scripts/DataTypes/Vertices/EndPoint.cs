@@ -17,6 +17,9 @@ namespace DataTypes
             _edge = edge;
             _carPrefab = carPrefab;
             _frequencies = frequencies;
+
+            // reset LaneTypes of lanes, needed for SubRouting
+            edge.other.ResetOutgoingLaneTypes();
         }
 
         public void SpawnCars()

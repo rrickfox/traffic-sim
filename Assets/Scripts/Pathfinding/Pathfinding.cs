@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
@@ -85,7 +86,7 @@ namespace Pathfinding
         }
         
         // iterates over vertices in reverse order to determine path and translates it into a path of edges
-        private static List<Edge> DetermineFoundPath(this EndPoint self, IVertex end)
+        private static List<RouteSegment> DetermineFoundPath(this EndPoint self, IVertex end)
         {
             // return null if no path could be found
             if (end.GetPathDistance() == null) return null;
@@ -98,7 +99,7 @@ namespace Pathfinding
             }
 
             // return the edges connecting the vertices in the path
-            return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
+            return vertexPath.ZipThree(vertexPath.Skip(1), vertexPath.Skip(2), (v1, v2, v3) => new RouteSegment(v1.GetEdge(v2), v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))).ToList();
         }
     }
 

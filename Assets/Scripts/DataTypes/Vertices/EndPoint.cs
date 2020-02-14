@@ -10,7 +10,7 @@ namespace DataTypes
         private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
-        public Dictionary<IVertex, List<Edge>> routingTable { get; } = new Dictionary<IVertex, List<Edge>>();
+        public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies) : base(edge)
         {

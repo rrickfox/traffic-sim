@@ -21,7 +21,7 @@ namespace DataTypes
         // returns necessary lane to go from an edge to another edge
         // throws exception if edges are not in this vertex
         // throws exception if edges are equal
-        protected LaneType SubRoute(Edge from, Edge to)
+        public override LaneType SubRoute(Edge from, Edge to)
         {
             if(this.edges.Contains(from) && this.edges.Contains(to))
                 if(this._up.Equals(from))

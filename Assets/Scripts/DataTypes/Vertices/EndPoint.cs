@@ -36,7 +36,7 @@ namespace DataTypes
             }
         }
 
-        protected LaneType SubRoute(Edge from, Edge to)
+        public override LaneType SubRoute(Edge from, Edge to)
         {
             if(this._edge.Equals(from) && this._edge.Equals(to))
                 return LaneType.Through;

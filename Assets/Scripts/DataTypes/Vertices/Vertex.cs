@@ -7,6 +7,7 @@ namespace DataTypes
     public interface IVertex : IGameObjectData
     {
         ImmutableArray<Edge> edges { get; }
+        LaneType SubRoute(Edge from, Edge to);
     }
     
     public class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
@@ -28,6 +29,11 @@ namespace DataTypes
             {
                 edge.vertex = this;
             }
+        }
+
+        public virtual LaneType SubRoute(Edge from, Edge to)
+        {
+            throw new System.Exception("SubRoute was not implemented");
         }
     }
 

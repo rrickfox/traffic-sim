@@ -10,7 +10,7 @@ namespace DataTypes
         LaneType SubRoute(Edge from, Edge to);
     }
     
-    public class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
+    public abstract class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
         where TBehaviour : VertexBehaviour<TThis>
         where TThis : Vertex<TThis, TBehaviour>
     {
@@ -31,10 +31,7 @@ namespace DataTypes
             }
         }
 
-        public virtual LaneType SubRoute(Edge from, Edge to)
-        {
-            throw new System.Exception("SubRoute was not implemented");
-        }
+        public abstract LaneType SubRoute(Edge from, Edge to);
     }
 
     public class VertexBehaviour<TData> : LinkedBehaviour<TData> where TData : IVertex { }

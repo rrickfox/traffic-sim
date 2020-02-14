@@ -7,7 +7,7 @@ using static Utility.CONSTANTS;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge : GameObjectData<Edge, EdgeBehaviour>
+    public class Edge : GameObjectData<Edge, EdgeBehaviour> , ITrack
     {
         // the Vertex from which this edge originates
         public IVertex vertex = null;
@@ -184,6 +184,25 @@ namespace DataTypes
             foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
             foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // right border
             foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // right side
+        }
+
+        // retrieves position and forward vector of car on road when given relative position on road and lane 
+        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
+        {
+            // get first estimation of position from saved array of points
+            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
+            var index = Mathf.RoundToInt(positionOnRoad);
+            var absolutePosition = shape.points[index];
+
+            // set offset to the right to accommodate different lanes
+            var perpendicularOffset = lane * (LANE_WIDTH + LINE_WIDTH) + 0.5f * LANE_WIDTH + MIDDLE_LINE_WIDTH / 2f;
+
+            // calculate backwards vector to rotate to right facing vector using Vector2.Perpendicular()
+            var inverse = absolutePosition.forward * -1;
+
+            absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
+
+            return absolutePosition;
         }
     }
 

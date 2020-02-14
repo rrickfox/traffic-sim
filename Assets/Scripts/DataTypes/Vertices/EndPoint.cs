@@ -35,6 +35,14 @@ namespace DataTypes
                 _edge.cars.Remove(car);
             }
         }
+
+        protected LaneType SubRoute(Edge from, Edge to)
+        {
+            if(this._edge.Equals(from) && this._edge.Equals(to))
+                return LaneType.Through;
+            else
+                throw new System.Exception("Edges not found");
+        }
     }
 
     public class EndPointBehaviour : VertexBehaviour<EndPoint>

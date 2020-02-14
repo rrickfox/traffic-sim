@@ -1,5 +1,6 @@
 using UnityEngine;
 using Utility;
+using System.Collections.Generic;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -10,6 +11,8 @@ namespace DataTypes
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
+
+        public List<Car> otherCars;
 
         public Car(GameObject prefab, Edge road, float positionOnRoad, float lane) : base(prefab)
         {
@@ -40,10 +43,27 @@ namespace DataTypes
             return absolutePosition;
         }
 
+        public void CarControler()
+        {
+            Move();
+            Car frontCar = GetFrontCar(speed /);
+        }
         public void Move()
         {
             positionOnRoad += speed;
             SetPosition();
+        }
+        
+        public Car GetFrontCar(float distance)
+        {   
+            foreach(var _car in road.cars)
+            { 
+                if((_car.positionOnRoad-positionOnRoad) <= distance && positionOnRoad != _car.positionOnRoad && lane == _car.lane)
+                {
+                    return _car;
+                }
+            }
+            return null;
         }
 
         private void SetPosition()
@@ -53,17 +73,20 @@ namespace DataTypes
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
+        // Acclelerate in meters per seconds 
         public void Accelerate(float acceleration)
         {
-            speed += acceleration;
+            speed += Conversion.UPTU2FromMetersPerSecond2(acceleration);
         }
+
+
     }
 
     public class CarBehaviour : LinkedBehaviour<Car>
     {
         private void FixedUpdate()
         {
-            _data.Move();
+            _data.CarControler();
         }
     }
 }

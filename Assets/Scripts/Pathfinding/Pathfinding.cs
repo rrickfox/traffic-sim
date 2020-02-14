@@ -20,6 +20,7 @@ namespace Pathfinding
                 { 
                     start.FindPath(end, verticesSet);
                 }
+                start.SetWeights();
             }
         }
     }

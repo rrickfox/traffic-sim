@@ -10,23 +10,32 @@ namespace DataTypes
         private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
+        // weighed choosing of vertices to route to
+        private RouteProbabilities _routeProbabilities;
+        private int[] _weights { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
 
-        public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies) : base(edge)
+        public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
         {
             _edge = edge;
             _carPrefab = carPrefab;
             _frequencies = frequencies;
+            _weights = weights;
 
             // reset LaneTypes of lanes, needed for SubRouting
             edge.other.ResetOutgoingLaneTypes();
+        }
+
+        public void SetWeights()
+        {
+            _routeProbabilities = new RouteProbabilities(_weights, routingTable.Keys.ToList());
         }
 
         public void SpawnCars()
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
             {
-                new Car(_carPrefab, _edge, 0, lane);
+                new Car(_carPrefab, lane, routingTable[_routeProbabilities.Choose()]);
             }
         }
 
@@ -41,10 +50,7 @@ namespace DataTypes
 
         public override LaneType SubRoute(Edge from, Edge to)
         {
-            if(this._edge.Equals(from) && this._edge.Equals(to))
-                return LaneType.Through;
-            else
-                throw new System.Exception("Edges not found");
+            return LaneType.Through;
         }
     }
 

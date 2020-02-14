@@ -14,6 +14,8 @@ namespace DataTypes
         {
             _weights = weights;
             _destinations = destinations;
+            
+            CalculateCumulative();
         }
 
         // modified from: https://stackoverflow.com/a/43345968
@@ -37,7 +39,7 @@ namespace DataTypes
 
         // selects an IVertex from destinations based on weights
         // modified from: https://stackoverflow.com/a/43345968
-        public IVertex Choice()
+        public IVertex Choose()
         {
             var random = new Random();
             // now generate random double. It will always be in range from 0 to 1

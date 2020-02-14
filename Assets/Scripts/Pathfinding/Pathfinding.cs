@@ -101,6 +101,46 @@ namespace Pathfinding
             return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
         }
     }
+
+    // defines Zip method for three lists
+    // https://stackoverflow.com/a/10297160
+    public static class ZipExtensions
+    {
+        public static IEnumerable<TResult> ZipThree<T1, T2, T3, TResult>(
+            this IEnumerable<T1> source,
+            IEnumerable<T2> second,
+            IEnumerable<T3> third,
+            Func<T1, T2, T3, TResult> func)
+        {
+            if (source is null)
+            {
+                throw new System.ArgumentNullException(nameof(source));
+            }
+
+            if (second is null)
+            {
+                throw new System.ArgumentNullException(nameof(second));
+            }
+
+            if (third is null)
+            {
+                throw new System.ArgumentNullException(nameof(third));
+            }
+
+            if (func is null)
+            {
+                throw new System.ArgumentNullException(nameof(func));
+            }
+
+            using (var e1 = source.GetEnumerator())
+            using (var e2 = second.GetEnumerator())
+            using (var e3 = third.GetEnumerator())
+            {
+                while (e1.MoveNext() && e2.MoveNext() && e3.MoveNext())
+                    yield return func(e1.Current, e2.Current, e3.Current);
+            }
+        }
+    }
     
     public class VertexExtensionsData
     {

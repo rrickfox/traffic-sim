@@ -97,15 +97,22 @@ namespace Pathfinding
             {
                 vertexPath.AddFirst(tempEnd);
             }
+            vertexPath.AddFirst(self);
 
             // return the edges connecting the vertices in the path
-            return vertexPath.ZipThree(
+            var path = vertexPath.ZipThree(
                 vertexPath.Skip(1), 
                 vertexPath.Skip(2), 
                 (v1, v2, v3) => 
                     new RouteSegment(v1.GetEdge(v2), 
                         v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3))))
             .ToList();
+            path.Add(new RouteSegment(
+                vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                LaneType.Through // since last vertex is EndPoint, LaneType mus be Through
+                )
+            );
+            return path;
         }
     }
 

@@ -99,7 +99,13 @@ namespace Pathfinding
             }
 
             // return the edges connecting the vertices in the path
-            return vertexPath.ZipThree(vertexPath.Skip(1), vertexPath.Skip(2), (v1, v2, v3) => new RouteSegment(v1.GetEdge(v2), v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))).ToList();
+            return vertexPath.ZipThree(
+                vertexPath.Skip(1), 
+                vertexPath.Skip(2), 
+                (v1, v2, v3) => 
+                    new RouteSegment(v1.GetEdge(v2), 
+                        v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3))))
+            .ToList();
         }
     }
 

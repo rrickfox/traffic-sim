@@ -37,6 +37,7 @@ namespace DataTypes
         // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {
+            length = 0;
             // first point not included in any list of points to avoid duplication
             var tempPoints = new List<Vector2> {_curves[0].startPoint};
             

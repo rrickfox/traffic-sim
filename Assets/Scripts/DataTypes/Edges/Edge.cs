@@ -45,9 +45,13 @@ namespace DataTypes
         {
             shape.UpdateOrigin(newOriginPoint);
             other.shape = shape.Inverse();
+            if (gameObject.GetComponent<MeshFilter>() == null)
+                other.Display();
+            else
+                Display();
         }
 
-        private void Display()
+        protected void Display()
         {
             var meshVertices = new List<Vector3>();
             var uvs = new List<Vector2>();

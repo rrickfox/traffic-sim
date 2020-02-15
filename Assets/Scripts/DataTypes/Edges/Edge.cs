@@ -54,12 +54,12 @@ namespace DataTypes
 
             var leftOffset = LANE_WIDTH * incomingLanes.Count
                 + LINE_WIDTH * lineCountIncoming
-                + MIDDLE_LINE_WIDTH / 2
+                + ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH  / 2: 0)
                 + BORDER_LINE_WIDTH;
 
             var rightOffset = LANE_WIDTH * outgoingLanes.Count
                 + LINE_WIDTH * lineCountOutgoing
-                + MIDDLE_LINE_WIDTH / 2
+                + ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH / 2 : 0)
                 + BORDER_LINE_WIDTH;
 
             for (var i = 0; i < shape.points.Length; i++)
@@ -77,7 +77,7 @@ namespace DataTypes
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
                 var relativeInnerPos = ROAD_HEIGHT / (
-                    MIDDLE_LINE_WIDTH // middle line
+                    ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
                     + 2 * ROAD_HEIGHT // sides
                     + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
@@ -180,7 +180,8 @@ namespace DataTypes
             foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // left side
             foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // left border
             foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
-            foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) yield return color; // middle line
+            if(incomingLanes.Count > 0 && outgoingLanes.Count > 0)
+                foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) yield return color; // middle line
             foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
             foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // right border
             foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // right side

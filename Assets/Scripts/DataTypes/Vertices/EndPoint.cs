@@ -28,14 +28,14 @@ namespace DataTypes
 
         public void SetWeights()
         {
-            _routeProbabilities = new RouteProbabilities(_weights, routingTable.Keys.ToList());
+            _routeProbabilities = new RouteProbabilities(_weights, routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList());
         }
 
         public void SpawnCars()
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
             {
-                new Car(_carPrefab, lane, routingTable[_routeProbabilities.Choose()]);
+                new Car(_carPrefab, lane, routingTable[_routeProbabilities.Choose()].ToList());
             }
         }
 

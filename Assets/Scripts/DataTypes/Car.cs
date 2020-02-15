@@ -29,7 +29,7 @@ namespace DataTypes
         {
             positionOnRoad += speed;
             SetPosition();
-            if(positionOnRoad >= track.length)
+            if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length;
                 track.cars.Remove(this);

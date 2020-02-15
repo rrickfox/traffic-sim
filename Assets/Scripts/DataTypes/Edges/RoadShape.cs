@@ -27,6 +27,13 @@ namespace DataTypes
             this.length = length;
         }
 
+        // change start position of first curve
+        public void UpdateOrigin(Vector2 newOrigin)
+        {
+            _curves.First().startPoint = newOrigin;
+            CalculateEvenlySpacedPoints();
+        }
+
         // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {

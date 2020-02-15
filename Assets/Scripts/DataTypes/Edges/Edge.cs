@@ -15,7 +15,7 @@ namespace DataTypes
         public Edge other { get; }
         // the cars on the outgoing side of the road
         public List<Car> cars { get; } = new List<Car>();
-        public RoadShape shape { get; }
+        public RoadShape shape { get; protected set; }
         // the coordinates of the end of the road from which you look at the road
         public RoadPoint originPoint => shape.points[0];
         public List<Lane> outgoingLanes { get; private set;}
@@ -38,6 +38,13 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+        }
+
+        // change origin point and update other edge
+        private void UpdateOriginPoint(Vector2 newOriginPoint)
+        {
+            shape.UpdateOrigin(newOriginPoint);
+            other.shape = shape.Inverse();
         }
 
         private void Display()

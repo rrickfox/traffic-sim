@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 431655176}
   - component: {fileID: 431655175}
+  - component: {fileID: 431655177}
   m_Layer: 0
   m_Name: SimulationController
   m_TagString: Untagged
@@ -145,7 +146,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 431655174}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2f2ae315dc4ddb429e0125eeeac1f3d, type: 3}
   m_Name: 
@@ -173,6 +174,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &431655177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431655174}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff7bf07e4456fb34b9c07ddb6e8675f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roadPrefab: {fileID: 8832777517996270473, guid: 76e4e1bf918c09beb8186a8b8ab57847,
+    type: 3}
+  carPrefab: {fileID: 5327732160065177629, guid: d27139d3848b850f9a967b68a2aa83f4,
+    type: 3}
 --- !u!1 &680370309
 GameObject:
   m_ObjectHideFlags: 0

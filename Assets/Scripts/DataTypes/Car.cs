@@ -45,20 +45,23 @@ namespace DataTypes
 
         public void CarControler()
         {
+            positionOnRoad += speed ;
+            Car frontCar = GetFrontCar(Distance());
             Move();
-            Car frontCar = GetFrontCar(speed /);
         }
-        public void Move()
+
+        // Returns the stopping distance
+        public float Distance()
         {
-            positionOnRoad += speed;
-            SetPosition();
+            return ((MathUtils.Square(Conversion.KilometersPerHourFromUPTU(speed) / 10))/ 2);
         }
-        
+
+        // Returns the Car in front of the Car 
         public Car GetFrontCar(float distance)
         {   
             foreach(var _car in road.cars)
             { 
-                if((_car.positionOnRoad-positionOnRoad) <= distance && positionOnRoad != _car.positionOnRoad && lane == _car.lane)
+                if((_car.positionOnRoad-positionOnRoad) <= distance && positionOnRoad < _car.positionOnRoad && lane == _car.lane)
                 {
                     return _car;
                 }
@@ -66,18 +69,22 @@ namespace DataTypes
             return null;
         }
 
-        private void SetPosition()
+        // Moves the Car
+        private void Move()
         {
             var roadPoint = GetAbsolutePosition();
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
-        // Acclelerate in meters per seconds 
-        public void Accelerate(float acceleration)
+       
+
+        // Acclelerate in Units per Timestep
+        public void AccelerateMPS(float acceleration)
         {
-            speed += Conversion.UPTU2FromMetersPerSecond2(acceleration);
+            speed += acceleration;
         }
+        
 
 
     }

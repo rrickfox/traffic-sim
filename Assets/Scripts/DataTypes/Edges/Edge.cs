@@ -41,7 +41,7 @@ namespace DataTypes
         }
 
         // change origin point and update other edge
-        private void UpdateOriginPoint(Vector2 newOriginPoint)
+        public void UpdateOriginPoint(Vector2 newOriginPoint)
         {
             shape.UpdateOrigin(newOriginPoint);
             other.shape = shape.Inverse();

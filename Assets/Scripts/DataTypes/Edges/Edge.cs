@@ -61,13 +61,15 @@ namespace DataTypes
 
             var leftOffset = LANE_WIDTH * incomingLanes.Count
                 + LINE_WIDTH * lineCountIncoming
-                + ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH  / 2: 0)
-                + BORDER_LINE_WIDTH;
+                + MIDDLE_LINE_WIDTH / 2f
+                + BORDER_LINE_WIDTH
+                - ((incomingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
 
             var rightOffset = LANE_WIDTH * outgoingLanes.Count
                 + LINE_WIDTH * lineCountOutgoing
-                + ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH / 2 : 0)
-                + BORDER_LINE_WIDTH;
+                + MIDDLE_LINE_WIDTH / 2f
+                + BORDER_LINE_WIDTH
+                - ((outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
 
             for (var i = 0; i < shape.points.Length; i++)
             {
@@ -135,7 +137,7 @@ namespace DataTypes
             // border, road and lines, middle, road and lines, border
             var textureWidth = Mathf.RoundToInt(
                 WIDTH_MULTIPLIER * (
-                    MIDDLE_LINE_WIDTH // middle line
+                    ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
                     + 2 * ROAD_HEIGHT // sides
                     + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes

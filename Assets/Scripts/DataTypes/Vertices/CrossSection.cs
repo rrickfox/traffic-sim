@@ -1,5 +1,7 @@
 using UnityEngine;
 using static Utility.CONSTANTS;
+using static Utility.COLORS;
+using System.Collections.Generic;
 
 namespace DataTypes
 {
@@ -108,6 +110,90 @@ namespace DataTypes
                     + MIDDLE_LINE_WIDTH / 2f
                     + BORDER_LINE_WIDTH)
                 : BORDER_LINE_WIDTH - MIDDLE_LINE_WIDTH / 2f));
+
+            var meshVertices = new Vector3[8];
+            var triangles = new int[30];
+            var uvs = new Vector2[8];
+
+            meshVertices[0] = new Vector3(_left.originPoint.position.x + _up.originPoint.position.x - center.x,
+                0f,
+                _left.originPoint.position.y + _up.originPoint.position.y - center.y);
+            meshVertices[1] = new Vector3(_right.originPoint.position.x + _up.originPoint.position.x - center.x,
+                0f,
+                _right.originPoint.position.y + _up.originPoint.position.y - center.y);
+            meshVertices[2] = new Vector3(_right.originPoint.position.x + _down.originPoint.position.x - center.x,
+                0f,
+                _right.originPoint.position.y + _down.originPoint.position.y - center.y);
+            meshVertices[3] = new Vector3(_left.originPoint.position.x + _down.originPoint.position.x - center.x,
+                0f,
+                _left.originPoint.position.y + _down.originPoint.position.y - center.y);
+            meshVertices[4] = meshVertices[0] + new Vector3(0f, ROAD_HEIGHT, 0f);
+            meshVertices[5] = meshVertices[1] + new Vector3(0f, ROAD_HEIGHT, 0f);
+            meshVertices[6] = meshVertices[2] + new Vector3(0f, ROAD_HEIGHT, 0f);
+            meshVertices[7] = meshVertices[3] + new Vector3(0f, ROAD_HEIGHT, 0f);
+
+            var triIndex = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if(i == 4)
+                {
+                    triangles[triIndex] = i;
+                    triangles[triIndex + 1] = i + 1;
+                    triangles[triIndex + 2] = i + 2;
+
+                    triangles[triIndex + 3] = i;
+                    triangles[triIndex + 4] = i + 2;
+                    triangles[triIndex + 5] = i + 3;
+                }
+                else {
+                    triangles[triIndex] = i;
+                    triangles[triIndex + 1] = (i + 1) % 4;
+                    triangles[triIndex + 2] = i + 4;
+
+                    triangles[triIndex + 3] = i + 1;
+                    triangles[triIndex + 4] = (i + 1) % 4 + 4;
+                    triangles[triIndex + 5] = i + 4;
+                    triIndex += 6;
+                }
+            }
+
+            uvs[0] = new Vector2(0f, 1f);
+            uvs[1] = new Vector2(1f, 1f);
+            uvs[2] = new Vector2(1f, 0f);
+            uvs[3] = new Vector2(0f, 0f);
+            uvs[4] = new Vector2(ROAD_HEIGHT / (2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[5]).magnitude),
+                1 - ROAD_HEIGHT / (2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[7]).magnitude));
+            uvs[5] = new Vector2(1f - uvs[4].x, uvs[4].y);
+            uvs[6] = new Vector2(1f - uvs[4].x, 1f - uvs[4].y);
+            uvs[7] = new Vector2(uvs[4].x, 1f - uvs[4].y);
+
+            gameObject.GetComponent<MeshFilter>().mesh = new Mesh
+            {
+                vertices = meshVertices,
+                triangles = triangles,
+                uv = uvs
+            };
+
+            Texture texture = GetTexture(Mathf.RoundToInt(2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[5]).magnitude),
+                Mathf.RoundToInt(2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[7]).magnitude));
+            gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+        }
+
+        private Texture GetTexture(int width, int height)
+        {
+            var texture = new Texture2D(width, height, TextureFormat.ARGB32, true);
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    texture.SetPixel(x: x, y: y, color: ROAD);
+                }
+            }
+
+            texture.Apply();
+
+            return texture;
         }
     }
     

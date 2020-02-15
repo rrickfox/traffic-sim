@@ -40,7 +40,7 @@ public class SampleCrosssection : MonoBehaviour
         var point_down = new EndPoint(down, carPrefab, new Frequencies(new int[]{75, 50}), new int[]{1, 1, 1});
         _vertices.Add(point_down);
 
-        var section = new CrossSection(up.other, right.other, down.other, left.other);
+        var section = new CrossSection(roadPrefab, up.other, right.other, down.other, left.other);
         _vertices.Add(section);
 
         StartPathfinding(_vertices);

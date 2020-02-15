@@ -23,6 +23,7 @@ namespace Cameras
         float _camDistance = 50f;
         Transform _targetCar;
         bool _following;
+        float _scroll;
 
         // Setting camera right, focus the center
         void Start()
@@ -34,6 +35,7 @@ namespace Cameras
         private void Update()
         {
             SelectCar();
+            _scroll = Input.GetAxis("Mouse ScrollWheel");
         }
 
         void FixedUpdate()
@@ -95,7 +97,7 @@ namespace Cameras
         // Zooming with the mousewheel between maxZoom and minZoom
         void Zoom()
         {
-            _camDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            _camDistance -= _scroll * zoomSpeed;
             _camDistance = Mathf.Clamp(_camDistance, minZoom, maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
         }

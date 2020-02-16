@@ -27,35 +27,28 @@ namespace DataTypes
         public override LaneType SubRoute(Edge from, Edge to)
         {
             if(!edges.Contains(from) || !edges.Contains(to)) throw new System.Exception("Edges not found");
+            if(from.Equals(to)) throw new System.Exception("From and to are the same Edge");
             if(_up.Equals(from))
-                if(_up.Equals(to))
-                    throw new System.Exception("From and to are the same Edge");
-                else if(_right.Equals(to))
+                if(_right.Equals(to))
                     return LaneType.LeftTurn;
                 else if(_down.Equals(to))
                     return LaneType.Through;
                 else
                     return LaneType.RightTurn;
             if(_right.Equals(from))
-                if(_right.Equals(to))
-                    throw new System.Exception("From and to are the same Edge");
-                else if(_down.Equals(to))
+                if(_down.Equals(to))
                     return LaneType.LeftTurn;
                 else if(_left.Equals(to))
                     return LaneType.Through;
                 else
                     return LaneType.RightTurn;
             if(_down.Equals(from))
-                if(_down.Equals(to))
-                    throw new System.Exception("From and to are the same Edge");
-                else if(_left.Equals(to))
+                if(_left.Equals(to))
                     return LaneType.LeftTurn;
                 else if(_up.Equals(to))
                     return LaneType.Through;
                 else
                     return LaneType.RightTurn;
-            if(_left.Equals(to))
-                throw new System.Exception("From and to are the same Edge");
             if(_up.Equals(to))
                 return LaneType.LeftTurn;
             if(_right.Equals(to))

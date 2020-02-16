@@ -25,5 +25,10 @@ namespace Utility
         {
             return unitsPerTimeUnit;
         }
+        //convert meters per second² to units per Timestep²
+        public static float UPTU2FromMetersPerSecond2(float MetersPerSecond2)
+        {
+            return UnitsPerTimeStepFromMPS(MetersPerSecond2) / CONSTANTS.TIME_UNIT;
+        }
     }
 }

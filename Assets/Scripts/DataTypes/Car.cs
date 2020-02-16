@@ -10,9 +10,11 @@ namespace DataTypes
         public Edge road { get; private set; }
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
-        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
+        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(10 + Random.value * 90); // Laengeneinheiten pro Zeiteinheit
 
         public List<Car> otherCars;
+
+        private int i = 0;
 
         public Car(GameObject prefab, Edge road, float positionOnRoad, float lane) : base(prefab)
         {
@@ -21,7 +23,6 @@ namespace DataTypes
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
 
-            SetPosition();
         }
         
         // retrieves position and forward vector of car on road when given relative position on road and lane
@@ -46,30 +47,47 @@ namespace DataTypes
         public void CarControler()
         {
             positionOnRoad += speed ;
-            Car frontCar = GetFrontCar(Distance());
+
+            var stoppingDistance = Distance();
+
+            float frontDistance = GetFrontDistance(stoppingDistance);
+
+
+            if (frontDistance != 0)
+            {
+                Accelerate(-1f);
+            }
+            if(speed <= Conversion.UnitsPerTimeStepFromKPH(60) && frontDistance == 0)
+            {
+                Accelerate(0.1f);
+            }
+            if(speed < Conversion.UnitsPerTimeStepFromKPH(30) && GetFrontDistance(stoppingDistance * 2) == 0)
+            {
+                Accelerate(0.2f);
+            }
+
             Move();
         }
 
         // Returns the stopping distance
         public float Distance()
         {
-            return ((MathUtils.Square(Conversion.KilometersPerHourFromUPTU(speed) / 10))/ 2);
+            return MathUtils.Square(speed) +2;
         }
 
         // Returns the Car in front of the Car 
-        public Car GetFrontCar(float distance)
+        public float GetFrontDistance(float distance)
         {   
             foreach(var _car in road.cars)
             { 
                 if((_car.positionOnRoad-positionOnRoad) <= distance && positionOnRoad < _car.positionOnRoad && lane == _car.lane)
                 {
-                    return _car;
+                    return _car.positionOnRoad;
                 }
             }
-            return null;
+            return 0;  
         }
 
-        // Moves the Car
         private void Move()
         {
             var roadPoint = GetAbsolutePosition();
@@ -77,16 +95,11 @@ namespace DataTypes
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
-       
-
         // Acclelerate in Units per Timestep
-        public void AccelerateMPS(float acceleration)
+        public void Accelerate(float acceleration)
         {
             speed += acceleration;
         }
-        
-
-
     }
 
     public class CarBehaviour : LinkedBehaviour<Car>

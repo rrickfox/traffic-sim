@@ -16,8 +16,8 @@ public class SimulationController : MonoBehaviour
     public Vector2 endPoint = new Vector2(140, -50);
 
     // spawn frequency
-    public int lane1To2 = 100;
-    public int lane2To1 = 100;
+    public int lane1To2 = 5;
+    public int lane2To1 = 5;
 
     private List<Edge> _roads = new List<Edge>();
     private List<EndPoint> _spawnPoints = new List<EndPoint>();

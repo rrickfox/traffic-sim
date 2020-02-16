@@ -14,5 +14,9 @@ namespace Utility
                 .Skip(1)
                 .Count();
         }
+        public static float Square(float value)
+        {
+            return (value * value);
+        }
     }
 }

@@ -34,5 +34,9 @@ namespace Utility
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)));
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
+        // length of buffer between stopping line and intersection
+        public static readonly float SECTION_BUFFER_LENGTH = 2f;
+        // width of stop line at intersection
+        public static readonly float STOP_LINE_WIDTH = 0.4f;
     }
 }

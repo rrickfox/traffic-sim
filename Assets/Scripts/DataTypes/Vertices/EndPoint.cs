@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,6 +15,7 @@ namespace DataTypes
         private RouteProbabilities _routeProbabilities;
         private int[] _weights { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
+        private static readonly HashSet<LaneType> _ONLY_THROUGH = new HashSet<LaneType> {LaneType.Through};
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
         {
@@ -22,8 +24,8 @@ namespace DataTypes
             _frequencies = frequencies;
             _weights = weights;
 
-            // reset LaneTypes of lanes, needed for SubRouting
-            edge.other.ResetOutgoingLaneTypes();
+            if (edge.incomingLanes.Any(lane => lane.types != _ONLY_THROUGH))
+                throw new Exception("All lanes going into an EndPoint have to be of type Through");
         }
 
         public void SetWeights()

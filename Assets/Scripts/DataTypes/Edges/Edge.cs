@@ -204,15 +204,6 @@ namespace DataTypes
 
             return absolutePosition;
         }
-
-        // set LaneType of all lanes to Through
-        public void ResetOutgoingLaneTypes()
-        {
-            foreach (var lane in outgoingLanes)
-            {
-                lane.ResetLaneTypes(LaneType.Through);
-            }
-        }
     }
 
     public class EdgeBehaviour : LinkedBehaviour<Edge> { }

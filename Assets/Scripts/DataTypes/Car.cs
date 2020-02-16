@@ -7,7 +7,7 @@ namespace DataTypes
     public class Car : GameObjectData<Car, CarBehaviour>
     {
         public ITrack track => segment.track;
-        public float positionOnRoad { get; private set; }
+        public float positionOnRoad { get; private set; } = 0;
         public float lane { get; private set; }
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
         public List<RouteSegment> route { get; private set;}
@@ -18,7 +18,6 @@ namespace DataTypes
             this.route = route;
             segment = route.PopAt(0);
             track.cars.Add(this);
-            positionOnRoad = 0;
             this.lane = lane;
 
             SetPosition();

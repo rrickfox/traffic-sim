@@ -14,8 +14,6 @@ namespace DataTypes
 
         public List<Car> otherCars;
 
-        private int i = 0;
-
         public Car(GameObject prefab, Edge road, float positionOnRoad, float lane) : base(prefab)
         {
             this.road = road;
@@ -57,14 +55,16 @@ namespace DataTypes
             {
                 Accelerate(-1f);
             }
-            if(speed <= Conversion.UnitsPerTimeStepFromKPH(60) && frontDistance == 0)
+            if(speed <= Conversion.UnitsPerTimeStepFromKPH(120) && frontDistance == 0)
             {
-                Accelerate(0.1f);
+                Accelerate(1);
             }
-            if(speed < Conversion.UnitsPerTimeStepFromKPH(30) && GetFrontDistance(stoppingDistance * 2) == 0)
+            if(speed < Conversion.UnitsPerTimeStepFromKPH(120) && GetFrontDistance(stoppingDistance * 2) == 0)
             {
-                Accelerate(0.2f);
+                Accelerate(2f);
             }
+
+            Human();
 
             Move();
         }
@@ -86,6 +86,11 @@ namespace DataTypes
                 }
             }
             return 0;  
+        }
+
+        public void Human()
+        {
+            Accelerate(Random.value *-5);
         }
 
         private void Move()

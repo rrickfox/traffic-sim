@@ -17,6 +17,8 @@ namespace Cameras
         [Header("Borders")]
         public Vector3 border1;
         public Vector3 border2;
+        [Header("Parent")]
+        public Transform parent;
 
         Vector3 _newPosition;
         Camera _cam;
@@ -69,7 +71,7 @@ namespace Cameras
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
             if (_newPosition != transform.position)
-                transform.SetParent(null);
+                transform.SetParent(parent);
 
             // Moving if mouse is near to the edge of the game window
             if (!Input.GetMouseButton(1))
@@ -110,12 +112,12 @@ namespace Cameras
                                     out var hit,
                                     200f,
                                     LayerMask.GetMask("Cars"))
-                        ? hit.transform : null
+                        ? hit.transform : parent
                 );
             }
         }
 
-        // Visualisation of border
+        // Visualization of border
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;

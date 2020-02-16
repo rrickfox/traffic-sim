@@ -123,18 +123,58 @@ namespace DataTypes
             var triangles = new int[30];
             var uvs = new Vector2[8];
 
-            meshVertices[0] = new Vector3(_left.originPoint.position.x + _up.originPoint.position.x - center.x,
-                0f,
-                _left.originPoint.position.y + _up.originPoint.position.y - center.y);
-            meshVertices[1] = new Vector3(_right.originPoint.position.x + _up.originPoint.position.x - center.x,
-                0f,
-                _right.originPoint.position.y + _up.originPoint.position.y - center.y);
-            meshVertices[2] = new Vector3(_right.originPoint.position.x + _down.originPoint.position.x - center.x,
-                0f,
-                _right.originPoint.position.y + _down.originPoint.position.y - center.y);
-            meshVertices[3] = new Vector3(_left.originPoint.position.x + _down.originPoint.position.x - center.x,
-                0f,
-                _left.originPoint.position.y + _down.originPoint.position.y - center.y);
+            var leftUpCorner = center
+                + _left.originPoint.forward // offset to the left
+                    * (_up.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2)
+                + _up.originPoint.forward // offset up
+                    * (_left.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2);
+            meshVertices[0] = new Vector3(leftUpCorner.x, 0f, leftUpCorner.y);
+
+            var upRightCorner = center
+                + _up.originPoint.forward
+                    * (_right.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2)
+                + _right.originPoint.forward
+                    * (_up.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2);
+            meshVertices[1] = new Vector3(upRightCorner.x, 0f, upRightCorner.y);
+
+            var rightDownCorner = center
+                + _right.originPoint.forward
+                    * (_down.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2)
+                + _down.originPoint.forward
+                    * (_right.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2);
+            meshVertices[2] = new Vector3(rightDownCorner.x,  0f, rightDownCorner.y);
+
+            var downLeftCorner = center
+                + _down.originPoint.forward
+                    * (_left.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2)
+                + _left.originPoint.forward
+                    * (_down.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - LINE_WIDTH
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2);
+            meshVertices[3] = new Vector3(downLeftCorner.x, 0f, downLeftCorner.y);
+            
             meshVertices[4] = meshVertices[0] + new Vector3(0f, ROAD_HEIGHT, 0f);
             meshVertices[5] = meshVertices[1] + new Vector3(0f, ROAD_HEIGHT, 0f);
             meshVertices[6] = meshVertices[2] + new Vector3(0f, ROAD_HEIGHT, 0f);

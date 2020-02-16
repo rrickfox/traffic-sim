@@ -103,17 +103,15 @@ namespace Pathfinding
 
             // return the edges connecting the vertices in the path
             var path = vertexPath.ZipThree(
-                vertexPath.Skip(1), 
-                vertexPath.Skip(2), 
-                (v1, v2, v3) => 
-                    new RouteSegment(v1.GetEdge(v2), 
-                        v2.SubRoute(v2.GetEdge(v1), v2.GetEdge(v3))))
-            .ToList();
+                vertexPath.Skip(1),
+                vertexPath.Skip(2),
+                (v1, v2, v3) =>
+                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v2.GetEdge(v1), v2.GetEdge(v3)))
+            ).ToList();
             path.Add(new RouteSegment(
-                vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
-                LaneType.Through // since last vertex is EndPoint, LaneType mus be Through
-                )
-            );
+                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                laneType: LaneType.Through // since last vertex is EndPoint, LaneType mus be Through
+            ));
             return path;
         }
     }

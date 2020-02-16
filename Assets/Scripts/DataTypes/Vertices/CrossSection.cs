@@ -26,34 +26,38 @@ namespace DataTypes
         // throws exception if edges are equal
         public override LaneType SubRoute(Edge from, Edge to)
         {
-            if(!edges.Contains(from) || !edges.Contains(to)) throw new System.Exception("Edges not found");
-            if(from.Equals(to)) throw new System.Exception("From and to are the same Edge");
-            if(_up.Equals(from))
-                if(_right.Equals(to))
+            if (!edges.Contains(from)) throw new System.Exception("From Edge not found");
+            if(!edges.Contains(to)) throw new System.Exception("To Edge not found");
+            if(from == to) throw new System.Exception("From and to are the same Edge");
+            
+            if(from == _up)
+                if(to == _right)
                     return LaneType.LeftTurn;
-                else if(_down.Equals(to))
+                else if(to == _down)
                     return LaneType.Through;
-                else
+                else // to == _left
                     return LaneType.RightTurn;
-            if(_right.Equals(from))
-                if(_down.Equals(to))
+            if(from == _right)
+                if(to == _down)
                     return LaneType.LeftTurn;
-                else if(_left.Equals(to))
+                else if(to == _left)
                     return LaneType.Through;
-                else
+                else // to == _up
                     return LaneType.RightTurn;
-            if(_down.Equals(from))
-                if(_left.Equals(to))
+            if(from == _down)
+                if(to == _left)
                     return LaneType.LeftTurn;
-                else if(_up.Equals(to))
+                else if(to == _up)
                     return LaneType.Through;
-                else
+                else // to == _right
                     return LaneType.RightTurn;
-            if(_up.Equals(to))
-                return LaneType.LeftTurn;
-            if(_right.Equals(to))
-                return LaneType.Through;
-            return LaneType.RightTurn;
+            else // from == _left
+                if(to == _up)
+                    return LaneType.LeftTurn;
+                else if(to == _right)
+                    return LaneType.Through;
+                else // to == _down
+                    return LaneType.RightTurn;
         }
     }
     

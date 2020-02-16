@@ -28,9 +28,10 @@ namespace DataTypes
         {
             positionOnRoad += speed;
             SetPosition();
+            // if car is at end of RouteSegment, get next routeSegment if there is one
             if(positionOnRoad >= track.length && route.Count > 0)
             {
-                positionOnRoad -= track.length;
+                positionOnRoad -= track.length; // add overshot distance to new RouteSegment
                 track.cars.Remove(this);
                 segment = route.PopAt(0);
                 track.cars.Add(this);

@@ -24,7 +24,7 @@ namespace DataTypes
             _frequencies = frequencies;
             _weights = weights;
 
-            if (edge.incomingLanes.Any(lane => lane.types != _ONLY_THROUGH))
+            if (edge.incomingLanes.Any(lane => lane.types.Equals(_ONLY_THROUGH)))
                 throw new Exception("All lanes going into an EndPoint have to be of type Through");
         }
 

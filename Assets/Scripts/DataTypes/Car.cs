@@ -17,7 +17,7 @@ namespace DataTypes
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
             this.route = route;
-            segment = route.Pop();
+            segment = route.Shift();
             track.cars.Add(this);
             positionOnRoad = 0;
             this.lane = lane;
@@ -33,7 +33,7 @@ namespace DataTypes
             {
                 positionOnRoad -= track.length;
                 track.cars.Remove(this);
-                segment = route.Pop();
+                segment = route.Shift();
                 track.cars.Add(this);
             }
         }
@@ -63,7 +63,7 @@ namespace DataTypes
     // modified from: https://stackoverflow.com/a/24855920
     static class ListExtension
     {
-        public static T Pop<T>(this List<T> list)
+        public static T Shift<T>(this List<T> list)
         {
             T r = list[0];
             list.RemoveAt(0);

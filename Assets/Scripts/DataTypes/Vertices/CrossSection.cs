@@ -26,40 +26,40 @@ namespace DataTypes
         // throws exception if edges are equal
         public override LaneType SubRoute(Edge from, Edge to)
         {
-            if(this.edges.Contains(from) && this.edges.Contains(to))
-                if(this._up.Equals(from))
-                    if(this._up.Equals(to))
+            if(edges.Contains(from) && this.edges.Contains(to))
+                if(_up.Equals(from))
+                    if(_up.Equals(to))
                         throw new System.Exception("From and to are the same Edge");
-                    else if(this._right.Equals(to))
+                    else if(_right.Equals(to))
                         return LaneType.LeftTurn;
-                    else if(this._down.Equals(to))
+                    else if(_down.Equals(to))
                         return LaneType.Through;
                     else
                         return LaneType.RightTurn;
-                else if(this._right.Equals(from))
-                    if(this._right.Equals(to))
+                else if(_right.Equals(from))
+                    if(_right.Equals(to))
                         throw new System.Exception("From and to are the same Edge");
-                    else if(this._down.Equals(to))
+                    else if(_down.Equals(to))
                         return LaneType.LeftTurn;
-                    else if(this._left.Equals(to))
+                    else if(_left.Equals(to))
                         return LaneType.Through;
                     else
                         return LaneType.RightTurn;
-                else if(this._down.Equals(from))
-                    if(this._down.Equals(to))
+                else if(_down.Equals(from))
+                    if(_down.Equals(to))
                         throw new System.Exception("From and to are the same Edge");
-                    else if(this._left.Equals(to))
+                    else if(_left.Equals(to))
                         return LaneType.LeftTurn;
-                    else if(this._up.Equals(to))
+                    else if(_up.Equals(to))
                         return LaneType.Through;
                     else
                         return LaneType.RightTurn;
                 else
-                    if(this._left.Equals(to))
+                    if(_left.Equals(to))
                         throw new System.Exception("From and to are the same Edge");
-                    else if(this._up.Equals(to))
+                    else if(_up.Equals(to))
                         return LaneType.LeftTurn;
-                    else if(this._right.Equals(to))
+                    else if(_right.Equals(to))
                         return LaneType.Through;
                     else
                         return LaneType.RightTurn;

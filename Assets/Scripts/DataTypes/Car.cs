@@ -16,7 +16,7 @@ namespace DataTypes
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
             this.route = route;
-            segment = route.Shift();
+            segment = route.PopAt(0);
             track.cars.Add(this);
             positionOnRoad = 0;
             this.lane = lane;
@@ -32,7 +32,7 @@ namespace DataTypes
             {
                 positionOnRoad -= track.length;
                 track.cars.Remove(this);
-                segment = route.Shift();
+                segment = route.PopAt(0);
                 track.cars.Add(this);
             }
         }
@@ -60,11 +60,11 @@ namespace DataTypes
 
     // returns first element in list and removes it
     // modified from: https://stackoverflow.com/a/24855920
-    static class ListExtension
+    static class ListExtensions
     {
-        public static T Shift<T>(this List<T> list)
+        public static T PopAt<T>(this List<T> list, int index)
         {
-            T r = list[0];
+            var r = list[index];
             list.RemoveAt(0);
             return r;
         }

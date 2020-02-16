@@ -103,7 +103,7 @@ namespace DataTypes
             }
             
             var triangles =
-                Enumerable.Range(0, shape.points.Length - 4)
+                Enumerable.Range(0, shape.points.Length - 1)
                 .Select(i => 4 * i)
                 .Aggregate(
                     Enumerable.Empty<int>(),

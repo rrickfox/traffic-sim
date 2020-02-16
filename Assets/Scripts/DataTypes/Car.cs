@@ -57,16 +57,4 @@ namespace DataTypes
             _data.Move();
         }
     }
-
-    // returns first element in list and removes it
-    // modified from: https://stackoverflow.com/a/24855920
-    static class ListExtensions
-    {
-        public static T PopAt<T>(this List<T> list, int index)
-        {
-            var r = list[index];
-            list.RemoveAt(0);
-            return r;
-        }
-    }
 }

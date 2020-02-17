@@ -17,12 +17,12 @@ namespace Cameras
         [Header("Borders")]
         public Vector3 border1;
         public Vector3 border2;
-        [Header("Parent")]
-        public Transform parent;
 
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
+        Transform _targetCar;
+        bool _following;
         float _scroll;
 
         // Setting camera right, focus the center
@@ -42,6 +42,7 @@ namespace Cameras
         {
             if (!_cam.enabled)
                 return;
+            Follow();
             Rotate();
             Move();
             Zoom();
@@ -71,7 +72,7 @@ namespace Cameras
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
             if (_newPosition != transform.position)
-                transform.SetParent(parent);
+                _following = false;
 
             // Moving if mouse is near to the edge of the game window
             if (!Input.GetMouseButton(1))
@@ -101,23 +102,31 @@ namespace Cameras
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
         }
 
+        // follows a target Car
+        void Follow()
+        {
+            if (_targetCar != null && _following)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _targetCar.position, 1000f);
+            }
+        }
+
         // selects a Car with left mouse button to follow
         void SelectCar()
         {
             if (Input.GetMouseButtonDown(0))
             {
+                _following = false;
                 // shoots a ray to get a car located at the mousePosition
-                transform.SetParent(
-                    Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition),
-                                    out var hit,
-                                    200f,
-                                    LayerMask.GetMask("Cars"))
-                        ? hit.transform : parent
-                );
+                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))
+                {
+                    _following = true;
+                    _targetCar = hit.transform;
+                }
             }
         }
 
-        // Visualization of border
+        // Visualisation of border
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;

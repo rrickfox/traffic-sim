@@ -10,10 +10,11 @@ namespace DataTypes
         public Edge road { get; private set; }
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
-        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(10 + Random.value * 90); // Laengeneinheiten pro Zeiteinheit
+        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(70); // Laengeneinheiten pro Zeiteinheit
 
         public List<Car> otherCars;
 
+        private int i = 0;
         public Car(GameObject prefab, Edge road, float positionOnRoad, float lane) : base(prefab)
         {
             this.road = road;
@@ -44,27 +45,28 @@ namespace DataTypes
 
         public void CarControler()
         {
-            positionOnRoad += speed ;
-
             var stoppingDistance = Distance();
 
             float frontDistance = GetFrontDistance(stoppingDistance);
+            float frontSpeed = GetFrontSpeed(stoppingDistance);
 
-
-            if (frontDistance != 0)
+            //slow down
+            if (frontSpeed < speed && frontDistance > 2)
             {
-                Accelerate(-1f);
+                Accelerate(-speed / 100);
             }
-            if(speed <= Conversion.UnitsPerTimeStepFromKPH(120) && frontDistance == 0)
+            if (frontSpeed < speed  && frontDistance <= 2 && frontDistance > 0)
             {
-                Accelerate(1);
-            }
-            if(speed < Conversion.UnitsPerTimeStepFromKPH(120) && GetFrontDistance(stoppingDistance * 2) == 0)
-            {
-                Accelerate(2f);
+                Accelerate(-speed);
             }
 
-            Human();
+            //accelerate
+            if (frontSpeed >= speed || frontSpeed == -1 && frontDistance > 0 && speed < road.preferedSpeed)
+            { 
+                Accelerate(0.1f);
+            }
+
+            Human();  
 
             Move();
         }
@@ -87,14 +89,37 @@ namespace DataTypes
             }
             return 0;  
         }
+        public float GetFrontSpeed(float distance)
+        {
+            foreach (var _car in road.cars)
+            {
+                if ((_car.positionOnRoad - positionOnRoad) <= distance && positionOnRoad < _car.positionOnRoad && lane == _car.lane)
+                {
+                    return _car.speed;
+                }
+            }
+            return -1;
+        }
 
         public void Human()
         {
-            Accelerate(Random.value *-5);
+            bool human = false;
+
+            if (Random.value * 100 <= 1)
+            {
+                human = true;
+                i = 0;
+            }
+            if (human == true && i < 5)
+            {
+                i++;
+                Accelerate(-1);
+            }
         }
 
         private void Move()
-        {
+        {           
+            positionOnRoad += speed;
             var roadPoint = GetAbsolutePosition();
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);

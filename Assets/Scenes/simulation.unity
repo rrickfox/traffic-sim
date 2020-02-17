@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44658017, g: 0.49641502, b: 0.57482153, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -157,8 +157,8 @@ MonoBehaviour:
   startPoint: {x: -140, y: -50}
   controlPoint: {x: 0, y: 100}
   endPoint: {x: 140, y: -50}
-  lane1To2: 100
-  lane2To1: 100
+  lane1To2: 25
+  lane2To1: 25
 --- !u!4 &431655176
 Transform:
   m_ObjectHideFlags: 0

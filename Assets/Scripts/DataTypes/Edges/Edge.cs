@@ -22,6 +22,8 @@ namespace DataTypes
         // the incomingLanes of this are just the outgoingLanes of the other view
         public List<Lane> incomingLanes => other.outgoingLanes;
         public float length => shape.length;
+        //The Speed Cars should have
+        public float preferedSpeed = Conversion.UnitsPerTimeStepFromKPH(120);
 
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {

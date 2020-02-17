@@ -50,23 +50,29 @@ namespace DataTypes
             float frontDistance = GetFrontDistance(stoppingDistance);
             float frontSpeed = GetFrontSpeed(stoppingDistance);
 
-            //slow down
-            if (frontSpeed < speed && frontDistance > 2)
-            {
-                Accelerate(-speed / 100);
-            }
-            if (frontSpeed < speed  && frontDistance <= 2 && frontDistance > 0)
-            {
-                Accelerate(-speed);
-            }
-
             //accelerate
-            if (frontSpeed >= speed || frontSpeed == -1 && frontDistance > 0 && speed < road.preferedSpeed)
-            { 
-                Accelerate(0.1f);
+            if (frontSpeed >= speed || frontSpeed == -1)
+            {
+                if (frontDistance > 0 && speed < road.preferedSpeed)
+                {
+                    Accelerate(0.1f);
+                }
+            }
+            //slow down
+            else
+            {
+                if (frontDistance > 3)
+                {
+                    Accelerate(-speed / 100);
+                }
+
+                if (frontDistance <= 3 && frontDistance > 0)
+                {
+                    Accelerate(-speed);
+                }
             }
 
-            Human();  
+            Human(false);  
 
             Move();
         }
@@ -101,19 +107,21 @@ namespace DataTypes
             return -1;
         }
 
-        public void Human()
+        public void Human(bool human)
         {
-            bool human = false;
-
-            if (Random.value * 100 <= 1)
+            if (Random.value * 200 <= 1)
             {
                 human = true;
                 i = 0;
             }
-            if (human == true && i < 5)
+            if (human == true && i < 50)
             {
                 i++;
-                Accelerate(-1);
+                Accelerate(-1f);
+            }
+            if (i >= 50) 
+            { 
+                human = false;  
             }
         }
 

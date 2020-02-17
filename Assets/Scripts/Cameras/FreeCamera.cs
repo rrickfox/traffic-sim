@@ -41,7 +41,15 @@ namespace Cameras
         void FixedUpdate()
         {
             if (!_cam.enabled)
+            {
+                // reset camera
+                if (_following)
+                {
+                    _following = false;
+                    _targetCar = null;
+                }
                 return;
+            }
             Follow();
             Rotate();
             Move();

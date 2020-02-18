@@ -11,7 +11,7 @@ namespace DataTypes
         private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
-        // weighed choosing of vertices to route to
+        // possible routing destinations with weight
         private RouteProbabilities _routeProbabilities;
         private int[] _weights { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
@@ -43,6 +43,7 @@ namespace DataTypes
 
         public void DespawnCars()
         {
+            // removes incoming cars
             foreach (var car in _edge.other.cars.ToList().Where(car => car.positionOnRoad >= _edge.length))
             {
                 car.Dispose();

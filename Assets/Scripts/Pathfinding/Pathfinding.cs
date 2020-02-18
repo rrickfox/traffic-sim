@@ -101,7 +101,8 @@ namespace Pathfinding
             }
             vertexPath.AddFirst(self);
 
-            // return the edges connecting the vertices in the path
+            // return the route segments composed of edges connecting the vertices
+            // as well as the LaneType required at the vertex
             var path = vertexPath.ZipThree(
                 vertexPath.Skip(1),
                 vertexPath.Skip(2),
@@ -110,7 +111,7 @@ namespace Pathfinding
             ).ToList();
             path.Add(new RouteSegment(
                 track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
-                laneType: LaneType.Through // since last vertex is EndPoint, LaneType mus be Through
+                laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
             ));
             return path;
         }

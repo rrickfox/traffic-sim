@@ -119,101 +119,108 @@ namespace DataTypes
                 + STOP_LINE_WIDTH
                 + SECTION_BUFFER_LENGTH));
 
-            var meshVertices = new Vector3[8];
+            var meshVertices = new Vector3[12];
             var triangles = new int[30];
-            var uvs = new Vector2[8];
+            var uvs = new Vector2[12];
 
-            var leftUpCorner = center
-                + _left.originPoint.forward // offset to the left
-                    * (_up.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2)
-                + _up.originPoint.forward // offset up
-                    * (_left.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2);
-            meshVertices[0] = new Vector3(leftUpCorner.x, 0f, leftUpCorner.y);
+            // set mesh Vertices in plus shape
+            var leftUpCorner = center + GetSectionCorner(_left, _up);
+            meshVertices[0] = new Vector3(leftUpCorner.x, ROAD_HEIGHT, leftUpCorner.y);
 
-            var upRightCorner = center
-                + _up.originPoint.forward
-                    * (_right.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2)
-                + _right.originPoint.forward
-                    * (_up.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2);
-            meshVertices[1] = new Vector3(upRightCorner.x, 0f, upRightCorner.y);
+            var upBufferLeft = GetBufferCorner(_up, true);
+            meshVertices[1] = new Vector3(upBufferLeft.x, ROAD_HEIGHT, upBufferLeft.y);
+            var upBufferRight = GetBufferCorner(_up, false);
+            meshVertices[2] = new Vector3(upBufferRight.x, ROAD_HEIGHT, upBufferRight.y);
 
-            var rightDownCorner = center
-                + _right.originPoint.forward
-                    * (_down.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2)
-                + _down.originPoint.forward
-                    * (_right.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2);
-            meshVertices[2] = new Vector3(rightDownCorner.x,  0f, rightDownCorner.y);
+            var upRightCorner = center + GetSectionCorner(_up, _right);
+            meshVertices[3] = new Vector3(upRightCorner.x, ROAD_HEIGHT, upRightCorner.y);
 
-            var downLeftCorner = center
-                + _down.originPoint.forward
-                    * (_left.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2)
-                + _left.originPoint.forward
-                    * (_down.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                        - LINE_WIDTH
-                        + BORDER_LINE_WIDTH
-                        + MIDDLE_LINE_WIDTH / 2);
-            meshVertices[3] = new Vector3(downLeftCorner.x, 0f, downLeftCorner.y);
-            
-            meshVertices[4] = meshVertices[0] + new Vector3(0f, ROAD_HEIGHT, 0f);
-            meshVertices[5] = meshVertices[1] + new Vector3(0f, ROAD_HEIGHT, 0f);
-            meshVertices[6] = meshVertices[2] + new Vector3(0f, ROAD_HEIGHT, 0f);
-            meshVertices[7] = meshVertices[3] + new Vector3(0f, ROAD_HEIGHT, 0f);
+            var rightBufferLeft = GetBufferCorner(_right, true);
+            meshVertices[4] = new Vector3(rightBufferLeft.x, ROAD_HEIGHT, rightBufferLeft.y);
+            var rightBufferRight = GetBufferCorner(_right, false);
+            meshVertices[5] = new Vector3(rightBufferRight.x, ROAD_HEIGHT, rightBufferRight.y);
 
-            var triIndex = 0;
-            for (int i = 0; i < 5; i++)
+
+            var rightDownCorner = center + GetSectionCorner(_right, _down);
+            meshVertices[6] = new Vector3(rightDownCorner.x,  ROAD_HEIGHT, rightDownCorner.y);
+
+            var downBufferLeft = GetBufferCorner(_down, true);
+            meshVertices[7] = new Vector3(downBufferLeft.x, ROAD_HEIGHT, downBufferLeft.y);
+            var downBufferRight = GetBufferCorner(_down, false);
+            meshVertices[8] = new Vector3(downBufferRight.x, ROAD_HEIGHT, downBufferRight.y);
+
+            var downLeftCorner = center + GetSectionCorner(_down, _left);
+            meshVertices[9] = new Vector3(downLeftCorner.x, ROAD_HEIGHT, downLeftCorner.y);
+
+            var leftBufferLeft = GetBufferCorner(_left, true);
+            meshVertices[10] = new Vector3(leftBufferLeft.x, ROAD_HEIGHT, leftBufferLeft.y);
+            var leftBufferRight = GetBufferCorner(_left, false);
+            meshVertices[11] = new Vector3(leftBufferRight.x, ROAD_HEIGHT, leftBufferRight.y);
+
+            // first triangle is middle of crosssection
+            triangles[0] = 0;
+            triangles[1] = 3;
+            triangles[2] = 6;
+
+            triangles[3] = 0;
+            triangles[4] = 6;
+            triangles[5] = 9;
+
+            // other triangles make up the buffer zone
+            var triIndex = 6;
+            for(var i = 0; i < 12; i += 3)
             {
-                if(i == 4)
-                {
-                    triangles[triIndex] = i;
-                    triangles[triIndex + 1] = i + 1;
-                    triangles[triIndex + 2] = i + 2;
+                triangles[triIndex] = i;
+                triangles[triIndex + 1] = i + 1;
+                triangles[triIndex + 2] = i + 2;
 
-                    triangles[triIndex + 3] = i;
-                    triangles[triIndex + 4] = i + 2;
-                    triangles[triIndex + 5] = i + 3;
-                }
-                else {
-                    triangles[triIndex] = i;
-                    triangles[triIndex + 1] = (i + 1) % 4;
-                    triangles[triIndex + 2] = i + 4;
+                triangles[triIndex + 3] = i;
+                triangles[triIndex + 4] = i + 2;
+                triangles[triIndex + 5] = (i + 3) % 12;
 
-                    triangles[triIndex + 3] = i + 1;
-                    triangles[triIndex + 4] = (i + 1) % 4 + 4;
-                    triangles[triIndex + 5] = i + 4;
-                    triIndex += 6;
-                }
+                triIndex += 6;
             }
 
-            uvs[0] = new Vector2(0f, 1f);
-            uvs[1] = new Vector2(1f, 1f);
-            uvs[2] = new Vector2(1f, 0f);
-            uvs[3] = new Vector2(0f, 0f);
-            uvs[4] = new Vector2(ROAD_HEIGHT / (2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[5]).magnitude),
-                1 - ROAD_HEIGHT / (2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[7]).magnitude));
-            uvs[5] = new Vector2(1f - uvs[4].x, uvs[4].y);
-            uvs[6] = new Vector2(1f - uvs[4].x, 1f - uvs[4].y);
-            uvs[7] = new Vector2(uvs[4].x, 1f - uvs[4].y);
+            // set uvs based on relative position of mesh vertices
+            var bottomLeftCorner = center
+                + _down.originPoint.forward * Vector2.Distance(center, _down.originPoint.position)
+                + _left.originPoint.forward * Vector2.Distance(center, _left.originPoint.position);
+            var bottomRightCorner = center
+                + _down.originPoint.forward * Vector2.Distance(center, _down.originPoint.position)
+                + _right.originPoint.forward * Vector2.Distance(center, _right.originPoint.position);
+            var topLeftCorner = center
+                + _up.originPoint.forward * Vector2.Distance(center, _up.originPoint.position)
+                + _left.originPoint.forward * Vector2.Distance(center, _left.originPoint.position);
+            var topRightCorner = center
+                + _up.originPoint.forward * Vector2.Distance(center, _up.originPoint.position)
+                + _right.originPoint.forward * Vector2.Distance(center, _right.originPoint.position);
+            
+            // upper uv coordinates
+            uvs[1] = new Vector2(Vector2.Distance(new Vector2(meshVertices[1].x, meshVertices[1].z), topLeftCorner) / Vector2.Distance(topLeftCorner, topRightCorner), 1);
+            uvs[2] = new Vector2(Vector2.Distance(new Vector2(meshVertices[2].x, meshVertices[2].z), topLeftCorner) / Vector2.Distance(topLeftCorner, topRightCorner), 1);
+            // right uv coordinates
+            uvs[4] = new Vector2(1, Vector2.Distance(new Vector2(meshVertices[4].x, meshVertices[4].z), bottomRightCorner) / Vector2.Distance(bottomRightCorner, topRightCorner));
+            uvs[5] = new Vector2(1, Vector2.Distance(new Vector2(meshVertices[5].x, meshVertices[5].z), bottomRightCorner) / Vector2.Distance(bottomRightCorner, topRightCorner));
+            // bottom uv coordinates
+            uvs[7] = new Vector2(Vector2.Distance(new Vector2(meshVertices[7].x, meshVertices[7].z), bottomLeftCorner) / Vector2.Distance(bottomLeftCorner, bottomRightCorner), 0);
+            uvs[8] = new Vector2(Vector2.Distance(new Vector2(meshVertices[8].x, meshVertices[8].z), bottomLeftCorner) / Vector2.Distance(bottomLeftCorner, bottomRightCorner), 0);
+            // left uv coordinates
+            uvs[10] = new Vector2(0, Vector2.Distance(new Vector2(meshVertices[10].x, meshVertices[10].z), bottomLeftCorner) / Vector2.Distance(bottomLeftCorner, topLeftCorner));
+            uvs[11] = new Vector2(0, Vector2.Distance(new Vector2(meshVertices[11].x, meshVertices[11].z), bottomLeftCorner) / Vector2.Distance(bottomLeftCorner, topLeftCorner));
+            
+            // center uv coordinates
+            uvs[0] = new Vector2(uvs[1].x, uvs[11].y);
+            uvs[3] = new Vector2(uvs[2].x, uvs[4].y);
+            uvs[6] = new Vector2(uvs[7].x, uvs[5].y);
+            uvs[9] = new Vector2(uvs[8].x, uvs[10].y);
+
+            foreach(var vec in uvs)
+            {
+                var s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                s.transform.position = new Vector3(vec.x, 0, vec.y);
+                s.transform.localScale = Vector3.one * 0.3f;
+                Debug.Log(vec.x + " " + vec.y);
+            }
 
             gameObject.GetComponent<MeshFilter>().mesh = new Mesh
             {
@@ -222,26 +229,151 @@ namespace DataTypes
                 uv = uvs
             };
 
-            Texture texture = GetTexture(Mathf.RoundToInt(2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[5]).magnitude),
-                Mathf.RoundToInt(2 * ROAD_HEIGHT + (meshVertices[4] - meshVertices[7]).magnitude));
+            Texture texture = GetTexture(meshVertices);
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+            gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", Vector2.one);
         }
 
-        private Texture GetTexture(int width, int height)
+        private Texture GetTexture(Vector3[] meshVertices)
         {
-            var texture = new Texture2D(width, height, TextureFormat.ARGB32, true);
+            // calculate height and width based on origin Points of opposite edges
+            var height = Mathf.RoundToInt(Vector2.Distance(_up.originPoint.position, _down.originPoint.position) * MULTIPLIER_SECTION);
+            var width = Mathf.RoundToInt(Vector2.Distance(_right.originPoint.position, _left.originPoint.position) * MULTIPLIER_SECTION);
+            var texture = new Texture2D(width, height, TextureFormat.RGBA32, true);
+            Debug.Log(height + " " + width + " " + MULTIPLIER_SECTION);
 
-            for (int y = 0; y < height; y++)
+             // construct texture from bottom up
+            for (var y = 0; y < height; y++)
             {
-                for (int x = 0; x < width; x++)
+                var x = 0;
+
+                 // stop line in _down edge
+                if(y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION))
                 {
-                    texture.SetPixel(x: x, y: y, color: ROAD);
-                }
+                    ///Debug.Log("----------");
+                    // if x is left of _down
+                    var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
+                        - Vector2.Distance(_down.originPoint.position, 
+                            new Vector2(meshVertices[8].x, meshVertices[8].z)))
+                        * MULTIPLIER_SECTION;
+                    ///Debug.Log("leftOfRoad: " + leftOfRoad);
+                    for(var i = 0; i < (int) leftOfRoad; i++)
+                    {
+                        texture.SetPixel(x, y, TRANSPARENT);
+                        x++;
+                    }
+                    ///Debug.Log(x);
+                    ///Debug.Log(BORDER_LINE_WIDTH * MULTIPLIER_SECTION);
+                    for(var i = 0; i < (int) (BORDER_LINE_WIDTH * MULTIPLIER_SECTION); i++)
+                    {
+                        texture.SetPixel(x, y, BORDER_LINE);
+                        x++;
+                    }
+                    ///Debug.Log(x);
+                    for(var j = 0; j < _down.outgoingLanes.Count; j++)
+                    {
+                        if(j > 0)
+                        {
+                            ///Debug.Log(LINE_WIDTH * MULTIPLIER_SECTION);
+                            for(var i = 0; i < (int) (LINE_WIDTH * MULTIPLIER_SECTION); i++)
+                            {
+                                texture.SetPixel(x, y, LINE);
+                                x++;
+                            }
+                            ///Debug.Log(x);
+                        }
+                        ///Debug.Log(LANE_WIDTH * MULTIPLIER_SECTION);
+                        for(var i = 0; i < (int) (LANE_WIDTH * MULTIPLIER_SECTION); i++)
+                        {
+                            texture.SetPixel(x, y, ROAD);
+                            x++;
+                        }
+                        ///Debug.Log(x);
+                    }
+                    if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
+                    {
+                        ///Debug.Log(MIDDLE_LINE_WIDTH * MULTIPLIER_SECTION);
+                        for(var i = 0; i < (int) (MIDDLE_LINE_WIDTH * MULTIPLIER_SECTION); i++)
+                        {
+                            texture.SetPixel(x, y, MIDDLE_LINE);
+                            x++;
+                        }
+                        ///Debug.Log(x);
+                    }
+                    for(var j = 0; j < _down.incomingLanes.Count; j++)
+                    {
+                        if(j > 0)
+                        {
+                            ///Debug.Log(LINE_WIDTH * MULTIPLIER_SECTION);
+                            for(var i = 0; i < (int) (LINE_WIDTH * MULTIPLIER_SECTION); i++)
+                            {
+                                texture.SetPixel(x, y, STOP_LINE);
+                                x++;
+                            }
+                            ///Debug.Log(x);
+                        }
+                        ///Debug.Log(LANE_WIDTH * MULTIPLIER_SECTION);
+                        for(var i = 0; i < (int) (LANE_WIDTH * MULTIPLIER_SECTION); i++)
+                        {
+                            texture.SetPixel(x, y, STOP_LINE);
+                            x++;
+                        }
+                        ///Debug.Log(x);
+                    }
+                    ///Debug.Log(BORDER_LINE_WIDTH * MULTIPLIER_SECTION);
+                    for(var i = 0; i < (int) (BORDER_LINE_WIDTH * MULTIPLIER_SECTION); i++)
+                    {
+                        texture.SetPixel(x, y, BORDER_LINE);
+                        x++;
+                    }
+                    ///Debug.Log(x);
+                    var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
+                        - Vector2.Distance(_down.originPoint.position,
+                            new Vector2(meshVertices[7].x, meshVertices[7].z)))
+                        * MULTIPLIER_SECTION;
+                    ///Debug.Log("rightOfRoad: " + rightOfRoad);
+                    for(var i = 0; i < (int) rightOfRoad; i++)
+                    {
+                        texture.SetPixel(x, y, TRANSPARENT);
+                        x++;
+                    }
+                    ///Debug.Log(x + " " + width);
+                } else
+                    for(; x < width; x++)
+                        texture.SetPixel(x: x, y: y, color: ROAD);
             }
 
             texture.Apply();
 
             return texture;
+        }
+
+        // return position of corner when given to adjacent edges
+        private Vector2 GetSectionCorner(Edge leftEdge, Edge rightEdge)
+        {
+            return leftEdge.originPoint.forward // offset to the left Edge
+                * (rightEdge.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                    - LINE_WIDTH
+                    + BORDER_LINE_WIDTH
+                    + MIDDLE_LINE_WIDTH / 2)
+            + rightEdge.originPoint.forward // offset to the right Edge
+                * (leftEdge.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                    - LINE_WIDTH
+                    + BORDER_LINE_WIDTH
+                    + MIDDLE_LINE_WIDTH / 2);
+        }
+
+        // return position of corner including offset
+        private Vector2 GetBufferCorner(Edge edge, bool left)
+        {
+            var leftVector =  new Vector2(-edge.originPoint.forward.y, edge.originPoint.forward.x);
+            return edge.originPoint.position 
+                +  (left ? leftVector : -leftVector)
+                    * (LANE_WIDTH * (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) // lanes
+                    + LINE_WIDTH * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 1) ? (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) - 1 : 0) // lines
+                    + MIDDLE_LINE_WIDTH / 2f // half the middle line
+                    + BORDER_LINE_WIDTH // border line
+                    - (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)); // subtract half the middle line if no lanes incoming
         }
     }
     

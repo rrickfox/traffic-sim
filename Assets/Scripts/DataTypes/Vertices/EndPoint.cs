@@ -28,7 +28,7 @@ namespace DataTypes
                 throw new Exception("All lanes going into an EndPoint have to be of type Through");
         }
 
-        public void SetWeights()
+        public void CalculateRouteProbabilities()
         {
             _routeProbabilities = new RouteProbabilities(_weights, routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList());
         }

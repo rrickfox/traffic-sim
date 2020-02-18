@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -41,9 +42,8 @@ namespace DataTypes
         // modified from: https://stackoverflow.com/a/43345968
         public IVertex Choose()
         {
-            var random = new Random();
             // now generate random double. It will always be in range from 0 to 1
-            var r = random.NextDouble();
+            var r = RANDOM.NextDouble();
             // now find first index in our cumulative array that is greater or equal generated random value
             var idx = _cumulative.BinarySearch(r);
             // if exact match is not found, List.BinarySearch will return index of the first items greater than passed value, but in specific form (negative)

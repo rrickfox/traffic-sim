@@ -20,13 +20,13 @@ namespace DataTypes
             track.cars.Add(this);
             this.lane = lane;
 
-            SetPosition();
+            UpdatePosition();
         }
 
         public void Move()
         {
             positionOnRoad += speed;
-            SetPosition();
+            UpdatePosition();
             // if car is at end of RouteSegment, get next routeSegment if there is one
             if(positionOnRoad >= track.length && route.Count > 0)
             {
@@ -37,7 +37,7 @@ namespace DataTypes
             }
         }
 
-        private void SetPosition()
+        private void UpdatePosition()
         {
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);

@@ -140,7 +140,7 @@ namespace DataTypes
             // texture contains (left to right):
             // border, road and lines, middle, road and lines, border
             var textureWidth = Mathf.RoundToInt(
-                WIDTH_MULTIPLIER * (
+                WIDTH_MULTIPLIER_ROAD * (
                     ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
                     + 2 * ROAD_HEIGHT // sides
@@ -176,16 +176,16 @@ namespace DataTypes
 
         private IEnumerable<Color> GetColorRow(bool lines)
         {
-            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER));
+            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER_ROAD));
             
             IEnumerable<Color> GetLanesColorRow(int laneCount)
             {
                 for(var j = 0; j < laneCount; j++)
                 {
                     if(j > 0)
-                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER); i++)
+                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                             yield return lines ? COLORS.LINE : COLORS.ROAD;
-                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER); i++)
+                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                         yield return COLORS.ROAD;
                 }
             }

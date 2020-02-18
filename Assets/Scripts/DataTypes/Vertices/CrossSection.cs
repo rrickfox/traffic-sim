@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using static Utility.CONSTANTS;
 
@@ -26,9 +27,9 @@ namespace DataTypes
         // throws exception if edges are equal
         public override LaneType SubRoute(Edge from, Edge to)
         {
-            if (!edges.Contains(from)) throw new System.Exception("From Edge not found");
-            if(!edges.Contains(to)) throw new System.Exception("To Edge not found");
-            if(from == to) throw new System.Exception("From and to are the same Edge");
+            if (!edges.Contains(from)) throw new Exception("From Edge not found");
+            if(!edges.Contains(to)) throw new Exception("To Edge not found");
+            if(from == to) throw new Exception("From and to are the same Edge");
             
             if(from == _up)
                 if(to == _right)

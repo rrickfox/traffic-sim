@@ -34,7 +34,5 @@ namespace Utility
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)));
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
-        // global random Instance
-        public static System.Random RANDOM = new System.Random();
     }
 }

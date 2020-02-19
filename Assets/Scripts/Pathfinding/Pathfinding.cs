@@ -20,7 +20,6 @@ namespace Pathfinding
                 { 
                     start.FindPath(end, verticesSet);
                 }
-                start.CalculateRouteProbabilities();
             }
         }
     }

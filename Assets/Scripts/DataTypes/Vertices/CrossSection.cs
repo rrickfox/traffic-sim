@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using Utility;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -28,9 +28,9 @@ namespace DataTypes
         public override LaneType SubRoute(Edge comingFrom, Edge to)
         {
             var from = comingFrom.other; // Subroute gets called with the Edge facing this Vertex, therefore other must be called
-            if (!edges.Contains(from)) throw new Exception("From Edge not found");
-            if(!edges.Contains(to)) throw new Exception("To Edge not found");
-            if(from == to) throw new Exception("From and to are the same Edge");
+            if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
+            if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
+            if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
             
             if(from == _up)
                 if(to == _right)

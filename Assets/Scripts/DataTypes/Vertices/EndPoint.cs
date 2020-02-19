@@ -1,4 +1,4 @@
-using System;
+using Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -25,7 +25,7 @@ namespace DataTypes
             _weights = weights;
 
             if (edge.incomingLanes.Any(lane => !lane.types.Equals(_ONLY_THROUGH)))
-                throw new Exception("All lanes going into an EndPoint have to be of type Through");
+                throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
         }
 
         public void CalculateRouteProbabilities()

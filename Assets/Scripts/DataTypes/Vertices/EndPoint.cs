@@ -14,7 +14,6 @@ namespace DataTypes
         // cumulative Probabilities of choosing a vertex to route to
         private List<double> _cumulativeProbabilities { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
-        private static readonly HashSet<LaneType> _ONLY_THROUGH = new HashSet<LaneType> {LaneType.Through};
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
         {
@@ -23,7 +22,7 @@ namespace DataTypes
             _frequencies = frequencies;
             _cumulativeProbabilities = MathUtils.CalculateCumulative(weights);
 
-            if (edge.incomingLanes.Any(lane => !lane.types.Equals(_ONLY_THROUGH)))
+            if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
         }
 

@@ -9,7 +9,7 @@ namespace DataTypes
         {
         }
 
-        public override LaneType SubRoute(Edge from, Edge to)
+        public override LaneType SubRoute(Edge ComingFrom, Edge to)
         {
             throw new System.NotImplementedException();
         }

@@ -25,8 +25,9 @@ namespace DataTypes
         // returns necessary lane to go from an edge to another edge
         // throws exception if edges are not in this vertex
         // throws exception if edges are equal
-        public override LaneType SubRoute(Edge from, Edge to)
+        public override LaneType SubRoute(Edge comingFrom, Edge to)
         {
+            var from = comingFrom.other; // Subroute gets called with the Edge facing this Vertex, therefore other must be called
             if (!edges.Contains(from)) throw new Exception("From Edge not found");
             if(!edges.Contains(to)) throw new Exception("To Edge not found");
             if(from == to) throw new Exception("From and to are the same Edge");

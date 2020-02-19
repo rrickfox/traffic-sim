@@ -51,7 +51,7 @@ namespace DataTypes
             }
         }
 
-        public override LaneType SubRoute(Edge from, Edge to) => LaneType.Through;
+        public override LaneType SubRoute(Edge comingFrom, Edge to) => LaneType.Through;
     }
 
     public class EndPointBehaviour : VertexBehaviour<EndPoint>

@@ -75,6 +75,7 @@ namespace DataTypes
 
         public void Display()
         {
+            #region setOriginPoints
             // move originPoints to be in line with the borders of neighbouring edges
             _up.UpdateOriginPoint(center // center of section
                 + _up.originPoint.forward // move-direction
@@ -119,11 +120,13 @@ namespace DataTypes
                 : BORDER_LINE_WIDTH - MIDDLE_LINE_WIDTH / 2f)
                 + STOP_LINE_WIDTH
                 + SECTION_BUFFER_LENGTH));
+            #endregion
 
             var meshVertices = new Vector3[12];
             var triangles = new int[30];
             var uvs = new Vector2[12];
 
+            #region setMeshVertices
             // set mesh Vertices in plus shape
             var leftUpCorner = center + GetSectionCorner(_left, _up);
             meshVertices[0] = new Vector3(leftUpCorner.x, ROAD_HEIGHT, leftUpCorner.y);
@@ -157,7 +160,9 @@ namespace DataTypes
             meshVertices[10] = new Vector3(leftBufferLeft.x, ROAD_HEIGHT, leftBufferLeft.y);
             var leftBufferRight = GetBufferCorner(_left, false);
             meshVertices[11] = new Vector3(leftBufferRight.x, ROAD_HEIGHT, leftBufferRight.y);
+            #endregion
 
+            #region setTriangles
             // first triangle is middle of crosssection
             triangles[0] = 0;
             triangles[1] = 3;
@@ -181,7 +186,9 @@ namespace DataTypes
 
                 triIndex += 6;
             }
+            #endregion
 
+            #region setUvs
             // set uvs based on relative position of mesh vertices
             var bottomLeftCorner = center
                 + _down.originPoint.forward * Vector2.Distance(center, _down.originPoint.position)
@@ -214,14 +221,7 @@ namespace DataTypes
             uvs[3] = new Vector2(uvs[2].x, uvs[4].y);
             uvs[6] = new Vector2(uvs[7].x, uvs[5].y);
             uvs[9] = new Vector2(uvs[8].x, uvs[10].y);
-
-            foreach(var vec in uvs)
-            {
-                var s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                s.transform.position = new Vector3(vec.x, 0, vec.y);
-                s.transform.localScale = Vector3.one * 0.3f;
-                Debug.Log(vec.x + " " + vec.y);
-            }
+            #endregion
 
             gameObject.GetComponent<MeshFilter>().mesh = new Mesh
             {

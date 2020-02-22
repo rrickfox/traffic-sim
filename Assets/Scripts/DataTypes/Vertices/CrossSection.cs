@@ -20,8 +20,6 @@ namespace DataTypes
             _left = left;
         }
 
-        public CrossSection(Edge up, Edge right, Edge down, Edge left) : this(EMPTY_PREFAB, up, right, down, left) {}
-
         // returns necessary lane to go from an edge to another edge
         // throws exception if edges are not in this vertex
         // throws exception if edges are equal

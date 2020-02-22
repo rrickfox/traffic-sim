@@ -2,6 +2,7 @@ using UnityEngine;
 using static Utility.CONSTANTS;
 using static Utility.COLORS;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DataTypes
 {
@@ -242,110 +243,63 @@ namespace DataTypes
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, true);
             Debug.Log(height + " " + width + " " + MULTIPLIER_SECTION);
 
+            var downStopLineRow = GetDownStopLineRow(meshVertices);
              // construct texture from bottom up
             for (var y = 0; y < height; y++)
             {
-                var x = 0;
-
-                 // stop line in _down edge
-                if(y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION))
+                for(var x = 0; x < width; x++)
                 {
-                    ///Debug.Log("----------");
-                    // if x is left of _down
-                    var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
-                        - Vector2.Distance(_down.originPoint.position, 
-                            new Vector2(meshVertices[8].x, meshVertices[8].z)))
-                        * MULTIPLIER_SECTION;
-                    ///Debug.Log("leftOfRoad: " + leftOfRoad);
-                    for(var i = 0; i < (int) leftOfRoad; i++)
-                    {
-                        texture.SetPixel(x, y, TRANSPARENT);
-                        x++;
-                    }
-                    ///Debug.Log(x);
-                    ///Debug.Log(BORDER_LINE_WIDTH * MULTIPLIER_SECTION);
-                    for(var i = 0; i < (int) (BORDER_LINE_WIDTH * MULTIPLIER_SECTION); i++)
-                    {
-                        texture.SetPixel(x, y, BORDER_LINE);
-                        x++;
-                    }
-                    ///Debug.Log(x);
-                    for(var j = 0; j < _down.outgoingLanes.Count; j++)
-                    {
-                        if(j > 0)
-                        {
-                            ///Debug.Log(LINE_WIDTH * MULTIPLIER_SECTION);
-                            for(var i = 0; i < (int) (LINE_WIDTH * MULTIPLIER_SECTION); i++)
-                            {
-                                texture.SetPixel(x, y, LINE);
-                                x++;
-                            }
-                            ///Debug.Log(x);
-                        }
-                        ///Debug.Log(LANE_WIDTH * MULTIPLIER_SECTION);
-                        for(var i = 0; i < (int) (LANE_WIDTH * MULTIPLIER_SECTION); i++)
-                        {
-                            texture.SetPixel(x, y, ROAD);
-                            x++;
-                        }
-                        ///Debug.Log(x);
-                    }
-                    if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
-                    {
-                        ///Debug.Log(MIDDLE_LINE_WIDTH * MULTIPLIER_SECTION);
-                        for(var i = 0; i < (int) (MIDDLE_LINE_WIDTH * MULTIPLIER_SECTION); i++)
-                        {
-                            texture.SetPixel(x, y, MIDDLE_LINE);
-                            x++;
-                        }
-                        ///Debug.Log(x);
-                    }
-                    for(var j = 0; j < _down.incomingLanes.Count; j++)
-                    {
-                        if(j > 0)
-                        {
-                            ///Debug.Log(LINE_WIDTH * MULTIPLIER_SECTION);
-                            for(var i = 0; i < (int) (LINE_WIDTH * MULTIPLIER_SECTION); i++)
-                            {
-                                texture.SetPixel(x, y, STOP_LINE);
-                                x++;
-                            }
-                            ///Debug.Log(x);
-                        }
-                        ///Debug.Log(LANE_WIDTH * MULTIPLIER_SECTION);
-                        for(var i = 0; i < (int) (LANE_WIDTH * MULTIPLIER_SECTION); i++)
-                        {
-                            texture.SetPixel(x, y, STOP_LINE);
-                            x++;
-                        }
-                        ///Debug.Log(x);
-                    }
-                    ///Debug.Log(BORDER_LINE_WIDTH * MULTIPLIER_SECTION);
-                    for(var i = 0; i < (int) (BORDER_LINE_WIDTH * MULTIPLIER_SECTION); i++)
-                    {
-                        texture.SetPixel(x, y, BORDER_LINE);
-                        x++;
-                    }
-                    ///Debug.Log(x);
-                    var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
-                        - Vector2.Distance(_down.originPoint.position,
-                            new Vector2(meshVertices[7].x, meshVertices[7].z)))
-                        * MULTIPLIER_SECTION;
-                    ///Debug.Log("rightOfRoad: " + rightOfRoad);
-                    for(var i = 0; i < (int) rightOfRoad; i++)
-                    {
-                        texture.SetPixel(x, y, TRANSPARENT);
-                        x++;
-                    }
-                    ///Debug.Log(x + " " + width);
-                } else
-                    for(; x < width; x++)
+                    // stop line in _down edge
+                    if(y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION))
+                        texture.SetPixel(x: x, y:y, color: downStopLineRow[x]);
+                    else
                         texture.SetPixel(x: x, y: y, color: ROAD);
+                }
             }
 
             texture.Apply();
 
             return texture;
+        }
+
+        private Color[] GetDownStopLineRow(Vector3[] meshVertices)
+        {
+            var row = new List<Color>();
+        
+            void RepeatWidth(float width, Color color) => row.AddRange(Enumerable.Range(0, (int)(width * MULTIPLIER_SECTION)).Select(x => color));
+
+            // add a transparent Pixel, as left of road counts in distances, not absolute values
+            // if LeftOfRoad is 540, it has to place pixels *up to* 540, not 540 pixels
+            // therefore a single pixel has to be set
+            row.Add(TRANSPARENT);
+
+            // if x is left of _down
+            var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position, 
+                    new Vector2(meshVertices[8].x, meshVertices[8].z)));
+            RepeatWidth(leftOfRoad, TRANSPARENT);
+            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
+            for(var j = 0; j < _down.outgoingLanes.Count; j++)
+            {
+                if(j > 0)
+                    RepeatWidth(LINE_WIDTH, LINE);
+                RepeatWidth(LANE_WIDTH, ROAD);
+            }
+            if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
+                RepeatWidth(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
+            for(var j = 0; j < _down.incomingLanes.Count; j++)
+            {
+                if(j > 0)
+                    RepeatWidth(LINE_WIDTH, STOP_LINE);
+                RepeatWidth(LANE_WIDTH, STOP_LINE);
+            }
+            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
+            var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position,
+                    new Vector2(meshVertices[7].x, meshVertices[7].z)));
+            RepeatWidth(rightOfRoad, TRANSPARENT);
+
+            return row.ToArray();
         }
 
         // return position of corner when given to adjacent edges

@@ -35,7 +35,7 @@ public class protoRoundabout : Vertex<TeeSection, TeeSectionBehaviour>
         
         if(from == _Right)
             if(to == _incoming)
-                throw new NetworkConfigurationError("to is incoming-only")
+                throw new NetworkConfigurationError("to is incoming-only");
             else // to == _outgoing
                 return LaneType.RightTurn;
         if(from == _incoming)
@@ -44,7 +44,7 @@ public class protoRoundabout : Vertex<TeeSection, TeeSectionBehaviour>
             else // to == _outgoing
                 return LaneType.Through;
         else // from == _outgoing
-            throw new NetworkConfigurationError("coming from outgoing-only")
-        }
+            throw new NetworkConfigurationError("coming from outgoing-only");
     }
+    
 }

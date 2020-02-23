@@ -1,14 +1,13 @@
 using UnityEngine;
 using Utility;
 using System.Collections.Generic;
-using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
     public class Car : GameObjectData<Car, CarBehaviour>
     {
         public ITrack track => segment.track;
-        public float positionOnRoad { get; private set; }
+        public float positionOnRoad { get; private set; } = 0;
         public float lane { get; private set; }
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
         public List<RouteSegment> route { get; private set;}
@@ -17,28 +16,28 @@ namespace DataTypes
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
             this.route = route;
-            segment = route.Pop();
+            segment = route.PopAt(0);
             track.cars.Add(this);
-            positionOnRoad = 0;
             this.lane = lane;
 
-            SetPosition();
+            UpdatePosition();
         }
 
         public void Move()
         {
             positionOnRoad += speed;
-            SetPosition();
+            UpdatePosition();
+            // if car is at end of RouteSegment, get next routeSegment if there is one
             if(positionOnRoad >= track.length && route.Count > 0)
             {
-                positionOnRoad -= track.length;
+                positionOnRoad -= track.length; // add overshot distance to new RouteSegment
                 track.cars.Remove(this);
-                segment = route.Pop();
+                segment = route.PopAt(0);
                 track.cars.Add(this);
             }
         }
 
-        private void SetPosition()
+        private void UpdatePosition()
         {
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
@@ -56,18 +55,6 @@ namespace DataTypes
         private void FixedUpdate()
         {
             _data.Move();
-        }
-    }
-
-    // returns first element in list and removes it
-    // modified from: https://stackoverflow.com/a/24855920
-    static class ListExtension
-    {
-        public static T Pop<T>(this List<T> list)
-        {
-            T r = list[0];
-            list.RemoveAt(0);
-            return r;
         }
     }
 }

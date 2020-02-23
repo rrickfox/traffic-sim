@@ -1,3 +1,4 @@
+using Utility;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,9 +11,8 @@ namespace DataTypes
         private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
-        // weighed choosing of vertices to route to
-        private RouteProbabilities _routeProbabilities;
-        private int[] _weights { get; }
+        // cumulative Probabilities of choosing a vertex to route to
+        private List<double> _cumulativeProbabilities { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
@@ -20,27 +20,25 @@ namespace DataTypes
             _edge = edge;
             _carPrefab = carPrefab;
             _frequencies = frequencies;
-            _weights = weights;
+            _cumulativeProbabilities = MathUtils.CalculateCumulative(weights);
 
-            // reset LaneTypes of lanes, needed for SubRouting
-            edge.other.ResetOutgoingLaneTypes();
-        }
-
-        public void SetWeights()
-        {
-            _routeProbabilities = new RouteProbabilities(_weights, routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList());
+            if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
+                throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
         }
 
         public void SpawnCars()
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
             {
-                new Car(_carPrefab, lane, routingTable[_routeProbabilities.Choose()].ToList());
+                new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(
+                    cumulativeProbabilities: _cumulativeProbabilities, 
+                    destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());
             }
         }
 
         public void DespawnCars()
         {
+            // removes incoming cars
             foreach (var car in _edge.other.cars.ToList().Where(car => car.positionOnRoad >= _edge.length))
             {
                 car.Dispose();
@@ -48,10 +46,7 @@ namespace DataTypes
             }
         }
 
-        public override LaneType SubRoute(Edge from, Edge to)
-        {
-            return LaneType.Through;
-        }
+        public override LaneType SubRoute(Edge comingFrom, Edge to) => LaneType.Through;
     }
 
     public class EndPointBehaviour : VertexBehaviour<EndPoint>

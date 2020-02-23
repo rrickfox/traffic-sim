@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Utility;
 using UnityEngine;
 
 namespace DataTypes
@@ -20,32 +20,28 @@ namespace DataTypes
         // returns necessary lane to go from an edge to another edge
         // throws exception if edges are not in this vertex
         // throws exception if edges are equal
-        public override LaneType SubRoute(Edge from, Edge to)
+        public override LaneType SubRoute(Edge comingFrom, Edge to)
         {
-            if(this.edges.Contains(from) && this.edges.Contains(to))
-                if(this._leftOrRight.Equals(from))
-                    if(this._leftOrRight.Equals(to))
-                        throw new System.Exception("From and to are the same Edge");
-                    else if(this._throughOrLeft.Equals(to))
-                        return LaneType.RightTurn;
-                    else
-                        return LaneType.LeftTurn;
-                else if(this._throughOrLeft.Equals(from))
-                    if(this._throughOrLeft.Equals(to))
-                        throw new System.Exception("From and to are the same Edge");
-                    else if(this._throughOrRight.Equals(to))
-                        return LaneType.Through;
-                    else
-                        return LaneType.LeftTurn;
-                else // from lane is through or right lane
-                    if(this._throughOrRight.Equals(to))
-                        throw new System.Exception("From and to are the same Edge");
-                    else if(this._leftOrRight.Equals(to))
-                        return LaneType.RightTurn;
-                    else
-                        return LaneType.Through;
-            else
-                throw new System.Exception("Edges not found");
+            var from = comingFrom.other; // Subroute gets called with the Edge facing this Vertex, therefore other must be called
+            if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
+            if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
+            if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
+            
+            if(from == _leftOrRight)
+                if(to == _throughOrRight)
+                    return LaneType.LeftTurn;
+                else // to == _throughOrLeft
+                    return LaneType.RightTurn;
+            if(from == _throughOrRight)
+                if(to == _leftOrRight)
+                    return LaneType.RightTurn;
+                else // to == _throughOrLeft
+                    return LaneType.Through;
+            else // from == _throughOrLeft
+                if(to == _leftOrRight)
+                    return LaneType.LeftTurn;
+                else // to == _throughOrRight
+                    return LaneType.Through;
         }
     }
 

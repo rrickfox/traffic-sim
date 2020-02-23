@@ -7,22 +7,17 @@ using static Utility.CONSTANTS;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge : GameObjectData<Edge, EdgeBehaviour> , ITrack
+    public class Edge : GameObjectData<Edge, EdgeBehaviour>, ITrack
     {
-        // the Vertex from which this edge originates
-        public IVertex vertex = null;
-        // represents how the road would look like from its other endpoint
-        public Edge other { get; }
-        // the cars on the outgoing side of the road
-        public List<Car> cars { get; } = new List<Car>();
-        public RoadShape shape { get; protected set; }
-        // the coordinates of the end of the road from which you look at the road
         public RoadPoint originPoint => shape.points[0];
-        public List<Lane> outgoingLanes { get; private set;}
-        // the incomingLanes of this are just the outgoingLanes of the other view
+        public IVertex vertex = null; // the Vertex from which this edge originates
+        public Edge other { get; } // represents how the road would look like from its other endpoint
+        public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
+        public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
+        public RoadShape shape { get; }
         public float length => shape.length;
-
+        
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;
@@ -217,15 +212,6 @@ namespace DataTypes
             absolutePosition.position += Vector2.Perpendicular(inverse) * perpendicularOffset;
 
             return absolutePosition;
-        }
-
-        // set LaneType of all lanes to Through
-        public void ResetOutgoingLaneTypes()
-        {
-            foreach (var lane in outgoingLanes)
-            {
-                lane.ResetLaneTypes(LaneType.Through);
-            }
         }
     }
 

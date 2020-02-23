@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
+using Utility;
 
 namespace Pathfinding
 {
@@ -20,7 +20,6 @@ namespace Pathfinding
                 { 
                     start.FindPath(end, verticesSet);
                 }
-                start.SetWeights();
             }
         }
     }
@@ -100,60 +99,19 @@ namespace Pathfinding
             }
             vertexPath.AddFirst(self);
 
-            // return the edges connecting the vertices in the path
+            // return the route segments composed of edges connecting the vertices
+            // as well as the LaneType required at the vertex
             var path = vertexPath.ZipThree(
-                vertexPath.Skip(1), 
-                vertexPath.Skip(2), 
-                (v1, v2, v3) => 
-                    new RouteSegment(v1.GetEdge(v2), 
-                        v2.SubRoute(v2.GetEdge(v1), v2.GetEdge(v3))))
-            .ToList();
+                vertexPath.Skip(1),
+                vertexPath.Skip(2),
+                (v1, v2, v3) =>
+                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
+            ).ToList();
             path.Add(new RouteSegment(
-                vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
-                LaneType.Through // since last vertex is EndPoint, LaneType mus be Through
-                )
-            );
+                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
+            ));
             return path;
-        }
-    }
-
-    // defines Zip method for three lists
-    // https://stackoverflow.com/a/10297160
-    public static class ZipExtensions
-    {
-        public static IEnumerable<TResult> ZipThree<T1, T2, T3, TResult>(
-            this IEnumerable<T1> source,
-            IEnumerable<T2> second,
-            IEnumerable<T3> third,
-            Func<T1, T2, T3, TResult> func)
-        {
-            if (source is null)
-            {
-                throw new System.ArgumentNullException(nameof(source));
-            }
-
-            if (second is null)
-            {
-                throw new System.ArgumentNullException(nameof(second));
-            }
-
-            if (third is null)
-            {
-                throw new System.ArgumentNullException(nameof(third));
-            }
-
-            if (func is null)
-            {
-                throw new System.ArgumentNullException(nameof(func));
-            }
-
-            using (var e1 = source.GetEnumerator())
-            using (var e2 = second.GetEnumerator())
-            using (var e3 = third.GetEnumerator())
-            {
-                while (e1.MoveNext() && e2.MoveNext() && e3.MoveNext())
-                    yield return func(e1.Current, e2.Current, e3.Current);
-            }
         }
     }
     

@@ -10,17 +10,17 @@ public class protoRoundabout : Vertex<TeeSection, TeeSectionBehaviour>
 {
     public GameObject roadPrefab;
     public GameObject carPrefab;
-    private Edge _throughOrRight { get; }
+    private Edge _incoming { get; }
     private Edge _outgoing { get; }
-    private Edge _leftOrRight { get; }
+    private Edge _Right { get; }
 
         
-    public protoRoundabout(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
-        : base(prefab, throughOrRight, throughOrLeft, leftOrRight)
+    public protoRoundabout(GameObject prefab, Edge incoming, Edge outgoing, Edge Right)
+        : base(prefab, incoming, outgoing, Right)
     {
-        _throughOrRight = throughOrRight;
-        _outgoing = throughOrLeft;
-        _leftOrRight = leftOrRight;
+        _incoming = incoming;
+        _outgoing = outgoing;
+        _Right = Right;
     }
 
     // returns necessary lane to go from an edge to another edge
@@ -33,19 +33,16 @@ public class protoRoundabout : Vertex<TeeSection, TeeSectionBehaviour>
         if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
         if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
         
-        if(from == _leftOrRight)
-            if(to == _throughOrRight)
-                return LaneType.LeftTurn;
-            else // to == _throughOrLeft
+        if(from == _Right)
+            if(to == _incoming)
+                throw new NetworkConfigurationError("to is incoming-only")
+            else // to == _outgoing
                 return LaneType.RightTurn;
-        if(from == _throughOrRight)
-            if(to == _leftOrRight)
+        if(from == _incoming)
+            if(to == _Right)
                 return LaneType.RightTurn;
-            else // to == _throughOrLeft
+            else // to == _outgoing
                 return LaneType.Through;
-        else // from == _throughOrLeft
-            if(to == _leftOrRight)
-                return LaneType.LeftTurn;
-            else // to == _throughOrRight
-                return LaneType.Through;
+        else // from == _outgoing
+            throw new NetworkConfigurationError("coming from outgoing-only")
 }

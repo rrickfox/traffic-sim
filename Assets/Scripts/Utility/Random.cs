@@ -11,7 +11,7 @@ namespace Utility
 
         // selects an IVertex from destinations based on weights
         // modified from: https://stackoverflow.com/a/43345968
-        public static IVertex Choose(List<double> cumulativeProbabilities, List<IVertex> destinations)
+        public static IVertex Choose(List<double> cumulativeProbabilities, IList<IVertex> destinations)
         {
             // now generate random double. It will always be in range from 0 to 1
             var r = RANDOM.NextDouble();

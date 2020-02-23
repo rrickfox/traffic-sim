@@ -39,9 +39,9 @@ public class SimulationController : MonoBehaviour
         var road = new Edge(roadPrefab, shape, lanes1To2, lanes2To1);
 
         // EndPoint creation
-        var pointA = new EndPoint(road, carPrefab, frequencyLanes1To2);
+        var pointA = new EndPoint(road, carPrefab, frequencyLanes1To2, new int[]{1});
         _spawnPoints.Add(pointA);
-        var pointB = new EndPoint(road.other, carPrefab, frequencyLanes2To1);
+        var pointB = new EndPoint(road.other, carPrefab, frequencyLanes2To1, new int[]{1});
         _spawnPoints.Add(pointB);
         _roads.Add(road);
 
@@ -57,9 +57,9 @@ public class SimulationController : MonoBehaviour
 
         var road_1 = new Edge(roadPrefab, shape_1, lanes1To2_1, lanes2To1_1);
 
-        var pointC = new EndPoint(road_1, carPrefab, frequencyLanes1To2_1);
+        var pointC = new EndPoint(road_1, carPrefab, frequencyLanes1To2_1, new int[]{1});
         _spawnPoints.Add(pointC);
-        var pointD = new EndPoint(road_1.other, carPrefab, frequencyLanes2To1_1);
+        var pointD = new EndPoint(road_1.other, carPrefab, frequencyLanes2To1_1, new int[]{1});
         _spawnPoints.Add(pointD);
         _roads.Add(road_1);
         #endregion

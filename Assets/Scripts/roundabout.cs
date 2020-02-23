@@ -45,4 +45,6 @@ public class protoRoundabout : Vertex<TeeSection, TeeSectionBehaviour>
                 return LaneType.Through;
         else // from == _outgoing
             throw new NetworkConfigurationError("coming from outgoing-only")
+        }
+    }
 }

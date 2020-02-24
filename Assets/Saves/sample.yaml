@@ -34,12 +34,16 @@ vertices:
   - !endpoint
     edge: 1a
     frequencies: [100]
+    weights: [1]
   - !endpoint
     edge: 1b
     frequencies: [100]
+    weights: [1]
   - !endpoint
     edge: 2a
-    frequencies: [100, 66]
+    frequencies: [100]
+    weights: [1]
   - !endpoint
     edge: 2b
     frequencies: [100]
+    weights: [1]

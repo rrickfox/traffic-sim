@@ -5,47 +5,41 @@ version: 1.0
 # a list of edges
 # vertices reference an edge by an id
 edges:
-  - &e1a
-    shape: &s1
+  1:
+    shape:
       # roadShape
       # contains a list of bezierCurves
       - start: {x: -140, y: -50}
         control: {x: 0, y: 50}
         end: {x: 140, y: -50}
         # bezierCurves save start, control and endpoint
-    lanes:
+    outgoingLanes:
       # contains a list of outgoing lane objects
       - [through]  # lane objects contain a hashset of lane types
-    other: &e1b
-      shape: *s1
-      lanes:
-        - [through]
-      other: *e1a
-  - &e2a
-    shape: &s2
+    incomingLanes:
+      - [through]
+  2:
+    shape:
       - start: {x: -50, y: 50}
         control: {x: 0, y: 50}
         end: {x: 50, y: 50}
-    lanes:
+    outgoingLanes:
       - [through]
       - [through]
-    other: &e2b
-      shape: *s2
-      lanes:
-        - [through]
-      other: *e2a
+    incomingLanes:
+      - [through]
 
 # a list of vertices
 vertices:
   - !endpoint
-    edge: *e1a
+    edge: 1a
     frequencies: [100]
   - !endpoint
-    edge: *e1b
+    edge: 1b
     frequencies: [100]
   - !endpoint
-    edge: *e2a
+    edge: 2a
     frequencies: [100, 66]
   - !endpoint
-    edge: *e2b
+    edge: 2b
     frequencies: [100]

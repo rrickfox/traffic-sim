@@ -13,7 +13,16 @@ public class MainMenu : MonoBehaviour
     public void Start()
     {
         // get available Resolutions
-        _resolutions = Screen.resolutions;
+        Resolution[] allResolutions = Screen.resolutions;
+        List<Resolution> resolutions = new List<Resolution>();
+        foreach(Resolution r in allResolutions)
+        {
+            if (resolutions.Count == 0)
+                resolutions.Add(r);
+            else if (r.width != resolutions[resolutions.Count - 1].width && r.height != resolutions[resolutions.Count - 1].height)
+                resolutions.Add(r);
+        }
+        _resolutions = resolutions.ToArray();
         resolutionDropdown.ClearOptions();
         List<string> options = new List<string>();
 

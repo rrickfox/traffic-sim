@@ -236,19 +236,21 @@ namespace DataTypes
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, true);
             Debug.Log(height + " " + width + " " + MULTIPLIER_SECTION);
 
+            // construct texture from bottom up
+            // stop line in _down edge
             var downStopLineRow = GetDownStopLineRow(meshVertices);
-             // construct texture from bottom up
-            for (var y = 0; y < height; y++)
-            {
+            for(var y = 0; y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION); y++)
                 for(var x = 0; x < width; x++)
-                {
-                    // stop line in _down edge
-                    if(y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION))
-                        texture.SetPixel(x: x, y:y, color: downStopLineRow[x]);
-                    else
-                        texture.SetPixel(x: x, y: y, color: ROAD);
-                }
-            }
+                    texture.SetPixel(x: x, y:y, color: downStopLineRow[x]);
+                    
+            // buffer section in _down edge
+            var downBufferRow = GetDownBufferRow(meshVertices);
+            for(var y = 0; y < (int) (SECTION_BUFFER_LENGTH * MULTIPLIER_SECTION); y++)
+                for(var x = 0; x < width; x++)
+                    texture.SetPixel(x: x, y:y, color: downBufferRow[x]);      
+            for(var y = 0; y < height - (int) ((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); y++)
+                for(var x = 0; x < width; x++)
+                    texture.SetPixel(x: x, y: y, color: ROAD);
 
             texture.Apply();
 
@@ -262,7 +264,7 @@ namespace DataTypes
             void RepeatWidth(float width, Color color) => row.AddRange(Enumerable.Range(0, (int)(width * MULTIPLIER_SECTION)).Select(x => color));
 
             // add a transparent Pixel, as left of road counts in distances, not absolute values
-            // if LeftOfRoad is 540, it has to place pixels *up to* 540, not 540 pixels
+            // if LeftOfRoad is 540, it has to place pixels UP TO 540, not EXACTLY 540 pixels
             // therefore a single pixel has to be set
             row.Add(TRANSPARENT);
 
@@ -285,6 +287,46 @@ namespace DataTypes
                 if(j > 0)
                     RepeatWidth(LINE_WIDTH, STOP_LINE);
                 RepeatWidth(LANE_WIDTH, STOP_LINE);
+            }
+            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
+            var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position,
+                    new Vector2(meshVertices[7].x, meshVertices[7].z)));
+            RepeatWidth(rightOfRoad, TRANSPARENT);
+
+            return row.ToArray();
+        }
+
+        private Color[] GetDownBufferRow(Vector3[] meshVertices)
+        {
+            var row = new List<Color>();
+        
+            void RepeatWidth(float width, Color color) => row.AddRange(Enumerable.Range(0, (int)(width * MULTIPLIER_SECTION)).Select(x => color));
+
+            // add a transparent Pixel, as left of road counts in distances, not absolute values
+            // if LeftOfRoad is 540, it has to place pixels UP TO 540, not EXACTLY 540 pixels
+            // therefore a single pixel has to be set
+            row.Add(TRANSPARENT);
+
+            // if x is left of _down
+            var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position, 
+                    new Vector2(meshVertices[8].x, meshVertices[8].z)));
+            RepeatWidth(leftOfRoad, TRANSPARENT);
+            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
+            for(var j = 0; j < _down.outgoingLanes.Count; j++)
+            {
+                if(j > 0)
+                    RepeatWidth(LINE_WIDTH, LINE);
+                RepeatWidth(LANE_WIDTH, ROAD);
+            }
+            if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
+                RepeatWidth(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
+            for(var j = 0; j < _down.incomingLanes.Count; j++)
+            {
+                if(j > 0)
+                    RepeatWidth(LINE_WIDTH, ROAD);
+                RepeatWidth(LANE_WIDTH, ROAD);
             }
             RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
             var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)

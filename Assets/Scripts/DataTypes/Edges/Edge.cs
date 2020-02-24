@@ -15,7 +15,7 @@ namespace DataTypes
         public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
-        public RoadShape shape { get; }
+        public RoadShape shape { get; protected set;}
         public float length => shape.length;
         
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)

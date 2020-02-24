@@ -49,7 +49,7 @@ namespace DataTypes
         private void SetPosition()
         {
             var roadPoint = GetAbsolutePosition();
-            transform.position = new Vector3(roadPoint.position.x, transform.position.y, roadPoint.position.y);
+            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 

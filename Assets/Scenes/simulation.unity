@@ -543,6 +543,7 @@ MonoBehaviour:
   zoomSpeed: 20
   border1: {x: -150, y: 0, z: -75}
   border2: {x: 150, y: 0, z: 75}
+  parent: {fileID: 680370311}
 --- !u!1 &2099921975
 GameObject:
   m_ObjectHideFlags: 0

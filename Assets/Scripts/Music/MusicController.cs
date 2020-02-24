@@ -7,7 +7,7 @@ public class MusicController : MonoBehaviour
 
     void Start()
     {
-		Object.DontDestroyOnLoad(gameObject);
+		Object.DontDestroyOnLoad(this.gameObject);
         _audioData = GetComponent<AudioSource>();
 		_audioData.volume = 0;
         _audioData.Play(0);

@@ -47,31 +47,22 @@ namespace DataTypes
         {
             var stoppingDistance = Distance();
 
-            Car frontCar = GetFrontCar(stoppingDistance);
-            float frontDistance = frontCar.positionOnRoad - positionOnRoad;
-
-            //accelerate
-            if (frontCar.speed >= speed || frontCar.speed == -1)
+            Car frontCar = GetFrontCar();
+            if (frontCar != null)
             {
-                if (frontDistance > 0 && speed < road.preferedSpeed)
+                float frontDistance = frontCar.positionOnRoad - positionOnRoad;
+
+                //accelerate
+                if (frontDistance >= stoppingDistance && speed < road.preferedSpeed)
                 {
-                    Accelerate(0.1f);
+                    Accelerate(0.5f);
+                }
+                //slow down
+                if (frontDistance < stoppingDistance)
+                {
+                    Accelerate(-1);
                 }
             }
-            //slow down
-            else
-            {
-                if (frontDistance > 3)
-                {
-                    Accelerate(-speed / 100);
-                }
-
-                if (frontDistance <= 3 && frontDistance > 0)
-                {
-                    Accelerate(-speed);
-                }
-            }
-
             Human();  
 
             Move();
@@ -80,19 +71,19 @@ namespace DataTypes
         // Returns the stopping distance
         public float Distance()
         {
-            return MathUtils.Square(speed) +2;
+            return speed +5;
         }
 
         // Returns the Car in front of the Car 
-        public Car GetFrontCar(float distance)
+        public Car GetFrontCar()
         {
             Car merke = null; 
             foreach(var _car in road.cars)
             { 
-                if(positionOnRoad < _car.positionOnRoad && lane == _car.lane)
+                if (merke == null) {merke = _car; }
+                if(positionOnRoad < _car.positionOnRoad && lane == _car.lane && merke.positionOnRoad < _car.positionOnRoad)
                 {
-                    if (merke == null) {merke = _car; }
-                    if (merke.positionOnRoad < _car.positionOnRoad) { merke = _car; }
+                     merke = _car;
                 }
             } 
             return merke;  
@@ -101,7 +92,7 @@ namespace DataTypes
 
         public void Human()
         {
-            
+            if(Random.value*1000000 < 1) { Accelerate(-speed / 3); }
         }
 
         private void Move()

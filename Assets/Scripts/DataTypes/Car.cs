@@ -47,11 +47,11 @@ namespace DataTypes
         {
             var stoppingDistance = Distance();
 
-            float frontDistance = GetFrontDistance(stoppingDistance);
-            float frontSpeed = GetFrontSpeed(stoppingDistance);
+            Car frontCar = GetFrontCar(stoppingDistance);
+            float frontDistance = frontCar.positionOnRoad - positionOnRoad;
 
             //accelerate
-            if (frontSpeed >= speed || frontSpeed == -1)
+            if (frontCar.speed >= speed || frontCar.speed == -1)
             {
                 if (frontDistance > 0 && speed < road.preferedSpeed)
                 {
@@ -72,7 +72,7 @@ namespace DataTypes
                 }
             }
 
-            Human(false);  
+            Human();  
 
             Move();
         }
@@ -84,45 +84,24 @@ namespace DataTypes
         }
 
         // Returns the Car in front of the Car 
-        public float GetFrontDistance(float distance)
-        {   
+        public Car GetFrontCar(float distance)
+        {
+            Car merke = null; 
             foreach(var _car in road.cars)
             { 
-                if((_car.positionOnRoad-positionOnRoad) <= distance && positionOnRoad < _car.positionOnRoad && lane == _car.lane)
+                if(positionOnRoad < _car.positionOnRoad && lane == _car.lane)
                 {
-                    return _car.positionOnRoad;
+                    if (merke == null) {merke = _car; }
+                    if (merke.positionOnRoad < _car.positionOnRoad) { merke = _car; }
                 }
-            }
-            return 0;  
+            } 
+            return merke;  
         }
-        public float GetFrontSpeed(float distance)
-        {
-            foreach (var _car in road.cars)
-            {
-                if ((_car.positionOnRoad - positionOnRoad) <= distance && positionOnRoad < _car.positionOnRoad && lane == _car.lane)
-                {
-                    return _car.speed;
-                }
-            }
-            return -1;
-        }
+      
 
-        public void Human(bool human)
+        public void Human()
         {
-            if (Random.value * 200 <= 1)
-            {
-                human = true;
-                i = 0;
-            }
-            if (human == true && i < 50)
-            {
-                i++;
-                Accelerate(-1f);
-            }
-            if (i >= 50) 
-            { 
-                human = false;  
-            }
+            
         }
 
         private void Move()

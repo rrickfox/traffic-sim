@@ -236,21 +236,31 @@ namespace DataTypes
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, true);
             Debug.Log(height + " " + width + " " + MULTIPLIER_SECTION);
 
+            var y = 0;
             // construct texture from bottom up
             // stop line in _down edge
             var downStopLineRow = GetDownStopLineRow(meshVertices);
-            for(var y = 0; y < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION); y++)
+            for(var i = 0; i < (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION); i++)
+            {
                 for(var x = 0; x < width; x++)
                     texture.SetPixel(x: x, y:y, color: downStopLineRow[x]);
-                    
+                y++;
+            }
+
             // buffer section in _down edge
             var downBufferRow = GetDownBufferRow(meshVertices);
-            for(var y = 0; y < (int) (SECTION_BUFFER_LENGTH * MULTIPLIER_SECTION); y++)
+            for(var i = 0; i < (int) (SECTION_BUFFER_LENGTH * MULTIPLIER_SECTION); i++)
+            {
                 for(var x = 0; x < width; x++)
-                    texture.SetPixel(x: x, y:y, color: downBufferRow[x]);      
-            for(var y = 0; y < height - (int) ((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); y++)
+                    texture.SetPixel(x: x, y:y, color: downBufferRow[x]);
+                y++;
+            } 
+            for(var i = 0; i < height - (int) ((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); i++)
+            {
                 for(var x = 0; x < width; x++)
                     texture.SetPixel(x: x, y: y, color: ROAD);
+                y++;
+            }
 
             texture.Apply();
 
@@ -277,7 +287,7 @@ namespace DataTypes
             for(var j = 0; j < _down.outgoingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatWidth(LINE_WIDTH, LINE);
+                    RepeatWidth(LINE_WIDTH, ROAD);
                 RepeatWidth(LANE_WIDTH, ROAD);
             }
             if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
@@ -317,7 +327,7 @@ namespace DataTypes
             for(var j = 0; j < _down.outgoingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatWidth(LINE_WIDTH, LINE);
+                    RepeatWidth(LINE_WIDTH, ROAD);
                 RepeatWidth(LANE_WIDTH, ROAD);
             }
             if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)

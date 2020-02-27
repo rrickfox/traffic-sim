@@ -19,11 +19,11 @@ namespace Cameras
         public Vector3 border1;
         public Vector3 border2;
 
+        public bool _following;
+        public Transform _targetCar;
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
-        Transform _targetCar;
-        bool _following;
         float _scroll;
 
         // Setting camera right, focus the center

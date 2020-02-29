@@ -232,24 +232,11 @@ namespace DataTypes
         private Texture GetTexture(Vector3[] meshVertices)
         {
             // calculate height and width based on origin Points of opposite edges
-            // max amount of lanes on left and right edge
-            var lowerMaxLanes = Mathf.Max(_left.incomingLanes.Count, _right.outgoingLanes.Count);
-            var upperMaxLanes = Mathf.Max(_left.outgoingLanes.Count, _right.incomingLanes.Count);
-            var height = 2 * (int) (STOP_LINE_WIDTH * MULTIPLIER_SECTION)
-                + 2 * (int) (SECTION_BUFFER_LENGTH * MULTIPLIER_SECTION)
-                + 2 * (int) (BORDER_LINE_WIDTH * MULTIPLIER_SECTION)
-                + (int) (((Mathf.Max(
-                        Mathf.Min(_left.incomingLanes.Count, _left.outgoingLanes.Count),
-                        Mathf.Min(_right.outgoingLanes.Count, _right.incomingLanes.Count)) == 0)
-                    ? 0 : MIDDLE_LINE_WIDTH) * MULTIPLIER_SECTION)
-                + (int) (lowerMaxLanes * LANE_WIDTH * MULTIPLIER_SECTION)
-                + (int) ((lowerMaxLanes > 1 ? lowerMaxLanes - 1 : 0) * LINE_WIDTH * MULTIPLIER_SECTION)
-                + (int) (upperMaxLanes * LANE_WIDTH * MULTIPLIER_SECTION)
-                + (int) ((upperMaxLanes > 1 ? upperMaxLanes - 1 : 0) * LINE_WIDTH * MULTIPLIER_SECTION);
-            
+            var height = Mathf.RoundToInt(Vector2.Distance(_up.originPoint.position, _down.originPoint.position) * MULTIPLIER_SECTION);
             var width = Mathf.RoundToInt(Vector2.Distance(_right.originPoint.position, _left.originPoint.position) * MULTIPLIER_SECTION);
             var texture = new Texture2D(width, height, TextureFormat.RGBA32, true);
-            Debug.Log(height + " " + width + " " + MULTIPLIER_SECTION);
+
+            #region preFillTexture
 
             // fill texture width road, replace parts later
             for(var y = 0; y < height; y++)
@@ -304,10 +291,12 @@ namespace DataTypes
                 for(var y = height; y > height - Mathf.RoundToInt(rightAboveRoad * MULTIPLIER_SECTION); y--)
                     texture.SetPixel(x: x, y: y, color: BORDER_LINE);
 
+            #endregion
+
             #region stopLineAndBuffer
             // construct texture from bottom up
             // stop line in _down edge
-            var downStopLineRow = GetDownStopLineRow(meshVertices);
+            var downStopLineRow = GetDownRow(meshVertices, true);
             for(var y = 0; y < Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y++)
             {
                 for(var x = 0; x < width; x++)
@@ -315,7 +304,7 @@ namespace DataTypes
             }
 
             // buffer section in _down edge
-            var downBufferRow = GetDownBufferRow(meshVertices);
+            var downBufferRow = GetDownRow(meshVertices, false);
             for(int y = Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y < Mathf.RoundToInt((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH ) * MULTIPLIER_SECTION); y++)
             {
                 for(var x = 0; x < width; x++)
@@ -323,7 +312,7 @@ namespace DataTypes
             } 
 
             // stop line in _up Edge
-            var upStopLineRow = GetUpStopLineRow(meshVertices);
+            var upStopLineRow = GetUpRow(meshVertices, true);
             for(var y = height; y > height - Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y--)
             {
                 for(var x = 0; x < width; x++)
@@ -331,7 +320,7 @@ namespace DataTypes
             }
 
             // buffer section in _up Edge
-            var upBufferRow = GetUpBufferRow(meshVertices);
+            var upBufferRow = GetUpRow(meshVertices, false);
             for(var y = height - Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y > height - Mathf.RoundToInt((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); y--)
             {
                 for(var x = 0; x < width; x++)
@@ -339,7 +328,7 @@ namespace DataTypes
             }
 
             // stop line for _right Edge
-            var rightStopLineColumn = GetRightStopLineColumn(meshVertices);
+            var rightStopLineColumn = GetRightColumn(meshVertices, true);
             for(var x = width; x > width - Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); x--)
             {
                 for(var y = 0; y < height; y++)
@@ -347,7 +336,7 @@ namespace DataTypes
             }
 
             // buffer section for _right Edge
-            var rightBufferColumn = GetRightBufferColumn(meshVertices);
+            var rightBufferColumn = GetRightColumn(meshVertices, false);
             for(var x = width - Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); x > width - Mathf.RoundToInt((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); x--)
             {
                 for(var y = 0; y < height; y++)
@@ -355,7 +344,7 @@ namespace DataTypes
             }
 
             // stop line for _left Edge
-            var leftStopLineColumn = GetLeftStopLineColumn(meshVertices);
+            var leftStopLineColumn = GetLeftColumn(meshVertices, true);
             for(var x = 0; x < Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); x++)
             {
                 for(var y = 0; y < height; y++)
@@ -363,7 +352,7 @@ namespace DataTypes
             }
 
             // buffer section for _left Edge
-            var leftBufferColumn = GetLeftBufferColumn(meshVertices);
+            var leftBufferColumn = GetLeftColumn(meshVertices, false);
             for(var x = Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); x < Mathf.RoundToInt((STOP_LINE_WIDTH + SECTION_BUFFER_LENGTH) * MULTIPLIER_SECTION); x++)
             {
                 for(var y = 0; y < height; y++)
@@ -376,7 +365,7 @@ namespace DataTypes
             return texture;
         }
 
-        private Color[] GetDownStopLineRow(Vector3[] meshVertices)
+        private Color[] GetDownRow(Vector3[] meshVertices, bool stopLine)
         {
             var row = new List<Color>();
         
@@ -404,8 +393,8 @@ namespace DataTypes
             for(var j = 0; j < _down.incomingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatWidth(LINE_WIDTH, STOP_LINE);
-                RepeatWidth(LANE_WIDTH, STOP_LINE);
+                    RepeatWidth(LINE_WIDTH, (stopLine ? STOP_LINE : ROAD));
+                RepeatWidth(LANE_WIDTH, (stopLine ? STOP_LINE : ROAD));
             }
             RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
             var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
@@ -416,7 +405,7 @@ namespace DataTypes
             return row.ToArray();
         }
 
-        private Color[] GetUpStopLineRow(Vector3[] meshVertices)
+        private Color[] GetUpRow(Vector3[] meshVertices, bool stopLine)
         {
             var row = new List<Color>();
         
@@ -436,8 +425,8 @@ namespace DataTypes
             for(var j = 0; j < _up.incomingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatWidth(LINE_WIDTH, STOP_LINE);
-                RepeatWidth(LANE_WIDTH, STOP_LINE);
+                    RepeatWidth(LINE_WIDTH, (stopLine ? STOP_LINE : ROAD));
+                RepeatWidth(LANE_WIDTH, (stopLine ? STOP_LINE : ROAD));
             }
             if(_up.incomingLanes.Count > 0 && _up.outgoingLanes.Count > 0)
                 RepeatWidth(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
@@ -456,87 +445,7 @@ namespace DataTypes
             return row.ToArray();
         }
 
-        private Color[] GetDownBufferRow(Vector3[] meshVertices)
-        {
-            var row = new List<Color>();
-        
-            void RepeatWidth(float width, Color color) => row.AddRange(Enumerable.Range(0, Mathf.RoundToInt(width * MULTIPLIER_SECTION)).Select(x => color));
-
-            // add a transparent Pixel, as left of road counts in distances, not absolute values
-            // if LeftOfRoad is 540, it has to place pixels UP TO 540, not EXACTLY 540 pixels
-            // therefore a single pixel has to be set
-            row.Add(TRANSPARENT);
-
-            // if x is left of _down
-            var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
-                - Vector2.Distance(_down.originPoint.position, 
-                    new Vector2(meshVertices[8].x, meshVertices[8].z)));
-            RepeatWidth(leftOfRoad, TRANSPARENT);
-            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
-            for(var j = 0; j < _down.outgoingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatWidth(LINE_WIDTH, ROAD);
-                RepeatWidth(LANE_WIDTH, ROAD);
-            }
-            if(_down.incomingLanes.Count > 0 && _down.outgoingLanes.Count > 0)
-                RepeatWidth(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
-            for(var j = 0; j < _down.incomingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatWidth(LINE_WIDTH, ROAD);
-                RepeatWidth(LANE_WIDTH, ROAD);
-            }
-            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
-            var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
-                - Vector2.Distance(_down.originPoint.position,
-                    new Vector2(meshVertices[7].x, meshVertices[7].z)));
-            RepeatWidth(rightOfRoad, TRANSPARENT);
-
-            return row.ToArray();
-        }
-
-        private Color[] GetUpBufferRow(Vector3[] meshVertices)
-        {
-            var row = new List<Color>();
-        
-            void RepeatWidth(float width, Color color) => row.AddRange(Enumerable.Range(0, Mathf.RoundToInt(width * MULTIPLIER_SECTION)).Select(x => color));
-
-            // add a transparent Pixel, as left of road counts in distances, not absolute values
-            // if LeftOfRoad is 540, it has to place pixels UP TO 540, not EXACTLY 540 pixels
-            // therefore a single pixel has to be set
-            row.Add(TRANSPARENT);
-
-            // if x is left of _down
-            var leftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
-                - Vector2.Distance(_up.originPoint.position, 
-                    new Vector2(meshVertices[1].x, meshVertices[1].z)));
-            RepeatWidth(leftOfRoad, TRANSPARENT);
-            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
-            for(var j = 0; j < _up.incomingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatWidth(LINE_WIDTH, ROAD);
-                RepeatWidth(LANE_WIDTH, ROAD);
-            }
-            if(_up.incomingLanes.Count > 0 && _up.outgoingLanes.Count > 0)
-                RepeatWidth(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
-            for(var j = 0; j < _up.outgoingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatWidth(LINE_WIDTH, ROAD);
-                RepeatWidth(LANE_WIDTH, ROAD);
-            }
-            RepeatWidth(BORDER_LINE_WIDTH, BORDER_LINE);
-            var rightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
-                - Vector2.Distance(_up.originPoint.position,
-                    new Vector2(meshVertices[2].x, meshVertices[2].z)));
-            RepeatWidth(rightOfRoad, TRANSPARENT);
-
-            return row.ToArray();
-        }
-
-        private Color[] GetRightStopLineColumn(Vector3[] meshVertices)
+        private Color[] GetRightColumn(Vector3[] meshVertices, bool stopLine)
         {
             var column = new List<Color>();
         
@@ -560,8 +469,8 @@ namespace DataTypes
             for(var j = 0; j < _right.incomingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatHeight(LINE_WIDTH, STOP_LINE);
-                RepeatHeight(LANE_WIDTH, STOP_LINE);
+                    RepeatHeight(LINE_WIDTH, (stopLine ? STOP_LINE : ROAD));
+                RepeatHeight(LANE_WIDTH, (stopLine ? STOP_LINE : ROAD));
             }
             RepeatHeight(BORDER_LINE_WIDTH, BORDER_LINE);
             var aboveRoad = (Vector2.Distance(center, _up.originPoint.position)
@@ -572,43 +481,7 @@ namespace DataTypes
             return column.ToArray();
         }
 
-        private Color[] GetRightBufferColumn(Vector3[] meshVertices)
-        {
-            var column = new List<Color>();
-        
-            void RepeatHeight(float height, Color color) => column.AddRange(Enumerable.Range(0, Mathf.RoundToInt(height * MULTIPLIER_SECTION)).Select(y => color));
-
-            column.Add(TRANSPARENT);
-
-            var belowRoad = (Vector2.Distance(center, _down.originPoint.position)
-                - Vector2.Distance(_right.originPoint.position,
-                    new Vector2(meshVertices[5].x, meshVertices[5].z)));
-            RepeatHeight(belowRoad, TRANSPARENT);
-            RepeatHeight(BORDER_LINE_WIDTH, BORDER_LINE);
-            for(var j = 0; j < _right.outgoingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatHeight(LINE_WIDTH, ROAD);
-                RepeatHeight(LANE_WIDTH, ROAD);
-            }
-            if(_right.incomingLanes.Count > 0 && _right.outgoingLanes.Count > 0)
-                RepeatHeight(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
-            for(var j = 0; j < _right.incomingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatHeight(LINE_WIDTH, ROAD);
-                RepeatHeight(LANE_WIDTH, ROAD);
-            }
-            RepeatHeight(BORDER_LINE_WIDTH, BORDER_LINE);
-            var aboveRoad = (Vector2.Distance(center, _up.originPoint.position)
-                - Vector2.Distance(_right.originPoint.position,
-                    new Vector2(meshVertices[4].x, meshVertices[4].z)));
-            RepeatHeight(aboveRoad, TRANSPARENT);
-
-            return column.ToArray();
-        }
-
-        private Color[] GetLeftStopLineColumn(Vector3[] meshVertices)
+        private Color[] GetLeftColumn(Vector3[] meshVertices, bool stopLine)
         {
             var column = new List<Color>();
         
@@ -624,44 +497,8 @@ namespace DataTypes
             for(var j = 0; j < _left.incomingLanes.Count; j++)
             {
                 if(j > 0)
-                    RepeatHeight(LINE_WIDTH, STOP_LINE);
-                RepeatHeight(LANE_WIDTH, STOP_LINE);
-            }
-            if(_left.incomingLanes.Count > 0 && _left.outgoingLanes.Count > 0)
-                RepeatHeight(MIDDLE_LINE_WIDTH, MIDDLE_LINE);
-            for(var j = 0; j < _left.outgoingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatHeight(LINE_WIDTH, ROAD);
-                RepeatHeight(LANE_WIDTH, ROAD);
-            }
-            RepeatHeight(BORDER_LINE_WIDTH, BORDER_LINE);
-            var aboveRoad = (Vector2.Distance(center, _up.originPoint.position)
-                - Vector2.Distance(_left.originPoint.position,
-                    new Vector2(meshVertices[11].x, meshVertices[11].z)));
-            RepeatHeight(aboveRoad, TRANSPARENT);
-
-            return column.ToArray();
-        }
-
-        private Color[] GetLeftBufferColumn(Vector3[] meshVertices)
-        {
-            var column = new List<Color>();
-        
-            void RepeatHeight(float height, Color color) => column.AddRange(Enumerable.Range(0, Mathf.RoundToInt(height * MULTIPLIER_SECTION)).Select(y => color));
-
-            column.Add(TRANSPARENT);
-
-            var belowRoad = (Vector2.Distance(center, _down.originPoint.position)
-                - Vector2.Distance(_left.originPoint.position,
-                    new Vector2(meshVertices[10].x, meshVertices[10].z)));
-            RepeatHeight(belowRoad, TRANSPARENT);
-            RepeatHeight(BORDER_LINE_WIDTH, BORDER_LINE);
-            for(var j = 0; j < _left.incomingLanes.Count; j++)
-            {
-                if(j > 0)
-                    RepeatHeight(LINE_WIDTH, ROAD);
-                RepeatHeight(LANE_WIDTH, ROAD);
+                    RepeatHeight(LINE_WIDTH, (stopLine ? STOP_LINE : ROAD));
+                RepeatHeight(LANE_WIDTH, (stopLine ? STOP_LINE : ROAD));
             }
             if(_left.incomingLanes.Count > 0 && _left.outgoingLanes.Count > 0)
                 RepeatHeight(MIDDLE_LINE_WIDTH, MIDDLE_LINE);

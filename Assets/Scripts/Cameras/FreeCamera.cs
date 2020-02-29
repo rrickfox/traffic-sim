@@ -22,6 +22,9 @@ namespace Cameras
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
+        Transform _targetCar;
+        bool _following;
+        float _scroll;
 
         // Setting camera right, focus the center
         void Start()
@@ -30,10 +33,25 @@ namespace Cameras
             _cam.transform.LookAt(transform.position);
         }
 
+        private void Update()
+        {
+            SelectCar();
+            _scroll = Input.GetAxis("Mouse ScrollWheel");
+        }
+
         void FixedUpdate()
         {
             if (!_cam.enabled)
+            {
+                // reset camera
+                if (_following)
+                {
+                    _following = false;
+                    _targetCar = null;
+                }
                 return;
+            }
+            Follow();
             Rotate();
             Move();
             Zoom();
@@ -59,6 +77,9 @@ namespace Cameras
             _newPosition += transform.forward * Input.GetAxis("Vertical") * flySpeed;
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
+            if (_newPosition != transform.position)
+                _following = false;
+
             // Moving if mouse is near to the edge of the game window
             if (!Input.GetMouseButton(1) && moveOnEdges)
             {
@@ -82,9 +103,33 @@ namespace Cameras
         // Zooming with the mousewheel between maxZoom and minZoom
         void Zoom()
         {
-            _camDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            _camDistance -= _scroll * zoomSpeed;
             _camDistance = Mathf.Clamp(_camDistance, minZoom, maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
+        }
+
+        // follows a target Car
+        void Follow()
+        {
+            if (_targetCar != null && _following)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _targetCar.position, 1000f);
+            }
+        }
+
+        // selects a Car with left mouse button to follow
+        void SelectCar()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _following = false;
+                // shoots a ray to get a car located at the mousePosition
+                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))
+                {
+                    _following = true;
+                    _targetCar = hit.transform;
+                }
+            }
         }
 
         // Visualisation of border

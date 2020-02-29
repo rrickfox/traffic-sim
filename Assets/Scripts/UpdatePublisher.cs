@@ -5,8 +5,8 @@ public class UpdatePublisher : MonoBehaviour
     public static event System.Action PreFixedUpdate;
     public static event System.Action NormalFixedUpdate;
     public static event System.Action PostFixedUpdate;
-    
-    void FixedUpdate()
+
+    private void FixedUpdate()
     {
         PreFixedUpdate?.Invoke();
         NormalFixedUpdate?.Invoke();

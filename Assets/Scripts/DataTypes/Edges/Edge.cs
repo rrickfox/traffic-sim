@@ -7,7 +7,7 @@ using static Utility.CONSTANTS;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge : GameObjectData<Edge, EdgeBehaviour>, ITrack
+    public class Edge : GameObjectData, ITrack
     {
         public RoadPoint originPoint => shape.points[0];
         public IVertex vertex = null; // the Vertex from which this edge originates
@@ -200,6 +200,4 @@ namespace DataTypes
             return absolutePosition;
         }
     }
-
-    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

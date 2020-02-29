@@ -11,26 +11,20 @@ namespace DataTypes
         Transform transform { get; }
     }
     
-    public class GameObjectData<TThis, TBehaviour> : IGameObjectData
-        where TBehaviour : LinkedBehaviour<TThis>
-        where TThis : GameObjectData<TThis, TBehaviour>
+    public class GameObjectData : IGameObjectData
     {
         public GameObject prefab { get; }
         public GameObject gameObject { get; }
         public Transform transform { get; }
-        public TBehaviour behaviour { get; }
 
         protected GameObjectData(GameObject prefab)
         {
-            if (!(this is TThis))
-                throw new InvalidCastException("The first type parameter of a subclass GameObjectData has to be itself");
             this.prefab = prefab;
             gameObject = UnityEngine.Object.Instantiate(this.prefab);
-            // set default name
-            gameObject.name = $"{typeof(TThis)} ({gameObject.GetInstanceID()})";
+            // TODO: find way to generate useful default name (own type is no longer accessible)
+            // // set default name
+            // gameObject.name = $"{typeof(TThis)} ({gameObject.GetInstanceID()})";
             transform = gameObject.transform;
-            behaviour = gameObject.AddComponent<TBehaviour>();
-            behaviour.Initialize((TThis)this);
         }
         
         // construct using an empty prefab

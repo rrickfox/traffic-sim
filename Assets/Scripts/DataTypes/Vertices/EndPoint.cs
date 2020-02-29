@@ -1,11 +1,12 @@
 using Utility;
 using System.Collections.Generic;
 using System.Linq;
+using Events;
 using UnityEngine;
 
 namespace DataTypes
 {
-    public class EndPoint : Vertex<EndPoint, EndPointBehaviour>
+    public class EndPoint : Vertex
     {
         private Edge _edge { get; }
         private GameObject _carPrefab { get; }
@@ -24,6 +25,10 @@ namespace DataTypes
 
             if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
+            
+            // IMPORTANT: subscribe to PreFixedUpdate to destroy cars before they try to move
+            UpdatePublisher.SubscribePreFixedUpdate(SpawnCars);
+            UpdatePublisher.SubscribePreFixedUpdate(DespawnCars);
         }
 
         public void SpawnCars()
@@ -47,14 +52,5 @@ namespace DataTypes
         }
 
         public override LaneType SubRoute(Edge comingFrom, Edge to) => LaneType.Through;
-    }
-
-    public class EndPointBehaviour : VertexBehaviour<EndPoint>
-    {
-        private void FixedUpdate()
-        {
-            _data.SpawnCars();
-            _data.DespawnCars();
-        }
     }
 }

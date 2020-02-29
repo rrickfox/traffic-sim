@@ -1,10 +1,11 @@
 using UnityEngine;
 using Utility;
 using System.Collections.Generic;
+using Events;
 
 namespace DataTypes
 {
-    public class Car : GameObjectData<Car, CarBehaviour>
+    public class Car : GameObjectData
     {
         public ITrack track => segment.track;
         public float positionOnRoad { get; private set; } = 0;
@@ -21,6 +22,9 @@ namespace DataTypes
             this.lane = lane;
 
             UpdatePosition();
+            
+            // subscribe to updates
+            UpdatePublisher.SubscribeNormalFixedUpdate(Move);
         }
 
         public void Move()
@@ -47,14 +51,6 @@ namespace DataTypes
         public void Accelerate(float acceleration)
         {
             speed += acceleration;
-        }
-    }
-
-    public class CarBehaviour : LinkedBehaviour<Car>
-    {
-        private void FixedUpdate()
-        {
-            _data.Move();
         }
     }
 }

@@ -1,26 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Events
 {
     public class UpdatePublisher : MonoBehaviour
     {
-        public static event System.Action PreFixedUpdate;
-        public static event System.Action NormalFixedUpdate;
-        public static event System.Action PostFixedUpdate;
+        private static WeakVoidPublisher _PRE_FIXED_UPDATE { get; } = new WeakVoidPublisher();
+        private static WeakVoidPublisher _NORMAL_FIXED_UPDATE { get; } = new WeakVoidPublisher();
+        private static WeakVoidPublisher _POST_FIXED_UPDATE { get; } = new WeakVoidPublisher();
 
         private void FixedUpdate()
         {
-            PreFixedUpdate?.Invoke();
-            NormalFixedUpdate?.Invoke();
-            PostFixedUpdate?.Invoke();
+            _PRE_FIXED_UPDATE.Publish();
+            _NORMAL_FIXED_UPDATE.Publish();
+            _POST_FIXED_UPDATE.Publish();
         }
+        
+        public static void SubscribePreFixedUpdate(Action subscriber) => _PRE_FIXED_UPDATE.Subscribe(subscriber);
+        public static void SubscribeNormalFixedUpdate(Action subscriber) => _NORMAL_FIXED_UPDATE.Subscribe(subscriber);
+        public static void SubscribePostFixedUpdate(Action subscriber) => _POST_FIXED_UPDATE.Subscribe(subscriber);
 
-        public static void SubscribePreFixedUpdate(System.Action subscriber) => PreFixedUpdate += subscriber;
-        public static void SubscribeNormalFixedUpdate(System.Action subscriber) => NormalFixedUpdate += subscriber;
-        public static void SubscribePostFixedUpdate(System.Action subscriber) => PostFixedUpdate += subscriber;
-
-        public static void UnsubscribePreFixedUpdate(System.Action subscriber) => PreFixedUpdate -= subscriber;
-        public static void UnsubscribeNormalFixedUpdate(System.Action subscriber) => NormalFixedUpdate -= subscriber;
-        public static void UnsubscribePostFixedUpdate(System.Action subscriber) => PostFixedUpdate -= subscriber;
+        public static void UnsubscribePreFixedUpdate(Action subscriber) => _PRE_FIXED_UPDATE.Subscribe(subscriber);
+        public static void UnsubscribeNormalFixedUpdate(Action subscriber) => _NORMAL_FIXED_UPDATE.Subscribe(subscriber);
+        public static void UnsubscribePostFixedUpdate(Action subscriber) => _POST_FIXED_UPDATE.Subscribe(subscriber);
     }
 }

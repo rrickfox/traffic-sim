@@ -1,6 +1,5 @@
 using UnityEngine;
 using Utility;
-using static Utility.CONSTANTS;
 
 namespace DataTypes
 {

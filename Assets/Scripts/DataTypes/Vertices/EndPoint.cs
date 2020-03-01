@@ -15,6 +15,9 @@ namespace DataTypes
         // cumulative Probabilities of choosing a vertex to route to
         private List<double> _cumulativeProbabilities { get; }
         public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
+        
+        // updates only happen after all car updates
+        public static TypePublisher typePublisher { get; } = TypePublisher.Create<EndPoint>(Car.typePublisher);
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
         {
@@ -26,9 +29,10 @@ namespace DataTypes
             if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
             
-            // IMPORTANT: subscribe to PreFixedUpdate to destroy cars before they try to move
-            UpdatePublisher.SubscribePreFixedUpdate(SpawnCars);
-            UpdatePublisher.SubscribePreFixedUpdate(DespawnCars);
+            // subscribe to updates
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(SpawnCars);
+            _publisher.Subscribe(DespawnCars);
         }
 
         public void SpawnCars()

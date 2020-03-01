@@ -11,8 +11,10 @@ namespace DataTypes
         public float positionOnRoad { get; private set; } = 0;
         public float lane { get; private set; }
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
-        public List<RouteSegment> route { get; private set;}
-        public RouteSegment segment { get; private set;}
+        public List<RouteSegment> route { get; private set; }
+        public RouteSegment segment { get; private set; }
+        
+        public static TypePublisher typePublisher { get; } = TypePublisher.Create<Car>();
 
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
@@ -24,7 +26,8 @@ namespace DataTypes
             UpdatePosition();
             
             // subscribe to updates
-            UpdatePublisher.SubscribeNormalFixedUpdate(Move);
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(Move);
         }
 
         public void Move()

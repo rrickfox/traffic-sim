@@ -1,4 +1,5 @@
 using System;
+using Events;
 using UnityEngine;
 using static Utility.CONSTANTS;
 
@@ -11,11 +12,12 @@ namespace DataTypes
         Transform transform { get; }
     }
     
-    public class GameObjectData : IGameObjectData
+    public abstract class GameObjectData : IGameObjectData
     {
         public GameObject prefab { get; }
         public GameObject gameObject { get; }
         public Transform transform { get; }
+        protected ObjectPublisher _publisher { get; set; }
 
         protected GameObjectData(GameObject prefab)
         {
@@ -29,7 +31,11 @@ namespace DataTypes
         
         // construct using an empty prefab
         protected GameObjectData() : this(EMPTY_PREFAB) { }
-        
-        public void Dispose() => UnityEngine.Object.Destroy(gameObject);
+
+        public void Dispose()
+        {
+            UnityEngine.Object.Destroy(gameObject);
+            _publisher?.UnsubscribeAll();
+        }
     }
 }

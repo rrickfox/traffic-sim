@@ -9,6 +9,7 @@ namespace DataTypes
         public GameObject prefab { get; }
         public GameObject gameObject { get; }
         public Transform transform { get; }
+        public LinkedBehaviour behaviour { get; }
         protected ObjectPublisher _publisher { get; set; }
 
         protected GameObjectData(GameObject prefab)
@@ -19,8 +20,10 @@ namespace DataTypes
             // // set default name
             // gameObject.name = $"{typeof(TThis)} ({gameObject.GetInstanceID()})";
             transform = gameObject.transform;
+            behaviour = gameObject.AddComponent<LinkedBehaviour>();
+            behaviour.data = this;
         }
-        
+
         // construct using an empty prefab
         protected GameObjectData() : this(EMPTY_PREFAB) { }
 
@@ -29,5 +32,12 @@ namespace DataTypes
             Object.Destroy(gameObject);
             _publisher?.UnsubscribeAll();
         }
+    }
+    
+    public class LinkedBehaviour : MonoBehaviour
+    {
+        // You may have to manually cast this to the GameObjectData subclass you need.
+        // This is not really fixable since we don't have a reference to the specific type.
+        public GameObjectData data { get; set; }
     }
 }

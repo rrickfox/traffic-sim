@@ -10,7 +10,7 @@ namespace DataTypes
         
         protected Vertex(IEnumerable<Edge> edges) => SetEdges(edges);
         protected Vertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab) => SetEdges(edges);
-        // constructor aliases using a variable amount of parameters instead of an enumerable
+        // constructor aliases that use a variable amount of parameters instead of an enumerable
         protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
         protected Vertex(GameObject prefab, params Edge[] edges) : this(prefab, edges.ToImmutableArray()) { }
         

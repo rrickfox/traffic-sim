@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Events
 {
+    // Manages the publishing of FixedUpdates
     public class UpdatePublisher : MonoBehaviour
     {
         private static Dictionary<Type, TypePublisher> _publishers { get; } = new Dictionary<Type, TypePublisher>();
@@ -12,6 +13,8 @@ namespace Events
         {
             foreach (var publisher in _publishers.Values)
                 publisher.Publish();
+            // reset the publishers' states so they know that
+            // they haven't been invoked in the next update yet
             foreach (var publisher in _publishers.Values)
                 publisher.ResetState();
         }

@@ -2,6 +2,7 @@ using System;
 
 namespace Events
 {
+    // The publisher for a unique object
     public class ObjectPublisher
     {
         private event Action _action;

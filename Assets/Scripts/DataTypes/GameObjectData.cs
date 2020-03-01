@@ -30,6 +30,7 @@ namespace DataTypes
         public void Dispose()
         {
             Object.Destroy(gameObject);
+            // unsubscribe from all events to make sure there are no more references to this object
             _publisher?.UnsubscribeAll();
         }
     }

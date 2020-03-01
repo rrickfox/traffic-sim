@@ -4,13 +4,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public interface IVertex : IGameObjectData
-    {
-        ImmutableArray<Edge> edges { get; }
-        LaneType SubRoute(Edge comingFrom, Edge to);
-    }
-    
-    public abstract class Vertex : GameObjectData, IVertex
+    public abstract class Vertex : GameObjectData
     {
         public ImmutableArray<Edge> edges { get; private set; }
         

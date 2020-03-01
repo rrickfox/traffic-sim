@@ -14,7 +14,7 @@ namespace DataTypes
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
         private List<double> _cumulativeProbabilities { get; }
-        public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
+        public Dictionary<Vertex, List<RouteSegment>> routingTable { get; } = new Dictionary<Vertex, List<RouteSegment>>();
         
         // updates only happen after all car updates
         public static TypePublisher typePublisher { get; } = TypePublisher.Create<EndPoint>(Car.typePublisher);

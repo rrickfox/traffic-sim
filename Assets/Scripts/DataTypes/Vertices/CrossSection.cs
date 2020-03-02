@@ -15,6 +15,12 @@ namespace DataTypes
         private Edge _left { get; }
         private Vector2 center;
 
+        private Dictionary<Edge, List<List<BezierCurve>>> _upRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
+        private Dictionary<Edge, List<List<BezierCurve>>> _rightRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
+        private Dictionary<Edge, List<List<BezierCurve>>> _downRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
+        private Dictionary<Edge, List<List<BezierCurve>>> _leftRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
+        private Dictionary<Edge, Dictionary<Edge, List<List<BezierCurve>>>> _routes = new Dictionary<Edge, Dictionary<Edge, List<List<BezierCurve>>>>();
+
         public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
             : base(prefab, up, right, down, left)
         {
@@ -23,6 +29,10 @@ namespace DataTypes
             _down = down;
             _left = left;
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
+            _routes.Add(_up, _upRoutes);
+            _routes.Add(_right, _rightRoutes);
+            _routes.Add(_down, _downRoutes);
+            _routes.Add(_left, _leftRoutes);
             Display();
         }
 
@@ -227,6 +237,93 @@ namespace DataTypes
             texture.wrapMode = TextureWrapMode.Clamp;
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", Vector2.one);
+        }
+
+        public void GenerateRoutes()
+        {
+            _routes[_up].Clear();
+            for (int i = _up.incomingLanes.Count - 1; i >= 0; i--)
+            {
+                if (_up.incomingLanes[i].Equals(LaneType.LeftTurn))
+                {
+                    var track = new List<BezierCurve>();
+                    var lrDifference = Mathf.Clamp(_left.outgoingLanes.Count - _right.incomingLanes.Count, 0f, Mathf.Infinity);
+                    var preCurveStart = _up.other.GetAbsolutePosition(_up.length, i).position;
+                    var preCurveEnd = preCurveStart - _up.originPoint.forward * (STOP_LINE_WIDTH
+                            + lrDifference * LANE_WIDTH
+                            + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
+                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    track.Add(preCurve);
+
+                    var posCurveEnd = _right.GetAbsolutePosition(0f, i).position;
+                    var udDifference = Mathf.Clamp(_down.outgoingLanes.Count - _up.incomingLanes.Count, 0f, Mathf.Infinity);
+                    var posCurveStart = posCurveEnd - _right.originPoint.forward * (STOP_LINE_WIDTH
+                            + udDifference * LANE_WIDTH
+                            + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
+                    var posCurve = new BezierCurve(posCurveStart, posCurveStart, posCurveEnd);
+                    track.Add(posCurve);
+
+                    var curveControll = center
+                        - _up.originPoint.forward * _up.other.GetAbsolutePosition(_up.length, i).position
+                        - _right.originPoint.forward * _right.GetAbsolutePosition(0f, i).position;
+                    var curve = new BezierCurve(preCurveEnd, curveControll, posCurveStart);
+                    track.Add(curve);
+
+                    _routes[_up][_right].Add(track);
+                }
+
+                var throughOffset = 0;
+                if (_up.incomingLanes[i].Equals(LaneType.Through))
+                {
+                    var track = new List<BezierCurve>();
+                    var lrDifference = Mathf.Clamp(_right.outgoingLanes.Count - _left.incomingLanes.Count, 0f, Mathf.Infinity);
+                    if (i >= _down.outgoingLanes.Count && throughOffset == 0)
+                        throughOffset = i + 1 - _down.outgoingLanes.Count;
+                    if (i - throughOffset < 0)
+                        throw new NetworkConfigurationError("too many through Lanes");
+                    var posCurveEnd = _down.GetAbsolutePosition(0f, i - throughOffset).position;
+                    var posCurveStart = posCurveEnd - _down.originPoint.forward * (STOP_LINE_WIDTH
+                        + lrDifference * LANE_WIDTH
+                        + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
+                    var curve1Start = _up.other.GetAbsolutePosition(_up.length, i).position;
+                    var curve2Start = curve1Start + (curve1Start - posCurveStart) / 2f;
+                    var curve1Controll = curve1Start - _up.originPoint.forward * (curve1Start - curve2Start).magnitude;
+                    var curve2Controll = posCurveStart - _down.originPoint.forward * (curve2Start - posCurveStart).magnitude;
+                    track.Add(new BezierCurve(curve1Start, curve1Controll, curve2Start));
+                    track.Add(new BezierCurve(curve2Start, curve2Controll, posCurveStart));
+                    track.Add(new BezierCurve(posCurveStart, posCurveStart, posCurveEnd));
+
+                    _routes[_up][_down].Add(track);
+                }
+
+                if (_up.incomingLanes[i].Equals(LaneType.RightTurn))
+                {
+                    var track = new List<BezierCurve>();
+                    var lrDifference = Mathf.Clamp(_right.incomingLanes.Count - _left.outgoingLanes.Count, 0f, Mathf.Infinity);
+                    var preCurveStart = _up.other.GetAbsolutePosition(_up.length, i).position;
+                    var preCurveEnd = preCurveStart - _up.originPoint.forward * (STOP_LINE_WIDTH
+                            + lrDifference * LANE_WIDTH
+                            + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
+                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    track.Add(preCurve);
+
+                    var posCurveEnd = _left.GetAbsolutePosition(0f, i).position;
+                    var udDifference = Mathf.Clamp(_up.incomingLanes.Count - _down.outgoingLanes.Count, 0f, Mathf.Infinity);
+                    var posCurveStart = posCurveEnd - _left.originPoint.forward * (STOP_LINE_WIDTH
+                            + udDifference * LANE_WIDTH
+                            + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
+                    var posCurve = new BezierCurve(posCurveStart, posCurveStart, posCurveEnd);
+                    track.Add(posCurve);
+
+                    var curveControll = center
+                        - _up.originPoint.forward * _up.other.GetAbsolutePosition(_up.length, i).position
+                        - _left.originPoint.forward * _left.GetAbsolutePosition(0f, i).position;
+                    var curve = new BezierCurve(preCurveEnd, curveControll, posCurveStart);
+                    track.Add(curve);
+
+                    _routes[_up][_left].Add(track);
+                }
+            }
         }
 
         private Texture GetTexture(Vector3[] meshVertices)

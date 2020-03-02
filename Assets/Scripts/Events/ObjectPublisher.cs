@@ -3,7 +3,7 @@ using System;
 namespace Events
 {
     // The publisher for a unique object
-    public class ObjectPublisher
+    public class ObjectPublisher : IDisposable
     {
         private event Action _action;
         private TypePublisher _typePublisher { get; }
@@ -16,7 +16,7 @@ namespace Events
 
         public void Subscribe(Action subscriber) => _action += subscriber;
         
-        public void UnsubscribeAll() => _typePublisher.Unsubscribe(this);
+        public void Dispose() => _typePublisher.Unsubscribe(this);
         
         public void Publish() => _action?.Invoke();
     }

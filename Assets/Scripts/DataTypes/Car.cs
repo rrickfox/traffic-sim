@@ -14,7 +14,7 @@ namespace DataTypes
         public List<RouteSegment> route { get; private set; }
         public RouteSegment segment { get; private set; }
         
-        public static TypePublisher typePublisher { get; } = TypePublisher.Create<Car>();
+        public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {

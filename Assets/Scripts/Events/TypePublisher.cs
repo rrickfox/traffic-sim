@@ -8,26 +8,20 @@ namespace Events
     public class TypePublisher
     {
         private HashSet<ObjectPublisher> _publishers { get; } = new HashSet<ObjectPublisher>();
-        private HashSet<TypePublisher> _dependencies { get; set; }
+        private HashSet<TypePublisher> _dependencies { get; }
         private PublishingState _state { get; set; } = PublishingState.ToDo;
         
         private enum PublishingState { ToDo, WaitingForDependencies, Done }
 
-        private TypePublisher() { }
-
-        public static TypePublisher Create<T>(params TypePublisher[] dependencies)
+        public TypePublisher(params TypePublisher[] dependencies)
         {
-            var self = new TypePublisher();
-            self._dependencies = dependencies.ToHashSet();
-            UpdatePublisher.RegisterTypePublisher<T>(self);
-            return self;
+            _dependencies = dependencies.ToHashSet();
+            UpdatePublisher.RegisterTypePublisher(this);
         }
 
-        public void RegisterObjectPublisher(ObjectPublisher objectPublisher)
-            => _publishers.Add(objectPublisher);
+        public void RegisterObjectPublisher(ObjectPublisher objectPublisher) => _publishers.Add(objectPublisher);
 
-        public void Unsubscribe(ObjectPublisher subscriberObject)
-            => _publishers.Remove(subscriberObject);
+        public void Unsubscribe(ObjectPublisher subscriberObject) => _publishers.Remove(subscriberObject);
 
         public void Publish()
         {

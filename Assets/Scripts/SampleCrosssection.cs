@@ -27,7 +27,7 @@ public class SampleCrosssection : MonoBehaviour
 
         var shape_up = new RoadShape(new List<BezierCurve>(){new BezierCurve(new Vector2(0,70), new Vector2(0,40), new Vector2(0,10))});
         var lanes_up_incoming = new List<Lane>{new Lane(new HashSet<LaneType>(){LaneType.Through}), new Lane(new HashSet<LaneType>(){LaneType.Through})};
-        var lanes_up_outgoing = new List<Lane>{new Lane(new HashSet<LaneType>(){LaneType.LeftTurn}), new Lane(new HashSet<LaneType>(){LaneType.Through}), new Lane(new HashSet<LaneType>(){LaneType.RightTurn})};
+        var lanes_up_outgoing = new List<Lane>{new Lane(new HashSet<LaneType>(){LaneType.LeftTurn}), new Lane(new HashSet<LaneType>(){LaneType.Through}), new Lane(new HashSet<LaneType>(){LaneType.RightTurn,LaneType.Through})};
         var up = new Edge(roadPrefab, shape_up, lanes_up_outgoing, lanes_up_incoming);
         var point_up = new EndPoint(up, carPrefab, new Frequencies(new int[]{75, 50}), new int[]{1, 1, 1});
         _vertices.Add(point_up);

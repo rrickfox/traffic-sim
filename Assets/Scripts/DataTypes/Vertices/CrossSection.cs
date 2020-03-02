@@ -15,11 +15,7 @@ namespace DataTypes
         private Edge _left { get; }
         private Vector2 center;
 
-        private Dictionary<Edge, List<List<BezierCurve>>> _upRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
-        private Dictionary<Edge, List<List<BezierCurve>>> _rightRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
-        private Dictionary<Edge, List<List<BezierCurve>>> _downRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
-        private Dictionary<Edge, List<List<BezierCurve>>> _leftRoutes = new Dictionary<Edge, List<List<BezierCurve>>>();
-        private Dictionary<Edge, Dictionary<Edge, List<List<BezierCurve>>>> _routes = new Dictionary<Edge, Dictionary<Edge, List<List<BezierCurve>>>>();
+        private Dictionary<RouteSegment, Dictionary<int, RoadShape>> _routes = new Dictionary<RouteSegment, Dictionary<int, RoadShape>>();
 
         public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
             : base(prefab, up, right, down, left)
@@ -29,12 +25,42 @@ namespace DataTypes
             _down = down;
             _left = left;
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
-            _routes.Add(_up, _upRoutes);
-            _routes.Add(_right, _rightRoutes);
-            _routes.Add(_down, _downRoutes);
-            _routes.Add(_left, _leftRoutes);
             Display();
+            GenerateRoute(_up, _right, _down, _left);
+            GenerateRoute(_right, _down, _left, _up);
+            GenerateRoute(_down, _left, _up, _right);
+            GenerateRoute(_left, _up, _right, _down);
+            ShowTracks();
         }
+
+        public void ShowTracks()
+        {
+            /*
+            LineRenderer lRend = gameObject.AddComponent<LineRenderer>();
+            lRend.positionCount = (_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - (_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length % 100)) / 100 + 1;
+            lRend.material.color = Color.white;
+            for (int i = 0; i < lRend.positionCount; i++)
+                lRend.SetPosition(i, new Vector3(_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.x, ROAD_HEIGHT  + i* 1f, _routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.y));
+            lRend.SetPosition(lRend.positionCount-1,
+                new Vector3(_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - 1].position.x, ROAD_HEIGHT + 1f, _routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[_routes[new RouteSegment(_up.other, LaneType.Through)][1].points.Length - 1].position.y));
+            */
+            foreach (var dic in _routes)
+            {
+                foreach (var shape in dic.Value)
+                {
+                    GameObject gO = GameObject.Instantiate(EMPTY_PREFAB, gameObject.transform);
+                    LineRenderer lr = gO.AddComponent<LineRenderer>();
+                    lr.positionCount = shape.Value.points.Length;
+                    lr.startWidth = 0.2f;
+                    lr.endWidth = 0.2f;
+                    lr.startColor = Color.red;
+                    lr.endColor = Color.green;
+                    for (int i = 0; i < shape.Value.points.Length; i++)
+                        lr.SetPosition(i, new Vector3(shape.Value.points[i].position.x, ROAD_HEIGHT + .1f, shape.Value.points[i].position.y));
+                }
+            }
+        }
+
 
         // returns necessary lane to go from an edge to another edge
         // throws exception if edges are not in this vertex
@@ -241,7 +267,10 @@ namespace DataTypes
 
         private void GenerateRoute(Edge edge, Edge relativeLeft,Edge oppositeEdge,Edge relativeRight)
         {
-            _routes[edge].Clear();
+            _routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, RoadShape>());
+            _routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, RoadShape>());
+            _routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, RoadShape>());
+
             for (int i = edge.incomingLanes.Count - 1; i >= 0; i--)
             {
                 if (edge.incomingLanes[i].types.Contains(LaneType.LeftTurn))
@@ -253,23 +282,23 @@ namespace DataTypes
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
-                    track.Add(preCurve);
 
-                    var posCurveEnd = relativeLeft.GetAbsolutePosition(0f, i).position;
-                    var udDifference = Mathf.Clamp(oppositeEdge.outgoingLanes.Count - edge.incomingLanes.Count, 0f, Mathf.Infinity);
-                    var posCurveStart = posCurveEnd - relativeLeft.originPoint.forward * (STOP_LINE_WIDTH
+                    var postCurveEnd = relativeLeft.GetAbsolutePosition(0f, i).position;
+                    var udDifference = Mathf.Clamp(oppositeEdge.incomingLanes.Count - edge.outgoingLanes.Count, 0f, Mathf.Infinity);
+                    var postCurveStart = postCurveEnd - relativeLeft.originPoint.forward * (STOP_LINE_WIDTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var posCurve = new BezierCurve(posCurveStart, posCurveStart, posCurveEnd);
-                    track.Add(posCurve);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        - edge.originPoint.forward * edge.other.GetAbsolutePosition(edge.length, i).position
-                        - relativeLeft.originPoint.forward * relativeLeft.GetAbsolutePosition(0f, i).position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, posCurveStart);
+                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
+                        + relativeLeft.GetAbsolutePosition(0f, i).position - relativeLeft.originPoint.position;
+                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                    track.Add(preCurve);
                     track.Add(curve);
+                    track.Add(postCurve);
 
-                    _routes[edge][relativeLeft].Add(track);
+                    _routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new RoadShape(track));
                 }
 
                 var throughOffset = 0;
@@ -281,19 +310,19 @@ namespace DataTypes
                         throughOffset = i + 1 - oppositeEdge.outgoingLanes.Count;
                     if (i - throughOffset < 0)
                         throw new NetworkConfigurationError("too many through Lanes");
-                    var posCurveEnd = oppositeEdge.GetAbsolutePosition(0f, i - throughOffset).position;
-                    var posCurveStart = posCurveEnd - oppositeEdge.originPoint.forward * (STOP_LINE_WIDTH
+                    var postCurveEnd = oppositeEdge.GetAbsolutePosition(0f, i - throughOffset).position;
+                    var postCurveStart = postCurveEnd - oppositeEdge.originPoint.forward * (STOP_LINE_WIDTH
                         + lrDifference * LANE_WIDTH
                         + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var curve1Start = edge.other.GetAbsolutePosition(edge.length, i).position;
-                    var curve2Start = curve1Start + (curve1Start - posCurveStart) / 2f;
-                    var curve1Controll = curve1Start - edge.originPoint.forward * (curve1Start - curve2Start).magnitude;
-                    var curve2Controll = posCurveStart - oppositeEdge.originPoint.forward * (curve2Start - posCurveStart).magnitude;
+                    var curve2Start = curve1Start + (postCurveStart - curve1Start) / 2f;
+                    var curve1Controll = curve1Start - edge.originPoint.forward * (curve1Start - curve2Start).magnitude / 2f;
+                    var curve2Controll = postCurveStart - oppositeEdge.originPoint.forward * (curve2Start - postCurveStart).magnitude / 2f;
                     track.Add(new BezierCurve(curve1Start, curve1Controll, curve2Start));
-                    track.Add(new BezierCurve(curve2Start, curve2Controll, posCurveStart));
-                    track.Add(new BezierCurve(posCurveStart, posCurveStart, posCurveEnd));
+                    track.Add(new BezierCurve(curve2Start, curve2Controll, postCurveStart));
+                    track.Add(new BezierCurve(postCurveStart, postCurveStart, postCurveEnd));
 
-                    _routes[edge][oppositeEdge].Add(track);
+                    _routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new RoadShape(track));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.RightTurn))
@@ -305,23 +334,23 @@ namespace DataTypes
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
-                    track.Add(preCurve);
 
-                    var posCurveEnd = relativeRight.GetAbsolutePosition(0f, i).position;
+                    var postCurveEnd = relativeRight.GetAbsolutePosition(0f, i).position;
                     var udDifference = Mathf.Clamp(edge.incomingLanes.Count - oppositeEdge.outgoingLanes.Count, 0f, Mathf.Infinity);
-                    var posCurveStart = posCurveEnd - relativeRight.originPoint.forward * (STOP_LINE_WIDTH
+                    var postCurveStart = postCurveEnd - relativeRight.originPoint.forward * (STOP_LINE_WIDTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var posCurve = new BezierCurve(posCurveStart, posCurveStart, posCurveEnd);
-                    track.Add(posCurve);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        - edge.originPoint.forward * edge.other.GetAbsolutePosition(edge.length, i).position
-                        - relativeRight.originPoint.forward * relativeRight.GetAbsolutePosition(0f, i).position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, posCurveStart);
+                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
+                        + relativeRight.GetAbsolutePosition(0f, i).position - relativeRight.originPoint.position;
+                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                    track.Add(preCurve);
                     track.Add(curve);
+                    track.Add(postCurve);
 
-                    _routes[edge][relativeRight].Add(track);
+                    _routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new RoadShape(track));
                 }
             }
         }

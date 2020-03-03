@@ -15,7 +15,7 @@ namespace DataTypes
         private Edge _left { get; }
         private Vector2 center;
 
-        private Dictionary<RouteSegment, Dictionary<int, RoadShape>> _routes = new Dictionary<RouteSegment, Dictionary<int, RoadShape>>();
+        private Dictionary<RouteSegment, Dictionary<int, SectionTrack>> _routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
 
         public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
             : base(prefab, up, right, down, left)
@@ -46,17 +46,17 @@ namespace DataTypes
             */
             foreach (var dic in _routes)
             {
-                foreach (var shape in dic.Value)
+                foreach (var track in dic.Value)
                 {
                     GameObject gO = GameObject.Instantiate(EMPTY_PREFAB, gameObject.transform);
                     LineRenderer lr = gO.AddComponent<LineRenderer>();
-                    lr.positionCount = shape.Value.points.Length;
+                    lr.positionCount = track.Value.shape.points.Length;
                     lr.startWidth = 0.2f;
                     lr.endWidth = 0.2f;
                     lr.startColor = Color.red;
                     lr.endColor = Color.green;
-                    for (int i = 0; i < shape.Value.points.Length; i++)
-                        lr.SetPosition(i, new Vector3(shape.Value.points[i].position.x, ROAD_HEIGHT + .1f, shape.Value.points[i].position.y));
+                    for (int i = 0; i < track.Value.shape.points.Length; i++)
+                        lr.SetPosition(i, new Vector3(track.Value.shape.points[i].position.x, ROAD_HEIGHT + .1f, track.Value.shape.points[i].position.y));
                 }
             }
         }
@@ -267,9 +267,9 @@ namespace DataTypes
 
         private void GenerateRoute(Edge edge, Edge relativeLeft,Edge oppositeEdge,Edge relativeRight)
         {
-            _routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, RoadShape>());
-            _routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, RoadShape>());
-            _routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, RoadShape>());
+            _routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());
+            _routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, SectionTrack>());
+            _routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, SectionTrack>());
 
             var throughOffset = 0;
 
@@ -302,7 +302,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    _routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new RoadShape(track));
+                    _routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.Through))
@@ -326,7 +326,7 @@ namespace DataTypes
                     track.Add(new BezierCurve(curve2Start, curve2Controll, postCurveStart));
                     track.Add(new BezierCurve(postCurveStart, postCurveStart, postCurveEnd));
 
-                    _routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new RoadShape(track));
+                    _routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.RightTurn))
@@ -356,7 +356,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    _routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new RoadShape(track));
+                    _routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
             }
         }

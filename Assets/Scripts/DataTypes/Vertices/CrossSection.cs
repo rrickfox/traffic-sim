@@ -330,7 +330,12 @@ namespace DataTypes
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
 
-                    var postCurveEnd = relativeRight.GetAbsolutePosition(0f, i).position;
+                    var postCurveEnd = new Vector2();
+                    var rDifference = relativeRight.outgoingLanes.Count - edge.incomingLanes.Count;
+                    if (i + rDifference >= 0)
+                        postCurveEnd = relativeRight.GetAbsolutePosition(0f, i + rDifference).position;
+                    else
+                        throw new NetworkConfigurationError("too many right turns");
                     var udDifference = Mathf.Clamp(oppositeEdge.outgoingLanes.Count - edge.incomingLanes.Count, 0f, Mathf.Infinity);
                     var postCurveStart = postCurveEnd - relativeRight.originPoint.forward * (STOP_LINE_WIDTH
                             + SECTION_BUFFER_LENGTH

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
+using Utility;
 
 namespace Pathfinding
 {
@@ -85,7 +86,7 @@ namespace Pathfinding
         }
         
         // iterates over vertices in reverse order to determine path and translates it into a path of edges
-        private static List<Edge> DetermineFoundPath(this EndPoint self, IVertex end)
+        private static List<RouteSegment> DetermineFoundPath(this EndPoint self, IVertex end)
         {
             // return null if no path could be found
             if (end.GetPathDistance() == null) return null;
@@ -96,9 +97,21 @@ namespace Pathfinding
             {
                 vertexPath.AddFirst(tempEnd);
             }
+            vertexPath.AddFirst(self);
 
-            // return the edges connecting the vertices in the path
-            return vertexPath.Zip(vertexPath.Skip(1), (v1, v2) => v1.GetEdge(v2)).ToList();
+            // return the route segments composed of edges connecting the vertices
+            // as well as the LaneType required at the vertex
+            var path = vertexPath.ZipThree(
+                vertexPath.Skip(1),
+                vertexPath.Skip(2),
+                (v1, v2, v3) =>
+                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
+            ).ToList();
+            path.Add(new RouteSegment(
+                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
+            ));
+            return path;
         }
     }
     

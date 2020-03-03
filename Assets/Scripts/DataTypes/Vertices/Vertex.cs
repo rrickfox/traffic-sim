@@ -7,9 +7,10 @@ namespace DataTypes
     public interface IVertex : IGameObjectData
     {
         ImmutableArray<Edge> edges { get; }
+        LaneType SubRoute(Edge comingFrom, Edge to);
     }
     
-    public class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
+    public abstract class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
         where TBehaviour : VertexBehaviour<TThis>
         where TThis : Vertex<TThis, TBehaviour>
     {
@@ -29,6 +30,8 @@ namespace DataTypes
                 edge.vertex = this;
             }
         }
+
+        public abstract LaneType SubRoute(Edge comingFrom, Edge to);
     }
 
     public class VertexBehaviour<TData> : LinkedBehaviour<TData> where TData : IVertex { }

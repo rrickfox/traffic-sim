@@ -34,15 +34,6 @@ namespace DataTypes
 
         public void ShowTracks()
         {
-            /*
-            LineRenderer lRend = gameObject.AddComponent<LineRenderer>();
-            lRend.positionCount = (routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - (routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length % 100)) / 100 + 1;
-            lRend.material.color = Color.white;
-            for (int i = 0; i < lRend.positionCount; i++)
-                lRend.SetPosition(i, new Vector3(routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.x, ROAD_HEIGHT  + i* 1f, routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.y));
-            lRend.SetPosition(lRend.positionCount-1,
-                new Vector3(routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - 1].position.x, ROAD_HEIGHT + 1f, routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[routes[new RouteSegment(_up.other, LaneType.Through)][1].points.Length - 1].position.y));
-            */
             foreach (var dic in routes)
             {
                 foreach (var track in dic.Value)
@@ -55,7 +46,7 @@ namespace DataTypes
                     lr.startColor = Color.red;
                     lr.endColor = Color.green;
                     for (int i = 0; i < track.Value.shape.points.Length; i++)
-                        lr.SetPosition(i, new Vector3(track.Value.shape.points[i].position.x, ROAD_HEIGHT + .1f, track.Value.shape.points[i].position.y));
+                        lr.SetPosition(i, new Vector3(track.Value.shape.points[i].position.x, ROAD_HEIGHT + 0.1f, track.Value.shape.points[i].position.y));
                 }
             }
         }

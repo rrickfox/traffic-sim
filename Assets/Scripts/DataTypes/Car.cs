@@ -41,7 +41,14 @@ namespace DataTypes
                 } else if (track is Edge) // could also be standard else
                 {
                     track.cars.Remove(this);
-                    track = segment.edge.other.vertex.routes[segment][(int) lane];
+                    try
+                    {
+                        track = segment.edge.other.vertex.routes[segment][(int) lane];
+                    } catch(KeyNotFoundException e)
+                    {
+                        Dispose();
+                        throw new System.Exception("Car tried to take route it cannot reach.", e);
+                    }
                     track.cars.Add(this);
                 }
             }

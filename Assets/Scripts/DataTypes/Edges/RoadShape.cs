@@ -56,6 +56,8 @@ namespace DataTypes
             var lastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
 
+            
+
             foreach(var point in tempPoints)
             {
                 // go along the curve to find new point at regular interval
@@ -77,10 +79,7 @@ namespace DataTypes
                     lastPoint = newEvenlySpacedPoint;
                 }
 
-                if(dstSinceLastEvenPoint == 0)
-                {
-                    lastPoint = point;
-                }
+                lastPoint = point;
             }
 
             _curves.Last().endPoint = lastPoint;

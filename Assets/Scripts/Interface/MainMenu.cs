@@ -44,9 +44,9 @@ public class MainMenu : MonoBehaviour
     }
 
     // load scene
-    public void LoadScene(int sceneIndex)
+    public void LoadScene(string sceneName)
     {
-		SceneManager.LoadScene(sceneIndex);
+        SceneManager.LoadSceneAsync(sceneName);
 	}
 
     // set graphics Quality

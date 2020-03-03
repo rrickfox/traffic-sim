@@ -10,7 +10,7 @@ namespace DataTypes
         public Edge road { get; private set; }
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
-        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(70); // Laengeneinheiten pro Zeiteinheit
+        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(Random.value*50 + 30); // Laengeneinheiten pro Zeiteinheit
 
         public List<Car> otherCars;
 
@@ -55,7 +55,7 @@ namespace DataTypes
                 //accelerate
                 if (frontDistance >= stoppingDistance && speed < road.preferedSpeed)
                 {
-                    Accelerate(0.5f);
+                    Accelerate(0.05f);
                 }
                 //slow down
                 if (frontDistance < stoppingDistance)
@@ -63,6 +63,15 @@ namespace DataTypes
                     Accelerate(-1);
                 }
             }
+            else
+            {
+                //accelerate
+                if (speed < road.preferedSpeed)
+                {
+                    Accelerate(0.05f);
+                }
+            }
+
             Human();  
 
             Move();
@@ -71,7 +80,7 @@ namespace DataTypes
         // Returns the stopping distance
         public float Distance()
         {
-            return speed +5;
+            return 20 + speed * 20 ;
         }
 
         // Returns the Car in front of the Car 
@@ -80,10 +89,9 @@ namespace DataTypes
             Car merke = null; 
             foreach(var _car in road.cars)
             { 
-                if (merke == null) {merke = _car; }
-                if(positionOnRoad < _car.positionOnRoad && lane == _car.lane && merke.positionOnRoad < _car.positionOnRoad)
+                if (positionOnRoad < _car.positionOnRoad && lane == _car.lane && (merke == null || merke.positionOnRoad > _car.positionOnRoad))
                 {
-                     merke = _car;
+                    merke = _car;
                 }
             } 
             return merke;  

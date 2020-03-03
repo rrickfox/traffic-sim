@@ -271,6 +271,8 @@ namespace DataTypes
             _routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, RoadShape>());
             _routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, RoadShape>());
 
+            var throughOffset = 0;
+
             for (int i = edge.incomingLanes.Count - 1; i >= 0; i--)
             {
                 if (edge.incomingLanes[i].types.Contains(LaneType.LeftTurn))
@@ -279,6 +281,7 @@ namespace DataTypes
                     var lrDifference = Mathf.Clamp(relativeRight.outgoingLanes.Count - relativeLeft.incomingLanes.Count, 0f, Mathf.Infinity);
                     var preCurveStart = edge.other.GetAbsolutePosition(edge.length, i).position;
                     var preCurveEnd = preCurveStart - edge.originPoint.forward * (STOP_LINE_WIDTH
+                            + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
@@ -286,6 +289,7 @@ namespace DataTypes
                     var postCurveEnd = relativeLeft.GetAbsolutePosition(0f, i).position;
                     var udDifference = Mathf.Clamp(oppositeEdge.incomingLanes.Count - edge.outgoingLanes.Count, 0f, Mathf.Infinity);
                     var postCurveStart = postCurveEnd - relativeLeft.originPoint.forward * (STOP_LINE_WIDTH
+                            + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
                     var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
@@ -301,7 +305,6 @@ namespace DataTypes
                     _routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new RoadShape(track));
                 }
 
-                var throughOffset = 0;
                 if (edge.incomingLanes[i].types.Contains(LaneType.Through))
                 {
                     var track = new List<BezierCurve>();
@@ -311,7 +314,8 @@ namespace DataTypes
                     if (i - throughOffset < 0)
                         throw new NetworkConfigurationError("too many through Lanes");
                     var postCurveEnd = oppositeEdge.GetAbsolutePosition(0f, i - throughOffset).position;
-                    var postCurveStart = postCurveEnd - oppositeEdge.originPoint.forward * (STOP_LINE_WIDTH
+                    var postCurveStart = postCurveEnd - oppositeEdge.originPoint.forward * (STOP_LINE_WIDTH 
+                        + SECTION_BUFFER_LENGTH
                         + lrDifference * LANE_WIDTH
                         + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var curve1Start = edge.other.GetAbsolutePosition(edge.length, i).position;
@@ -331,13 +335,15 @@ namespace DataTypes
                     var lrDifference = Mathf.Clamp(relativeLeft.incomingLanes.Count - relativeRight.outgoingLanes.Count, 0f, Mathf.Infinity);
                     var preCurveStart = edge.other.GetAbsolutePosition(edge.length, i).position;
                     var preCurveEnd = preCurveStart - edge.originPoint.forward * (STOP_LINE_WIDTH
+                            + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
 
                     var postCurveEnd = relativeRight.GetAbsolutePosition(0f, i).position;
-                    var udDifference = Mathf.Clamp(edge.incomingLanes.Count - oppositeEdge.outgoingLanes.Count, 0f, Mathf.Infinity);
+                    var udDifference = Mathf.Clamp(oppositeEdge.outgoingLanes.Count - edge.incomingLanes.Count, 0f, Mathf.Infinity);
                     var postCurveStart = postCurveEnd - relativeRight.originPoint.forward * (STOP_LINE_WIDTH
+                            + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
                     var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);

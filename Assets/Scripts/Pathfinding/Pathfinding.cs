@@ -105,10 +105,10 @@ namespace Pathfinding
                 vertexPath.Skip(1),
                 vertexPath.Skip(2),
                 (v1, v2, v3) =>
-                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
+                    new RouteSegment(edge: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
             ).ToList();
             path.Add(new RouteSegment(
-                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                edge: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
                 laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
             ));
             return path;

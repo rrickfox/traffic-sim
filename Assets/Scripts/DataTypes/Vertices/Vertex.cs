@@ -8,6 +8,7 @@ namespace DataTypes
     {
         ImmutableArray<Edge> edges { get; }
         LaneType SubRoute(Edge comingFrom, Edge to);
+        Dictionary<RouteSegment, Dictionary<int, SectionTrack>> routes { get; }
     }
     
     public abstract class Vertex<TThis, TBehaviour> : GameObjectData<TThis, TBehaviour>, IVertex
@@ -15,6 +16,7 @@ namespace DataTypes
         where TThis : Vertex<TThis, TBehaviour>
     {
         public ImmutableArray<Edge> edges { get; private set; }
+        public Dictionary<RouteSegment, Dictionary<int, SectionTrack>> routes { get; set; }
         
         protected Vertex(IEnumerable<Edge> edges) => SetEdges(edges);
         protected Vertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab) => SetEdges(edges);

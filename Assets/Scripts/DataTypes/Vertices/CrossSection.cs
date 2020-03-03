@@ -15,8 +15,6 @@ namespace DataTypes
         private Edge _left { get; }
         private Vector2 center;
 
-        private Dictionary<RouteSegment, Dictionary<int, SectionTrack>> _routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
-
         public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
             : base(prefab, up, right, down, left)
         {
@@ -26,6 +24,7 @@ namespace DataTypes
             _left = left;
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();
+            routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
             GenerateRoute(_up, _right, _down, _left);
             GenerateRoute(_right, _down, _left, _up);
             GenerateRoute(_down, _left, _up, _right);
@@ -37,14 +36,14 @@ namespace DataTypes
         {
             /*
             LineRenderer lRend = gameObject.AddComponent<LineRenderer>();
-            lRend.positionCount = (_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - (_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length % 100)) / 100 + 1;
+            lRend.positionCount = (routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - (routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length % 100)) / 100 + 1;
             lRend.material.color = Color.white;
             for (int i = 0; i < lRend.positionCount; i++)
-                lRend.SetPosition(i, new Vector3(_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.x, ROAD_HEIGHT  + i* 1f, _routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.y));
+                lRend.SetPosition(i, new Vector3(routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.x, ROAD_HEIGHT  + i* 1f, routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[i*100].position.y));
             lRend.SetPosition(lRend.positionCount-1,
-                new Vector3(_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[_routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - 1].position.x, ROAD_HEIGHT + 1f, _routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[_routes[new RouteSegment(_up.other, LaneType.Through)][1].points.Length - 1].position.y));
+                new Vector3(routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points.Length - 1].position.x, ROAD_HEIGHT + 1f, routes[new RouteSegment(_up.other, LaneType.LeftTurn)][0].points[routes[new RouteSegment(_up.other, LaneType.Through)][1].points.Length - 1].position.y));
             */
-            foreach (var dic in _routes)
+            foreach (var dic in routes)
             {
                 foreach (var track in dic.Value)
                 {
@@ -267,9 +266,9 @@ namespace DataTypes
 
         private void GenerateRoute(Edge edge, Edge relativeLeft,Edge oppositeEdge,Edge relativeRight)
         {
-            _routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());
-            _routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, SectionTrack>());
-            _routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, SectionTrack>());
+            routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());
+            routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, SectionTrack>());
+            routes.Add(new RouteSegment(edge.other, LaneType.RightTurn), new Dictionary<int, SectionTrack>());
 
             var throughOffset = 0;
 
@@ -302,7 +301,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    _routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.Through))
@@ -326,7 +325,7 @@ namespace DataTypes
                     track.Add(new BezierCurve(curve2Start, curve2Controll, postCurveStart));
                     track.Add(new BezierCurve(postCurveStart, postCurveStart, postCurveEnd));
 
-                    _routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.RightTurn))
@@ -356,7 +355,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    _routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
             }
         }

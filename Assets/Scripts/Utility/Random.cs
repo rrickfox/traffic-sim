@@ -9,9 +9,9 @@ namespace Utility
         // global random Instance
         public static System.Random RANDOM = new System.Random();
 
-        // selects an IVertex from destinations based on weights
+        // selects a Vertex from destinations based on weights
         // modified from: https://stackoverflow.com/a/43345968
-        public static IVertex Choose(List<double> cumulativeProbabilities, IList<IVertex> destinations)
+        public static Vertex Choose(List<double> cumulativeProbabilities, IList<Vertex> destinations)
         {
             // now generate random double. It will always be in range from 0 to 1
             var r = RANDOM.NextDouble();

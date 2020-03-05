@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Cameras;
 using DataTypes;
 
@@ -11,7 +9,7 @@ public class CarStats : MonoBehaviour
     public GameObject panel;
 
     FreeCamera _freeCam;
-    CarBehaviour _car;
+    Car _car;
     bool _visible = false;
 
     // Start is called before the first frame update
@@ -25,10 +23,9 @@ public class CarStats : MonoBehaviour
     {
         if (_freeCam._following && !_visible)
         {
-            Debug.Log("now");
             _visible = true;
             panel.SetActive(true);
-            _car = _freeCam._targetCar.GetComponent<CarBehaviour>();
+            _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
         }
 
         if (!_freeCam._following)
@@ -38,6 +35,6 @@ public class CarStats : MonoBehaviour
         }
 
         if (_visible)
-            speedText.text = Mathf.Round(Utility.Conversion.KilometersPerHourFromUPTU(_car._data.speed) * 10) / 10f + " km/h";
+            speedText.text = Mathf.Round(Utility.Conversion.KilometersPerHourFromUPTU(_car.speed) * 10) / 10f + " km/h";
     }
 }

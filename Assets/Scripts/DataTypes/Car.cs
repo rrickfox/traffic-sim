@@ -39,11 +39,12 @@ namespace DataTypes
             return absolutePosition;
         }
 
-        public void CarControler()
+        public void CarController()
         {
             var stoppingDistance = Distance();
 
             var frontCar = GetFrontCar();
+            
             if (frontCar != null)
             {
                 var frontDistance = frontCar.positionOnRoad - positionOnRoad;
@@ -56,6 +57,7 @@ namespace DataTypes
                 if (frontDistance < stoppingDistance)
                     Accelerate(-1);
             }
+            
             Human();  
 
             Move();
@@ -80,11 +82,10 @@ namespace DataTypes
             }
             return merke;  
         }
-      
 
         public void Human()
         {
-            if(Random.value*1000000 < 1)
+            if (Random.value * 1000000 < 1)
                 Accelerate(-speed / 3);
         }
 
@@ -92,7 +93,7 @@ namespace DataTypes
         {           
             positionOnRoad += speed;
             var roadPoint = GetAbsolutePosition();
-            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
+            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
@@ -107,7 +108,7 @@ namespace DataTypes
     {
         private void FixedUpdate()
         {
-            _data.CarControler();
+            _data.CarController();
         }
     }
 }

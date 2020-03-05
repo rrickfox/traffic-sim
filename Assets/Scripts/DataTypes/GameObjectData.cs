@@ -16,9 +16,8 @@ namespace DataTypes
         {
             this.prefab = prefab;
             gameObject = Object.Instantiate(this.prefab);
-            // TODO: find way to generate useful default name (own type is no longer accessible)
-            // // set default name
-            // gameObject.name = $"{typeof(TThis)} ({gameObject.GetInstanceID()})";
+            // set default name
+            gameObject.name = $"{this.prefab.name} ({gameObject.GetInstanceID()})";
             transform = gameObject.transform;
             behaviour = gameObject.AddComponent<LinkedBehaviour>();
             behaviour.data = this;

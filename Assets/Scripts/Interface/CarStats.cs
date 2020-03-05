@@ -23,14 +23,16 @@ namespace Interface
         // Update is called once per frame
         private void Update()
         {
-            if (_freeCam._following && !_visible)
+            if (_freeCam._following)
             {
-                _visible = true;
-                panel.SetActive(true);
-                _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
+                if (!_visible)
+                {
+                    _visible = true;
+                    panel.SetActive(true);
+                    _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
+                }
             }
-
-            if (!_freeCam._following)
+            else
             {
                 _visible = false;
                 panel.SetActive(false);

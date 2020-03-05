@@ -5,9 +5,10 @@ namespace Cameras
     public class FreeCamera : MonoBehaviour
     {
         [Header("Fly Settings")]
-        public float flySpeed = 0.1f;
+        public float flySpeed = 0.5f;
+        public bool moveOnEdges = false;
         [Header("Rotation Settings")]
-        public float turnSpeed = 1f;
+        public float turnSpeed = 5f;
         public float maxTurnAngle = 90f;
         public float minTurnAngle = 20f;
         [Header("Zoom Settings")]
@@ -21,6 +22,9 @@ namespace Cameras
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
+        Transform _targetCar;
+        bool _following;
+        float _scroll;
 
         // Setting camera right, focus the center
         void Start()
@@ -29,27 +33,39 @@ namespace Cameras
             _cam.transform.LookAt(transform.position);
         }
 
+        private void Update()
+        {
+            SelectCar();
+            _scroll = Input.GetAxis("Mouse ScrollWheel");
+        }
+
         void FixedUpdate()
         {
             if (!_cam.enabled)
+            {
+                // reset camera
+                if (_following)
+                {
+                    _following = false;
+                    _targetCar = null;
+                }
                 return;
+            }
+            Follow();
             Rotate();
             Move();
             Zoom();
         }
 
-        // Rotating Camera around center while right mousebutton is pressed, up-down-rotation (X-axis) can be limited
+        // Rotating Camera around center while right mouse button is pressed, up-down-rotation (X-axis) can be limited
         void Rotate()
         {
             if (Input.GetMouseButton(1))
             {
                 transform.Rotate(0f, Input.GetAxis("Mouse X") * turnSpeed, 0f);
-                if (_cam.transform.rotation.eulerAngles.x <= maxTurnAngle && _cam.transform.rotation.eulerAngles.x >= minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, -1 * Input.GetAxis("Mouse Y") * turnSpeed);
-                if (_cam.transform.rotation.eulerAngles.x < minTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, minTurnAngle - _cam.transform.rotation.eulerAngles.x);
-                if (_cam.transform.rotation.eulerAngles.x > maxTurnAngle)
-                    _cam.transform.RotateAround(transform.position, _cam.transform.right, maxTurnAngle - _cam.transform.rotation.eulerAngles.x);
+                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * turnSpeed;
+                targetRotation = Mathf.Clamp(targetRotation, minTurnAngle, maxTurnAngle);
+                _cam.transform.RotateAround(transform.position, _cam.transform.right, targetRotation - _cam.transform.rotation.eulerAngles.x);
             }
         }
 
@@ -61,8 +77,11 @@ namespace Cameras
             _newPosition += transform.forward * Input.GetAxis("Vertical") * flySpeed;
             _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
 
+            if (_newPosition != transform.position)
+                _following = false;
+
             // Moving if mouse is near to the edge of the game window
-            if (!Input.GetMouseButton(1))
+            if (!Input.GetMouseButton(1) && moveOnEdges)
             {
                 if (Input.mousePosition.x < 5)
                     _newPosition -= transform.right * flySpeed * Mathf.Clamp((5f - Input.mousePosition.x) / 5f, 0f, 1f);
@@ -81,12 +100,36 @@ namespace Cameras
             transform.position = _newPosition;
         }
 
-        // Zooming with the mousewheel betwenn maxZoom and minZoom
+        // Zooming with the mousewheel between maxZoom and minZoom
         void Zoom()
         {
-            _camDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
+            _camDistance -= _scroll * zoomSpeed;
             _camDistance = Mathf.Clamp(_camDistance, minZoom, maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
+        }
+
+        // follows a target Car
+        void Follow()
+        {
+            if (_targetCar != null && _following)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, _targetCar.position, 1000f);
+            }
+        }
+
+        // selects a Car with left mouse button to follow
+        void SelectCar()
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                _following = false;
+                // shoots a ray to get a car located at the mousePosition
+                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))
+                {
+                    _following = true;
+                    _targetCar = hit.transform;
+                }
+            }
         }
 
         // Visualisation of border

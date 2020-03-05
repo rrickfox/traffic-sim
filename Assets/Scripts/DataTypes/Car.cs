@@ -1,31 +1,60 @@
 using UnityEngine;
-namespace DataTypes
-{ 
-    public class Car
-    {
-        public Edge road;
-        public float positionOnRoad;
-        public float lane;
-        public float speed = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
-        public Transform carTransform;
+using Utility;
+using System.Collections.Generic;
 
-        public Car(Edge road, float positionOnRoad, float lane)
+namespace DataTypes
+{
+    public class Car : GameObjectData<Car, CarBehaviour>
+    {
+        public ITrack track => segment.track;
+        public float positionOnRoad { get; private set; } = 0;
+        public float lane { get; private set; }
+        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(50); // Laengeneinheiten pro Zeiteinheit
+        public List<RouteSegment> route { get; private set;}
+        public RouteSegment segment { get; private set;}
+
+        public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
-            this.road = road;
-            this.positionOnRoad = positionOnRoad;
+            this.route = route;
+            segment = route.PopAt(0);
+            track.cars.Add(this);
             this.lane = lane;
+
+            UpdatePosition();
         }
-       
+
         public void Move()
         {
             positionOnRoad += speed;
-            Vector2 position = road.GetPosition(positionOnRoad, lane);
-            carTransform.position = new Vector3(position.x, carTransform.position.y, position.y);
+            UpdatePosition();
+            // if car is at end of RouteSegment, get next routeSegment if there is one
+            if(positionOnRoad >= track.length && route.Count > 0)
+            {
+                positionOnRoad -= track.length; // add overshot distance to new RouteSegment
+                track.cars.Remove(this);
+                segment = route.PopAt(0);
+                track.cars.Add(this);
+            }
+        }
+
+        private void UpdatePosition()
+        {
+            var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
+            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + CONSTANTS.ROAD_HEIGHT, roadPoint.position.y);
+            transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
 
         public void Accelerate(float acceleration)
         {
             speed += acceleration;
+        }
+    }
+
+    public class CarBehaviour : LinkedBehaviour<Car>
+    {
+        private void FixedUpdate()
+        {
+            _data.Move();
         }
     }
 }

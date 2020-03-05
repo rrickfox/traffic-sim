@@ -1,0 +1,49 @@
+# version of the yaml parser
+# needed when changes are made to the parsing
+version: 1.0
+
+# a list of edges
+# vertices reference an edge by an id
+edges:
+  1:
+    shape:
+      # roadShape
+      # contains a list of bezierCurves
+      - start: {x: -140, y: -50}
+        control: {x: 0, y: 50}
+        end: {x: 140, y: -50}
+        # bezierCurves save start, control and endpoint
+    outgoingLanes:
+      # contains a list of outgoing lane objects
+      - [through]  # lane objects contain a hashset of lane types
+    incomingLanes:
+      - [through]
+  2:
+    shape:
+      - start: {x: -50, y: 50}
+        control: {x: 0, y: 50}
+        end: {x: 50, y: 50}
+    outgoingLanes:
+      - [through]
+      - [through]
+    incomingLanes:
+      - [through]
+
+# a list of vertices
+vertices:
+  - !endpoint
+    edge: 1a
+    frequencies: [100]
+    weights: [1]
+  - !endpoint
+    edge: 1b
+    frequencies: [100]
+    weights: [1]
+  - !endpoint
+    edge: 2a
+    frequencies: [100]
+    weights: [1]
+  - !endpoint
+    edge: 2b
+    frequencies: [100]
+    weights: [1]

@@ -8,7 +8,12 @@ namespace Interface
         private void Update()
         {
             if (Input.GetAxis("Cancel") != 0)
-                SceneManager.LoadScene(0);
+                LoadMenu();
+        }
+
+        public void LoadMenu()
+        {
+            SceneManager.LoadScene(0);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace DataTypes
                 var frontDistance = frontCar.positionOnRoad - positionOnRoad;
 
                 //accelerate
-                if (frontDistance >= stoppingDistance && speed < road.preferedSpeed)
+                if (frontDistance >= stoppingDistance && speed < road.preferredSpeed)
                     Accelerate(0.05f);
 
                 //slow down
@@ -61,7 +61,7 @@ namespace DataTypes
             else
             {
                 //accelerate
-                if (speed < road.preferedSpeed)
+                if (speed < road.preferredSpeed)
                 {
                     Accelerate(0.05f);
                 }

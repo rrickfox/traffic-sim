@@ -7,10 +7,10 @@ using static Utility.CONSTANTS;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge : GameObjectData<Edge, EdgeBehaviour>, ITrack
+    public class Edge : GameObjectData, ITrack
     {
         public RoadPoint originPoint => shape.points[0];
-        public IVertex vertex = null; // the Vertex from which this edge originates
+        public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
         public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
@@ -200,6 +200,4 @@ namespace DataTypes
             return absolutePosition;
         }
     }
-
-    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

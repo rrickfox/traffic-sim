@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class TeeSection : Vertex<TeeSection, TeeSectionBehaviour>
+    public class TeeSection : Vertex
     {
         private Edge _throughOrRight { get; }
         private Edge _throughOrLeft { get; }
@@ -44,6 +44,4 @@ namespace DataTypes
                     return LaneType.Through;
         }
     }
-
-    public class TeeSectionBehaviour : VertexBehaviour<TeeSection> { }
 }

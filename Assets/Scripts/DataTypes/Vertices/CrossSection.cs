@@ -1,10 +1,9 @@
 using UnityEngine;
 using Utility;
-using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
-    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
+    public class CrossSection : Vertex
     {
         private Edge _up { get; }
         private Edge _right { get; }
@@ -60,6 +59,4 @@ namespace DataTypes
                     return LaneType.RightTurn;
         }
     }
-    
-    public class CrossSectionBehaviour : VertexBehaviour<CrossSection> { }
 }

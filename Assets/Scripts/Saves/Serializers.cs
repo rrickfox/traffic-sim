@@ -85,19 +85,19 @@ namespace Saves
             public DataTypes.Lane Deserialize() => new DataTypes.Lane(this.ToHashSet());
         }
 
-        public class Vertices : List<IVertex<DataTypes.IVertex>>
+        public class Vertices : List<Vertex<DataTypes.Vertex>>
         {
-            public List<DataTypes.IVertex> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
+            public List<DataTypes.Vertex> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
                 => this.Select(vertex => vertex.Deserialize(verticesLookup)).ToList();
         }
 
-        public interface IVertex<out TDeserialized>
-            where TDeserialized : DataTypes.IVertex
+        public interface Vertex<out TDeserialized>
+            where TDeserialized : DataTypes.Vertex
         {
             TDeserialized Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup);
         }
 
-        public class EndPoint : IVertex<DataTypes.EndPoint>
+        public class EndPoint : Vertex<DataTypes.EndPoint>
         {
             public string edge { get; set; }
             public Frequencies frequencies { get; set; }

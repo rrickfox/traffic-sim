@@ -1,6 +1,5 @@
 using UnityEngine;
 using Utility;
-using System.Collections.Generic;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -11,17 +10,14 @@ namespace DataTypes
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(70); // Laengeneinheiten pro Zeiteinheit
-
-        public List<Car> otherCars;
-
         private int i = 0;
+        
         public Car(GameObject prefab, Edge road, float positionOnRoad, float lane) : base(prefab)
         {
             this.road = road;
             this.road.cars.Add(this);
             this.positionOnRoad = positionOnRoad;
             this.lane = lane;
-
         }
         
         // retrieves position and forward vector of car on road when given relative position on road and lane
@@ -47,21 +43,18 @@ namespace DataTypes
         {
             var stoppingDistance = Distance();
 
-            Car frontCar = GetFrontCar();
+            var frontCar = GetFrontCar();
             if (frontCar != null)
             {
-                float frontDistance = frontCar.positionOnRoad - positionOnRoad;
+                var frontDistance = frontCar.positionOnRoad - positionOnRoad;
 
                 //accelerate
                 if (frontDistance >= stoppingDistance && speed < road.preferedSpeed)
-                {
                     Accelerate(0.5f);
-                }
+                
                 //slow down
                 if (frontDistance < stoppingDistance)
-                {
                     Accelerate(-1);
-                }
             }
             Human();  
 
@@ -78,21 +71,21 @@ namespace DataTypes
         public Car GetFrontCar()
         {
             Car merke = null; 
-            foreach(var _car in road.cars)
-            { 
-                if (merke == null) {merke = _car; }
-                if(positionOnRoad < _car.positionOnRoad && lane == _car.lane && merke.positionOnRoad < _car.positionOnRoad)
-                {
-                     merke = _car;
-                }
-            } 
+            foreach(var car in road.cars)
+            {
+                if (merke == null)
+                    merke = car;
+                else if(positionOnRoad < car.positionOnRoad && lane == car.lane && merke.positionOnRoad < car.positionOnRoad)
+                    merke = car;
+            }
             return merke;  
         }
       
 
         public void Human()
         {
-            if(Random.value*1000000 < 1) { Accelerate(-speed / 3); }
+            if(Random.value*1000000 < 1)
+                Accelerate(-speed / 3);
         }
 
         private void Move()

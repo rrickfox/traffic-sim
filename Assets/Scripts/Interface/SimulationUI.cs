@@ -1,22 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SimulationUI : MonoBehaviour
+namespace Interface
 {
-    // Start is called before the first frame update
-    void Start()
+    public class SimulationUI : MonoBehaviour
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetAxis("Cancel")!=0)
+        private void Update()
         {
-            SceneManager.LoadScene(0);
+            if (Input.GetAxis("Cancel") != 0)
+                SceneManager.LoadScene(0);
         }
     }
 }

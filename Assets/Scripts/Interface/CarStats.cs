@@ -1,40 +1,43 @@
-﻿using UnityEngine;
-using Cameras;
+﻿using Cameras;
 using DataTypes;
+using UnityEngine;
 
-public class CarStats : MonoBehaviour
+namespace Interface
 {
-    public Transform freeCamera;
-    public TMPro.TMP_Text speedText;
-    public GameObject panel;
-
-    FreeCamera _freeCam;
-    Car _car;
-    bool _visible = false;
-
-    // Start is called before the first frame update
-    void Start()
+    public class CarStats : MonoBehaviour
     {
-        _freeCam = freeCamera.GetComponent<FreeCamera>();
-    }
+        public Transform freeCamera;
+        public TMPro.TMP_Text speedText;
+        public GameObject panel;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (_freeCam._following && !_visible)
+        private FreeCamera _freeCam;
+        private Car _car;
+        private bool _visible = false;
+
+        // Start is called before the first frame update
+        private void Start()
         {
-            _visible = true;
-            panel.SetActive(true);
-            _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
+            _freeCam = freeCamera.GetComponent<FreeCamera>();
         }
 
-        if (!_freeCam._following)
+        // Update is called once per frame
+        private void Update()
         {
-            _visible = false;
-            panel.SetActive(false);
-        }
+            if (_freeCam._following && !_visible)
+            {
+                _visible = true;
+                panel.SetActive(true);
+                _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
+            }
 
-        if (_visible)
-            speedText.text = Mathf.Round(Utility.Conversion.KilometersPerHourFromUPTU(_car.speed) * 10) / 10f + " km/h";
+            if (!_freeCam._following)
+            {
+                _visible = false;
+                panel.SetActive(false);
+            }
+
+            if (_visible)
+                speedText.text = Mathf.Round(Utility.Conversion.KilometersPerHourFromUPTU(_car.speed) * 10) / 10f + " km/h";
+        }
     }
 }

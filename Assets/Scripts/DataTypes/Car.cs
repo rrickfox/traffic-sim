@@ -30,7 +30,7 @@ namespace DataTypes
             
             // subscribe to updates
             _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(Move);
+            _publisher.Subscribe(CarController);
         }
 
         public void CarController()

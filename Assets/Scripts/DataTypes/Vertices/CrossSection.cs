@@ -1,8 +1,9 @@
 using UnityEngine;
+using Utility;
 
 namespace DataTypes
 {
-    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
+    public class CrossSection : Vertex
     {
         private Edge _up { get; }
         private Edge _right { get; }
@@ -17,7 +18,45 @@ namespace DataTypes
             _down = down;
             _left = left;
         }
+
+        // returns necessary lane to go from an edge to another edge
+        // throws exception if edges are not in this vertex
+        // throws exception if edges are equal
+        public override LaneType SubRoute(Edge comingFrom, Edge to)
+        {
+            var from = comingFrom.other; // Subroute gets called with the Edge facing this Vertex, therefore other must be called
+            if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
+            if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
+            if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
+            
+            if(from == _up)
+                if(to == _right)
+                    return LaneType.LeftTurn;
+                else if(to == _down)
+                    return LaneType.Through;
+                else // to == _left
+                    return LaneType.RightTurn;
+            if(from == _right)
+                if(to == _down)
+                    return LaneType.LeftTurn;
+                else if(to == _left)
+                    return LaneType.Through;
+                else // to == _up
+                    return LaneType.RightTurn;
+            if(from == _down)
+                if(to == _left)
+                    return LaneType.LeftTurn;
+                else if(to == _up)
+                    return LaneType.Through;
+                else // to == _right
+                    return LaneType.RightTurn;
+            else // from == _left
+                if(to == _up)
+                    return LaneType.LeftTurn;
+                else if(to == _right)
+                    return LaneType.Through;
+                else // to == _down
+                    return LaneType.RightTurn;
+        }
     }
-    
-    public class CrossSectionBehaviour : VertexBehaviour<CrossSection> { }
 }

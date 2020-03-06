@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Utility
 {
@@ -14,9 +15,26 @@ namespace Utility
                 .Skip(1)
                 .Count();
         }
-        public static float Square(float value)
+
+        // modified from: https://stackoverflow.com/a/43345968
+        public static List<double> CalculateCumulative(int[] weights)
         {
-            return (value * value);
+            var sumWeights = (double) weights.Sum();
+            // generate distribution probability
+            var distribution = weights.Select(v => v / sumWeights).ToArray();
+
+            var sum = 0d;
+            // first change shape of your distribution probability array
+            // we need it to be cumulative, that is:
+            // if you have [0.1, 0.2, 0.3, 0.4] 
+            // we need     [0.1, 0.3, 0.6, 1  ] instead
+            return distribution.Select(c => {
+                var result = c + sum;
+                sum += c;
+                return result;
+            }).ToList();
         }
+
+        public static float Square(float value) => value * value;
     }
 }

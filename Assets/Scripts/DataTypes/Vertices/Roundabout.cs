@@ -3,12 +3,15 @@ using UnityEngine;
 
 namespace DataTypes
 {
-    public class Roundabout : Vertex<Roundabout, RoundaboutBehaviour>
+    public class Roundabout : Vertex
     {
         private Roundabout(GameObject prefab, IEnumerable<Edge> edges) : base(prefab, edges)
         {
         }
-    }
 
-    public class RoundaboutBehaviour : VertexBehaviour<Roundabout> { }
+        public override LaneType SubRoute(Edge comingFrom, Edge to)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

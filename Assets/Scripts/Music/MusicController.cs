@@ -1,20 +1,23 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
-public class MusicController : MonoBehaviour
+namespace Music
 {
-    private AudioSource _audioData;
-
-    void Start()
-    {
-		Object.DontDestroyOnLoad(this.gameObject);
-        _audioData = GetComponent<AudioSource>();
-		_audioData.volume = 0;
-        _audioData.Play(0);
-    }
-	
-	public void SetVolume(float volume)
+	[RequireComponent(typeof(AudioSource))]
+	public class MusicController : MonoBehaviour
 	{
-		_audioData.volume = volume;
+		private AudioSource _audioData;
+
+		void Start()
+		{
+			Object.DontDestroyOnLoad(this.gameObject);
+			_audioData = GetComponent<AudioSource>();
+			_audioData.volume = 0;
+			_audioData.Play(0);
+		}
+	
+		public void SetVolume(float volume)
+		{
+			_audioData.volume = volume;
+		}
 	}
 }

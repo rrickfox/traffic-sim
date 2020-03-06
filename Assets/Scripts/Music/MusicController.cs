@@ -9,7 +9,7 @@ namespace Music
 
 		private void Start()
 		{
-			Object.DontDestroyOnLoad(this.gameObject);
+			DontDestroyOnLoad(gameObject);
 			_audioData = GetComponent<AudioSource>();
 			_audioData.volume = 0;
 			_audioData.Play(0);

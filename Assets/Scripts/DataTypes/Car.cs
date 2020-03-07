@@ -34,10 +34,10 @@ namespace DataTypes
             
             // subscribe to updates
             _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(CarController);
+            _publisher.Subscribe(Drive);
         }
 
-        public void CarController()
+        public void Drive()
         {
             // TODO: figure out what state the car is in
             _state = CarState.DriveNormally;
@@ -78,7 +78,7 @@ namespace DataTypes
                 }
             }
 
-            Human();
+            SimulateHumanness();
         }
         
         private float GetStoppingDistance() => 20 + speed * 20;
@@ -96,7 +96,7 @@ namespace DataTypes
             return merke;  
         }
 
-        private void Human()
+        private void SimulateHumanness()
         {
             if (Random.value * 1000000 < 1)
                 Accelerate(-speed / 3);

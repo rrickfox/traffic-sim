@@ -35,7 +35,7 @@ namespace DataTypes
 
         public void CarController()
         {
-            var stoppingDistance = Distance();
+            var stoppingDistance = GetStoppingDistance();
 
             var frontCar = GetFrontCar();
             
@@ -43,17 +43,17 @@ namespace DataTypes
             {
                 var frontDistance = frontCar.positionOnRoad - positionOnRoad;
 
-                //accelerate
+                // accelerate
                 if (frontDistance >= stoppingDistance && speed < track.speedLimit)
                     Accelerate(0.05f);
 
-                //slow down
+                // slow down
                 if (frontDistance < stoppingDistance)
                     Accelerate(-1);
             }
             else
             {
-                //accelerate
+                // accelerate
                 if (speed < track.speedLimit)
                 {
                     Accelerate(0.05f);
@@ -64,14 +64,13 @@ namespace DataTypes
 
             Move();
         }
+        
+        public float GetStoppingDistance() => 20 + speed * 20;
+        
+        // Accelerate in Units per Timestep
+        private void Accelerate(float acceleration) => speed += acceleration;
 
-        // Returns the stopping distance
-        public float Distance()
-        {
-            return 20 + speed * 20 ;
-        }
-
-        // Returns the Car in front of the Car 
+        // Returns the Car in front of the current Car 
         public Car GetFrontCar()
         {
             Car merke = null;
@@ -109,12 +108,6 @@ namespace DataTypes
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
-        }
-
-        // Acclelerate in Units per Timestep
-        public void Accelerate(float acceleration)
-        {
-            speed += acceleration;
         }
     }
 }

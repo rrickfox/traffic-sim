@@ -85,14 +85,13 @@ namespace Pathfinding
         private static List<RouteSegment> DetermineFoundPath(this EndPoint self, Vertex end)
         {
             // return null if no path could be found
-            if (end.GetPathDistance() == null) return null;
+            if (end.GetPathDistance() == null)
+                return null;
 
             // build the path of all vertices
             var vertexPath = new LinkedList<Vertex>();
             for (var tempEnd = end; tempEnd != self; tempEnd = tempEnd.GetPreviousVertex())
-            {
                 vertexPath.AddFirst(tempEnd);
-            }
             vertexPath.AddFirst(self);
 
             // return the route segments composed of edges connecting the vertices

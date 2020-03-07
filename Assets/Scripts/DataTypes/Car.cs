@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Events;
 using UnityEngine;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace DataTypes
 {
-    public class Car : GameObjectData
+    public class Car : GameObjectData, IComparable<Car>
     {
         public ITrack track => segment.track;
         public List<RouteSegment> route { get; private set; }
@@ -97,7 +98,7 @@ namespace DataTypes
             if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
-                track.cars.Remove(this);
+                track.cars.UnsafeRemove(this);
                 segment = route.PopAt(0);
                 track.cars.Add(this);
             }
@@ -109,5 +110,7 @@ namespace DataTypes
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
+
+        public int CompareTo(Car other) => positionOnRoad.CompareTo(other.positionOnRoad);
     }
 }

@@ -50,8 +50,8 @@ namespace DataTypes
             // removes incoming cars
             foreach (var car in _edge.other.cars.ToList().Where(car => car.positionOnRoad >= _edge.length))
             {
+                _edge.other.cars.UnsafeRemove(car);
                 car.Dispose();
-                _edge.other.cars.Remove(car);
             }
         }
 

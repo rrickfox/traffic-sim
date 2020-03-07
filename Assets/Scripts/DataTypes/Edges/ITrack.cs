@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Utility;
 
 namespace DataTypes
 {
@@ -6,7 +6,7 @@ namespace DataTypes
     {
         float length { get; }
         float speedLimit { get; }
-        List<Car> cars { get; }
+        IndexableDictionary<Car> cars { get; }
         RoadPoint GetAbsolutePosition(float positionOnRoad, float lane);
     }
 }

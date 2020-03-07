@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Events;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -12,12 +13,14 @@ namespace DataTypes
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
-        public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
+        public IndexableDictionary<Car> cars { get; } = new IndexableDictionary<Car>(); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
         public float length => shape.length;
         public float speedLimit { get; } = Conversion.UnitsPerTimeStepFromKPH(120); // maximum speed of cars
+        
+        public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
@@ -26,6 +29,9 @@ namespace DataTypes
             other = new Edge(this, incomingLanes);
 
             Display();
+            
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(cars.Sort);
         }
 
         // construct an Edge where other is already constructed

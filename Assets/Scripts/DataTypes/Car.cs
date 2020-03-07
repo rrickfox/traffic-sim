@@ -13,11 +13,14 @@ namespace DataTypes
         public ITrack track => segment.track;
         public List<RouteSegment> route { get; private set; }
         public RouteSegment segment { get; private set; }
+        
         public float positionOnRoad { get; private set; }
         public float lane { get; private set; }
-        private int i = 0;
         public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(Random.value*50 + 30); // Laengeneinheiten pro Zeiteinheit
-
+        
+        private CarState _state { get; set; }
+        private enum CarState { DriveNormally, WantToChangeLane }
+        
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
@@ -35,6 +38,20 @@ namespace DataTypes
         }
 
         public void CarController()
+        {
+            // TODO: figure out what state the car is in
+            _state = CarState.DriveNormally;
+            
+            switch (_state)
+            {
+                case CarState.DriveNormally: DriveNormally(); break;
+                case CarState.WantToChangeLane: throw new NotImplementedException();
+            }
+            
+            Move();
+        }
+
+        private void DriveNormally()
         {
             var stoppingDistance = GetStoppingDistance();
 
@@ -62,8 +79,6 @@ namespace DataTypes
             }
 
             Human();
-
-            Move();
         }
         
         private float GetStoppingDistance() => 20 + speed * 20;

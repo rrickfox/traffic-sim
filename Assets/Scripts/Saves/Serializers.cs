@@ -127,9 +127,8 @@ namespace Saves
 
                 return new DataTypes.EndPoint(actualEdge, CAR_PREFAB, frequencies.Deserialize(), weights.Deserialize());
             }
-        }
-
-		public class TeeSection : Vertex<DataTypes.TeeSection>
+        } 
+        public class TeeSection : Vertex<DataTypes.TeeSection>
         {
             public Dictionary<string, string> edges;
 
@@ -138,7 +137,7 @@ namespace Saves
                 if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
                     throw new NetworkConfigurationError("Some edge of some TeeSection empty");
 
-                Dictionary<string, int> keys = new Dictionary<string, int>();
+                var keys = new Dictionary<string, int>();
                 foreach (var edge in edges)
                 {
                     if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
@@ -146,7 +145,7 @@ namespace Saves
                     keys.Add(edge.Key, key);
                 }
 
-                Dictionary<string, DataTypes.Edge> maybeEdges = new Dictionary<string, DataTypes.Edge>();
+                var maybeEdges = new Dictionary<string, DataTypes.Edge>();
                 foreach (var key in keys)
                 {
                     if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
@@ -154,7 +153,7 @@ namespace Saves
                     maybeEdges.Add(key.Key, maybeEdge);
                 }
 
-                Dictionary<string, DataTypes.Edge> actualEdges = new Dictionary<string, DataTypes.Edge>();
+                var actualEdges = new Dictionary<string, DataTypes.Edge>();
                 foreach (var edge in edges)
                 {
                     DataTypes.Edge actualEdge;
@@ -172,9 +171,9 @@ namespace Saves
                 return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughorright"]
                     , actualEdges["throughorleft"], actualEdges["leftorright"]);
             }
-        }
-
-		public class CrossSection : Vertex<DataTypes.CrossSection>
+        } 
+        
+        public class CrossSection : Vertex<DataTypes.CrossSection>
         {
             public Dictionary<string, string> edges;
 
@@ -183,7 +182,7 @@ namespace Saves
                 if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
                     throw new NetworkConfigurationError("Some edge of some TeeSection empty");
 
-                Dictionary<string, int> keys = new Dictionary<string, int>();
+                var keys = new Dictionary<string, int>();
                 foreach (var edge in edges)
                 {
                     if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
@@ -191,7 +190,7 @@ namespace Saves
                     keys.Add(edge.Key, key);
                 }
 
-                Dictionary<string, DataTypes.Edge> maybeEdges = new Dictionary<string, DataTypes.Edge>();
+                var maybeEdges = new Dictionary<string, DataTypes.Edge>();
                 foreach (var key in keys)
                 {
                     if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
@@ -199,7 +198,7 @@ namespace Saves
                     maybeEdges.Add(key.Key, maybeEdge);
                 }
 
-                Dictionary<string, DataTypes.Edge> actualEdges = new Dictionary<string, DataTypes.Edge>();
+                var actualEdges = new Dictionary<string, DataTypes.Edge>();
                 foreach (var edge in edges)
                 {
                     DataTypes.Edge actualEdge;

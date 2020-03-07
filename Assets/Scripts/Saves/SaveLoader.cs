@@ -8,8 +8,6 @@ namespace Saves
 {
     public class SaveLoader : MonoBehaviour
     {
-        public const float VERSION = 1.0f;
-        
         private void Start()
         {
             Load("Assets/Saves/sample.yaml");

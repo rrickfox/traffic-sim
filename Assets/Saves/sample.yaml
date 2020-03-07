@@ -1,7 +1,3 @@
-# version of the yaml parser
-# needed when changes are made to the parsing
-version: 1.0
-
 # a list of edges
 # vertices reference an edge by an id
 edges:

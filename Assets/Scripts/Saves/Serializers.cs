@@ -11,17 +11,11 @@ namespace Saves
     {
         public class Network
         {
-            public float version { get; set; }
             public Edges edges { get; set; }
             public Vertices vertices { get; set; }
 
             public DataTypes.Network Deserialize()
             {
-                if (version != SaveLoader.VERSION)
-                    throw new NetworkConfigurationError(
-                        "The version of the configuration file does not match the version of this build"
-                    );
-
                 var edgesLookup = edges.Deserialize();
                 return new DataTypes.Network(vertices.Deserialize(edgesLookup), edgesLookup.Values.ToList());
             }
@@ -85,19 +79,19 @@ namespace Saves
             public DataTypes.Lane Deserialize() => new DataTypes.Lane(this.ToHashSet());
         }
 
-        public class Vertices : List<Vertex<DataTypes.Vertex>>
+        public class Vertices : List<IVertex<DataTypes.Vertex>>
         {
             public List<DataTypes.Vertex> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
                 => this.Select(vertex => vertex.Deserialize(verticesLookup)).ToList();
         }
 
-        public interface Vertex<out TDeserialized>
+        public interface IVertex<out TDeserialized>
             where TDeserialized : DataTypes.Vertex
         {
             TDeserialized Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup);
         }
 
-        public class EndPoint : Vertex<DataTypes.EndPoint>
+        public class EndPoint : IVertex<DataTypes.EndPoint>
         {
             public string edge { get; set; }
             public Frequencies frequencies { get; set; }
@@ -138,7 +132,7 @@ namespace Saves
             public int[] Deserialize() => ToArray();
         }
         
-        public class TeeSection : Vertex<DataTypes.TeeSection>
+        public class TeeSection : IVertex<DataTypes.TeeSection>
         {
             public string throughOrRight { get; set; }
             public string throughOrLeft { get; set; }
@@ -182,12 +176,12 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
 
-                return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughorright"]
-                    , actualEdges["throughorleft"], actualEdges["leftorright"]);
+                return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughOrRight"]
+                    , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]);
             }
         }
         
-        public class CrossSection : Vertex<DataTypes.CrossSection>
+        public class CrossSection : IVertex<DataTypes.CrossSection>
         {
             public string up { get; set; }
             public string right { get; set; }

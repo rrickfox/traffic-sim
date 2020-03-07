@@ -17,8 +17,7 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
         public float length => shape.length;
-        //The Speed Cars should have
-        public float preferredSpeed { get; } = Conversion.UnitsPerTimeStepFromKPH(120);
+        public float speedLimit { get; } = Conversion.UnitsPerTimeStepFromKPH(120); // maximum speed of cars
         
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {

@@ -44,7 +44,7 @@ namespace DataTypes
                 var frontDistance = frontCar.positionOnRoad - positionOnRoad;
 
                 //accelerate
-                if (frontDistance >= stoppingDistance && speed < segment.track.preferredSpeed)
+                if (frontDistance >= stoppingDistance && speed < track.speedLimit)
                     Accelerate(0.05f);
 
                 //slow down
@@ -54,7 +54,7 @@ namespace DataTypes
             else
             {
                 //accelerate
-                if (speed < segment.track.preferredSpeed)
+                if (speed < track.speedLimit)
                 {
                     Accelerate(0.05f);
                 }
@@ -75,7 +75,7 @@ namespace DataTypes
         public Car GetFrontCar()
         {
             Car merke = null;
-            foreach(var _car in segment.track.cars)
+            foreach(var _car in track.cars)
                 if (positionOnRoad < _car.positionOnRoad && lane == _car.lane && (merke == null || merke.positionOnRoad > _car.positionOnRoad))
                     merke = _car;
             return merke;  
@@ -90,7 +90,7 @@ namespace DataTypes
         private void Move()
         {           
             positionOnRoad += speed;
-            var roadPoint = segment.track.GetAbsolutePosition(positionOnRoad, lane);
+            var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
 
             UpdatePosition();

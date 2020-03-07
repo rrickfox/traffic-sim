@@ -3,7 +3,6 @@ using System.Linq;
 using MoreLinq;
 using UnityEngine;
 using Utility;
-using YamlDotNet.Core.Tokens;
 using static Utility.CONSTANTS;
 
 namespace Saves
@@ -129,96 +128,6 @@ namespace Saves
             }
         }
 
-		public class TeeSection : Vertex<DataTypes.TeeSection>
-        {
-            public Dictionary<string, string> edges;
-
-            public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
-            {
-                if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
-                    throw new NetworkConfigurationError("Some edge of some TeeSection empty");
-
-                Dictionary<string, int> keys = new Dictionary<string, int>();
-                foreach (var edge in edges)
-                {
-                    if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
-                        throw new NetworkConfigurationError($"Some edge of some TeeSection is not an integer ({edges})");
-                    keys.Add(edge.Key, key);
-                }
-
-                Dictionary<string, DataTypes.Edge> maybeEdges = new Dictionary<string, DataTypes.Edge>();
-                foreach (var key in keys)
-                {
-                    if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
-                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent edge ({edges})");
-                    maybeEdges.Add(key.Key, maybeEdge);
-                }
-
-                Dictionary<string, DataTypes.Edge> actualEdges = new Dictionary<string, DataTypes.Edge>();
-                foreach (var edge in edges)
-                {
-                    DataTypes.Edge actualEdge;
-                    switch (edge.Value.Last())
-                    {
-                        case 'a': actualEdge = maybeEdges[edge.Key]; break;
-                        case 'b': actualEdge = maybeEdges[edge.Key].other; break;
-                        default: throw new NetworkConfigurationError(
-                            $"Some EndPoint's edge does not specify which edge variant it is ({edge})"
-                            );
-                    }
-                    actualEdges.Add(edge.Key, actualEdge);
-                }
-
-                return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughorright"]
-                    , actualEdges["throughorleft"], actualEdges["leftorright"]);
-            }
-        }
-
-		public class CrossSection : Vertex<DataTypes.CrossSection>
-        {
-            public Dictionary<string, string> edges;
-
-            public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
-            {
-                if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
-                    throw new NetworkConfigurationError("Some edge of some TeeSection empty");
-
-                Dictionary<string, int> keys = new Dictionary<string, int>();
-                foreach (var edge in edges)
-                {
-                    if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
-                        throw new NetworkConfigurationError($"Some edge of some TeeSection is not an integer ({edges})");
-                    keys.Add(edge.Key, key);
-                }
-
-                Dictionary<string, DataTypes.Edge> maybeEdges = new Dictionary<string, DataTypes.Edge>();
-                foreach (var key in keys)
-                {
-                    if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
-                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent edge ({edges})");
-                    maybeEdges.Add(key.Key, maybeEdge);
-                }
-
-                Dictionary<string, DataTypes.Edge> actualEdges = new Dictionary<string, DataTypes.Edge>();
-                foreach (var edge in edges)
-                {
-                    DataTypes.Edge actualEdge;
-                    switch (edge.Value.Last())
-                    {
-                        case 'a': actualEdge = maybeEdges[edge.Key]; break;
-                        case 'b': actualEdge = maybeEdges[edge.Key].other; break;
-                        default: throw new NetworkConfigurationError(
-                            $"Some EndPoint's edge does not specify which edge variant it is ({edge})"
-                            );
-                    }
-                    actualEdges.Add(edge.Key, actualEdge);
-                }
-
-                return new DataTypes.CrossSection(EMPTY_PREFAB, actualEdges["up"]
-                    , actualEdges["right"], actualEdges["down"], actualEdges["left"]);
-            }
-        }        
-        
         public class Frequencies : List<int>
         {
             public DataTypes.Frequencies Deserialize() => new DataTypes.Frequencies(ToArray());

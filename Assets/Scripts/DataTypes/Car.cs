@@ -60,7 +60,7 @@ namespace DataTypes
                 }
             }
 
-            Human();  
+            Human();
 
             Move();
         }
@@ -87,7 +87,7 @@ namespace DataTypes
         }
 
         private void Move()
-        {           
+        {
             positionOnRoad += speed;
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);

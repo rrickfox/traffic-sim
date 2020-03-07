@@ -15,12 +15,8 @@ namespace Pathfinding
             var endPoints = vertices.OfType<EndPoint>().ToList();
 
             foreach (var start in endPoints)
-            {
                 foreach (var end in endPoints.Where(end => end != start))
-                { 
                     start.FindPath(end, verticesSet);
-                }
-            }
         }
     }
 

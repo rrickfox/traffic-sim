@@ -148,8 +148,9 @@ namespace Saves
             {
                 var edges = new Dictionary<string, string>
                     {{"throughOrRight", throughOrRight}, {"throughOrLeft", throughOrLeft}, {"leftOrRight", leftOrRight}};
-                if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
-                    throw new NetworkConfigurationError("Some edge of some TeeSection empty");
+                
+                foreach (var edgeName in edges.Where(e => string.IsNullOrEmpty(e.Value)))
+                    throw new NetworkConfigurationError($"Some {edgeName} edge of some TeeSection is empty");
 
                 var keys = new Dictionary<string, int>();
                 foreach (var edge in edges)
@@ -198,8 +199,9 @@ namespace Saves
             {
                 var edges = new Dictionary<string, string>
                     {{"up", up}, {"right", right}, {"down", down}, {"left", left}};
-                if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
-                    throw new NetworkConfigurationError("Some edge of some TeeSection empty");
+                
+                foreach (var edgeName in edges.Where(e => string.IsNullOrEmpty(e.Value)))
+                    throw new NetworkConfigurationError($"Some {edgeName} edge of some CrossSection is empty");
 
                 var keys = new Dictionary<string, int>();
                 foreach (var edge in edges)

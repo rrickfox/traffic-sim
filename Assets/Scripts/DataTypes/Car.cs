@@ -65,13 +65,13 @@ namespace DataTypes
             Move();
         }
         
-        public float GetStoppingDistance() => 20 + speed * 20;
+        private float GetStoppingDistance() => 20 + speed * 20;
         
         // Accelerate in Units per Timestep
         private void Accelerate(float acceleration) => speed += acceleration;
 
         // Returns the Car in front of the current Car 
-        public Car GetFrontCar()
+        private Car GetFrontCar()
         {
             Car merke = null;
             foreach(var _car in track.cars)
@@ -80,7 +80,7 @@ namespace DataTypes
             return merke;  
         }
 
-        public void Human()
+        private void Human()
         {
             if (Random.value * 1000000 < 1)
                 Accelerate(-speed / 3);

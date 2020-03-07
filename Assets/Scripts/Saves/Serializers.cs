@@ -150,7 +150,7 @@ namespace Saves
                 foreach (var edge in edges)
                 {
                     if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
-                        throw new NetworkConfigurationError($"Some edge of some TeeSection is not an integer ({edges})");
+                        throw new NetworkConfigurationError($"Some {edge.Key} edge of some TeeSection is not an integer ({edges})");
                     keys.Add(edge.Key, key);
                 }
 
@@ -158,7 +158,7 @@ namespace Saves
                 foreach (var key in keys)
                 {
                     if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
-                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent edge ({edges})");
+                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent {key.Key} edge ({edges})");
                     maybeEdges.Add(key.Key, maybeEdge);
                 }
 
@@ -201,7 +201,7 @@ namespace Saves
                 foreach (var edge in edges)
                 {
                     if (!int.TryParse(string.Concat(edge.Value.SkipLast(1)), out var key))
-                        throw new NetworkConfigurationError($"Some edge of some TeeSection is not an integer ({edges})");
+                        throw new NetworkConfigurationError($"Some {edge.Key} edge of some TeeSection is not an integer ({edges})");
                     keys.Add(edge.Key, key);
                 }
 
@@ -209,7 +209,7 @@ namespace Saves
                 foreach (var key in keys)
                 {
                     if (!verticesLookup.TryGetValue(key.Value, out var maybeEdge))
-                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent edge ({edges})");
+                        throw new NetworkConfigurationError($"Some TeeSection refers to a non-existent {key.Key} edge ({edges})");
                     maybeEdges.Add(key.Key, maybeEdge);
                 }
 

@@ -140,10 +140,14 @@ namespace Saves
         
         public class TeeSection : Vertex<DataTypes.TeeSection>
         {
-            public Dictionary<string, string> edges;
+            public string throughOrRight { get; set; }
+            public string throughOrLeft { get; set; }
+            public string leftOrRight { get; set; }
 
             public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
+                var edges = new Dictionary<string, string>
+                    {{"throughOrRight", throughOrRight}, {"throughOrLeft", throughOrLeft}, {"leftOrRight", leftOrRight}};
                 if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
                     throw new NetworkConfigurationError("Some edge of some TeeSection empty");
 
@@ -185,10 +189,15 @@ namespace Saves
         
         public class CrossSection : Vertex<DataTypes.CrossSection>
         {
-            public Dictionary<string, string> edges;
+            public string up { get; set; }
+            public string right { get; set; }
+            public string down { get; set; }
+            public string left { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
+                var edges = new Dictionary<string, string>
+                    {{"up", up}, {"right", right}, {"down", down}, {"left", left}};
                 if (edges.Any(e => string.IsNullOrEmpty(e.Value)))
                     throw new NetworkConfigurationError("Some edge of some TeeSection empty");
 

@@ -84,12 +84,11 @@ vertices:
     frequencies: [75, 50, 75]
     weights: [1, 1, 1]
   - !crosssection
-    edges:
-      up:
-        1b
-      right:
-        2b
-      down:
-        3b
-      left:
-        4b
+    up:
+      1b
+    right:
+      2b
+    down:
+      3b
+    left:
+      4b

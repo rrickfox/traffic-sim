@@ -126,7 +126,18 @@ namespace Saves
 
                 return new DataTypes.EndPoint(actualEdge, CAR_PREFAB, frequencies.Deserialize(), weights.Deserialize());
             }
-        } 
+        }
+        
+        public class Frequencies : List<int>
+        {
+            public DataTypes.Frequencies Deserialize() => new DataTypes.Frequencies(ToArray());
+        }
+
+        public class Weights : List<int>
+        {
+            public int[] Deserialize() => ToArray();
+        }
+        
         public class TeeSection : Vertex<DataTypes.TeeSection>
         {
             public Dictionary<string, string> edges;
@@ -170,7 +181,7 @@ namespace Saves
                 return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughorright"]
                     , actualEdges["throughorleft"], actualEdges["leftorright"]);
             }
-        } 
+        }
         
         public class CrossSection : Vertex<DataTypes.CrossSection>
         {
@@ -215,16 +226,6 @@ namespace Saves
                 return new DataTypes.CrossSection(EMPTY_PREFAB, actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]);
             }
-        }        
-        
-        public class Frequencies : List<int>
-        {
-            public DataTypes.Frequencies Deserialize() => new DataTypes.Frequencies(ToArray());
-        }
-
-        public class Weights : List<int>
-        {
-            public int[] Deserialize() => ToArray();
         }
     }
 }

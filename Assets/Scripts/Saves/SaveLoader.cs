@@ -22,6 +22,8 @@ namespace Saves
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTagMapping("!endpoint", typeof(Serializers.EndPoint))
+                .WithTagMapping("!teesection", typeof(Serializers.TeeSection))
+                .WithTagMapping("!crosssection", typeof(Serializers.CrossSection))
                 .Build();
 
             // deserialize YAML file into intermediate network serializer object structure

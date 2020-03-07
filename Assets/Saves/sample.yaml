@@ -84,7 +84,7 @@ vertices:
     frequencies: [75, 50, 75]
     weights: [1, 1, 1]
   - !crosssection
-    edges:
+    edges:git push
       up:
         1b
       right:

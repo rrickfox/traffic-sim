@@ -45,6 +45,7 @@ namespace Utility
         // Runtime: O(1)
         // The new node is assumed to be smaller than the previous first node.
         // Otherwise you will have to call Sort() manually afterwards.
+        // TODO: Check whether automatically inserting in the correct place is more efficient than doing a sort afterwards
         public void AddFirst(TNode node)
         {
             if (first != null)

@@ -43,12 +43,12 @@ namespace Utility
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         // Runtime: O(1)
+        // The new node is assumed to be smaller than the previous first node.
+        // Otherwise you will have to call Sort() manually afterwards.
         public void AddFirst(TNode node)
         {
             if (first != null)
             {
-                if (_comparer.Compare(node, first) > 0)
-                    throw new ArgumentException("node has to be less than or equal to first");
                 first.previous = node;
                 node.next = first;
             }

@@ -33,7 +33,10 @@ namespace DataTypes
             segment = route.PopAt(0);
             track.cars.AddFirst(this);
             this.lane = lane;
-            
+
+            // give car a random color
+            gameObject.GetComponent<MeshRenderer>().material.color = UnityEngine.Random.ColorHSV();
+
             UpdatePosition();
             
             // subscribe to updates

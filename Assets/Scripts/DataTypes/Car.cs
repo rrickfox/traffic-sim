@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Events;
 using UnityEngine;
 using Utility;
@@ -8,10 +9,15 @@ using Random = UnityEngine.Random;
 
 namespace DataTypes
 {
-    public class Car : GameObjectData, IComparable<Car>
+    public class Car : GameObjectData, ISortableListNode
     {
+        public static TypePublisher typePublisher { get; } = new TypePublisher();
+        
+        public ISortableListNode previous { get; set; }
+        public ISortableListNode next { get; set; }
+
         public ITrack track => segment.track;
-        public List<RouteSegment> route { get; private set; }
+        public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
         
         public float positionOnRoad { get; private set; }
@@ -20,14 +26,12 @@ namespace DataTypes
         
         private CarState _state { get; set; }
         private enum CarState { DriveNormally, WantToChangeLane }
-        
-        public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
             this.route = route;
             segment = route.PopAt(0);
-            track.cars.Add(this);
+            track.cars.AddFirst(this);
             this.lane = lane;
             
             UpdatePosition();
@@ -86,14 +90,10 @@ namespace DataTypes
         // Accelerate in Units per Timestep
         private void Accelerate(float acceleration) => speed += acceleration;
 
-        // Returns the Car in front of the current Car 
+        // Returns the Car in front of the current Car
         private Car GetFrontCar()
         {
-            Car merke = null;
-            foreach(var _car in track.cars)
-                if (positionOnRoad < _car.positionOnRoad && lane == _car.lane && (merke == null || merke.positionOnRoad > _car.positionOnRoad))
-                    merke = _car;
-            return merke;  
+            return track.cars.AllGreater(this).FirstOrDefault(other => other.lane == lane);
         }
 
         private void SimulateHumanness()
@@ -113,9 +113,9 @@ namespace DataTypes
             if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
-                track.cars.UnsafeRemove(this);
+                track.cars.Remove(this);
                 segment = route.PopAt(0);
-                track.cars.Add(this);
+                track.cars.AddFirst(this);
             }
         }
 
@@ -125,7 +125,5 @@ namespace DataTypes
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
-
-        public int CompareTo(Car other) => positionOnRoad.CompareTo(other.positionOnRoad);
     }
 }

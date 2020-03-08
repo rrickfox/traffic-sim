@@ -6,7 +6,7 @@ namespace DataTypes
     {
         float length { get; }
         float speedLimit { get; }
-        IndexableDictionary<Car> cars { get; }
+        SortableLinkedList<Car> cars { get; }
         RoadPoint GetAbsolutePosition(float positionOnRoad, float lane);
     }
 }

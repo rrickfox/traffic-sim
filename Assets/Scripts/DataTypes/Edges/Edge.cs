@@ -13,7 +13,7 @@ namespace DataTypes
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
-        public IndexableDictionary<Car> cars { get; } = new IndexableDictionary<Car>(); // the cars on the outgoing side of the road
+        public SortableLinkedList<Car> cars { get; } = new SortableLinkedList<Car>(new CarComparer()); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
@@ -30,8 +30,7 @@ namespace DataTypes
 
             Display();
             
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(cars.Sort);
+            InitializeSubscriptions();
         }
 
         // construct an Edge where other is already constructed
@@ -40,6 +39,14 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+            
+            InitializeSubscriptions();
+        }
+
+        private void InitializeSubscriptions()
+        {
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(cars.Sort);
         }
 
         private void Display()

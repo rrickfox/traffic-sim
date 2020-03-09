@@ -45,7 +45,7 @@ namespace DataTypes
         }
         
         private Vertex _section { get; }
-        public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
+        public static TypePublisher typePublisher { get; } = new TypePublisher();
 
 
         public TrafficLight(GameObject prefab, int red, int yellow, int green, Vertex interSection) : base(prefab)

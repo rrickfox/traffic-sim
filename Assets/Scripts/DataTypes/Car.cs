@@ -11,6 +11,9 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
+        private static float _ACCELERATION { get; } = 0.05f;
+        private static float _DEACCELERATION { get; } = -1f;
+        
         public static TypePublisher typePublisher { get; } = new TypePublisher();
         
         public ISortableListNode previous { get; set; }
@@ -70,19 +73,17 @@ namespace DataTypes
 
                 // accelerate
                 if (frontDistance >= stoppingDistance && speed < track.speedLimit)
-                    Accelerate(0.05f);
+                    Accelerate(_ACCELERATION);
 
                 // slow down
                 if (frontDistance < stoppingDistance)
-                    Accelerate(-1);
+                    Accelerate(_DEACCELERATION);
             }
             else
             {
                 // accelerate
                 if (speed < track.speedLimit)
-                {
-                    Accelerate(0.05f);
-                }
+                    Accelerate(_ACCELERATION);
             }
 
             SimulateHumanness();

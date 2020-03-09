@@ -81,9 +81,9 @@ vertices:
     weights: [1, 1, 1]
   - !crosssection
     upDownFrequency: 
-      red: 20
-      yellow: 5
-      green: 30
+      red: 300
+      yellow: 100
+      green: 200
     up: 1b
     right: 2b
     down: 3b

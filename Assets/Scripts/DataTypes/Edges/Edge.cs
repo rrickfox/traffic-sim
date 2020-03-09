@@ -9,7 +9,7 @@ namespace DataTypes
     // represents what you can tell about a road if you were to stand at one of its endpoints
     public class Edge : GameObjectData, ITrack
     {
-        public int speedLimit;
+        public int speedLimit = 5; // temporary
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
@@ -18,7 +18,7 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
         public float length => shape.length;
-        public TrafficLight light;
+        public TrafficLight light { get; set; }
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;

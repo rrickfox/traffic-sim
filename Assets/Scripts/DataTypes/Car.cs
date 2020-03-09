@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Utility;
 using System.Collections.Generic;
@@ -35,6 +36,17 @@ namespace DataTypes
 
         public void Move()
         {
+            // test for function of traffic lights
+            /*
+            if (track.light == null)
+            {
+                positionOnRoad += speed;
+            }
+            else if (!track.light.State.Equals(new Tuple<int, int?>(0, null)))
+            {
+                positionOnRoad += speed;
+            }
+            */
             positionOnRoad += speed;
             UpdatePosition();
             // if car is at end of RouteSegment, get next routeSegment if there is one

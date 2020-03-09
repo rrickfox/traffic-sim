@@ -16,6 +16,8 @@ namespace DataTypes
 
         private LightState _state;
 
+        // return different information for cars depending on state
+        // (velocity, stopping distance)
         public Tuple<int, int?> State
         {
             get
@@ -28,10 +30,12 @@ namespace DataTypes
                     }
                     case LightState.Yellow:
                     {
+                        // calculates distance a car with intersection velocity will travel while light is yellow
                         return new Tuple<int, int?>(0, _yellowToRed * _section.edges.Select(e => e.speedLimit).Min());
                     }
                     case LightState.Green:
                     {
+                        // returns velocity for intersection
                         return new Tuple<int, int?>(_section.edges.Select(e => e.speedLimit).Min(), null);
                     }
                     default:
@@ -41,7 +45,7 @@ namespace DataTypes
         }
         
         private Vertex _section { get; }
-        public static TypePublisher typePublisher { get; } = new TypePublisher();
+        public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
 
 
         public TrafficLight(GameObject prefab, int red, int yellow, int green, Vertex interSection) : base(prefab)
@@ -55,7 +59,9 @@ namespace DataTypes
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(ChangeState);
         }
-
+        
+        // counts ticks and compares to given length of each traffic light cycle
+        // changes state accordingly and resets counter
         public void ChangeState()
         {
             _ticks++;
@@ -89,6 +95,11 @@ namespace DataTypes
                         _state = LightState.Red;
                     }
 
+                    break;
+                }
+                default:
+                {
+                    _state = LightState.Red;
                     break;
                 }
             }

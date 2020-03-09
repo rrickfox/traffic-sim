@@ -15,8 +15,9 @@ namespace DataTypes
             _throughOrRight = throughOrRight;
             _throughOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.light = _throughOrRight.light;
+            _throughOrLeft.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
             _leftOrRight = leftOrRight;
+            // calculates cycles based on perpendicular street
             _leftOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, yellow + green, yellow, red - yellow, this);
         }
 

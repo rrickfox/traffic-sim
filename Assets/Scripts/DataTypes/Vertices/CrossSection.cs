@@ -14,13 +14,14 @@ namespace DataTypes
             : base(prefab, up, right, down, left)
         {
             _up = up;
-            _up.light = new TrafficLight(CONSTANTS.CAR_PREFAB, red, yellow, green, this);
+            _up.other.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
             _right = right;
-            _right.light = new TrafficLight(CONSTANTS.CAR_PREFAB, yellow + green, yellow, red - yellow, this);
+            // calculates cycles based on perpendicular street
+            _right.other.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, yellow + green, yellow, red - yellow, this);
             _down = down;
-            _down.light = _up.light;
+            _down.other.light = _up.other.light;
             _left = left;
-            _left.light = _right.light;
+            _left.other.light = _right.other.light;
         }
 
         // returns necessary lane to go from an edge to another edge

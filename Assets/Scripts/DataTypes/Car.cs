@@ -99,6 +99,7 @@ namespace DataTypes
             return track.cars.AllGreater(this).FirstOrDefault(other => other.lane == lane);
         }
 
+        // Add an aspect of randomness to the car's behaviour
         private void SimulateHumanness()
         {
             if (Random.value * 1000000 < 1)

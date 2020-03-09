@@ -10,13 +10,17 @@ namespace DataTypes
         private Edge _down { get; }
         private Edge _left { get; }
 
-        public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
+        public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left, int red, int yellow, int green)
             : base(prefab, up, right, down, left)
         {
             _up = up;
+            _up.light = new TrafficLight(CONSTANTS.CAR_PREFAB, red, yellow, green, this);
             _right = right;
+            _right.light = new TrafficLight(CONSTANTS.CAR_PREFAB, yellow + green, yellow, red - yellow, this);
             _down = down;
+            _down.light = _up.light;
             _left = left;
+            _left.light = _right.light;
         }
 
         // returns necessary lane to go from an edge to another edge

@@ -80,11 +80,11 @@ vertices:
     frequencies: [75, 50, 75]
     weights: [1, 1, 1]
   - !crosssection
-    up:
-      1b
-    right:
-      2b
-    down:
-      3b
-    left:
-      4b
+    upDownFrequency: 
+      red: 20
+      yellow: 5
+      green: 30
+    up: 1b
+    right: 2b
+    down: 3b
+    left: 4b

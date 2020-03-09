@@ -18,7 +18,7 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
         public float length => shape.length;
-        
+        public TrafficLight light;
         public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
         {
             this.shape = shape;

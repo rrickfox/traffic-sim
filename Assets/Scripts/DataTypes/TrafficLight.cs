@@ -12,7 +12,7 @@ namespace DataTypes
         private int _redToGreen { get; }
         private int _yellowToRed { get; }
         private int _greenToYellow { get; }
-        private enum LightState { Green, Yellow, Red }
+        public enum LightState { Green, Yellow, Red }
 
         private LightState _state;
 

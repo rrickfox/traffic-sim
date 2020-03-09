@@ -9,12 +9,15 @@ namespace DataTypes
         private Edge _throughOrLeft { get; }
         private Edge _leftOrRight { get; }
 
-        public TeeSection(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
+        public TeeSection(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, int red, int yellow, int green)
             : base(prefab, throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
+            _throughOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
             _throughOrLeft = throughOrLeft;
+            _throughOrLeft.light = _throughOrRight.light;
             _leftOrRight = leftOrRight;
+            _leftOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, yellow + green, yellow, red - yellow, this);
         }
 
         // returns necessary lane to go from an edge to another edge

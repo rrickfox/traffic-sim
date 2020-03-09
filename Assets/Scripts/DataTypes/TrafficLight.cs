@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Events;
 using UnityEngine;
@@ -15,21 +16,26 @@ namespace DataTypes
 
         private LightState _state;
 
-        public int[] State
+        public Tuple<int, int?> State
         {
             get
             {
-                if (_state == LightState.Red)
+                switch (_state)
                 {
-                    return new[] {0};
-                }
-                if (_state == LightState.Yellow)
-                {
-                    return new[] {0, _yellowToRed * _section.edges.Select(e => e.speedLimit).Min()};
-                }
-                else
-                {
-                    return new[] {_section.edges.Select(e => e.speedLimit).Min()};
+                    case LightState.Red:
+                    {
+                        return new Tuple<int, int?>(0, null);
+                    }
+                    case LightState.Yellow:
+                    {
+                        return new Tuple<int, int?>(0, _yellowToRed * _section.edges.Select(e => e.speedLimit).Min());
+                    }
+                    case LightState.Green:
+                    {
+                        return new Tuple<int, int?>(_section.edges.Select(e => e.speedLimit).Min(), null);
+                    }
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
             }
         }

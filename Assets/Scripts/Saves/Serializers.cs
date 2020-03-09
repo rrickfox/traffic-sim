@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DataTypes;
 using MoreLinq;
 using UnityEngine;
 using Utility;
@@ -137,7 +138,7 @@ namespace Saves
             public string throughOrRight { get; set; }
             public string throughOrLeft { get; set; }
             public string leftOrRight { get; set; }
-            public Dictionary<string, int> throughFrequency { get; set; }
+            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
 
             public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -180,8 +181,8 @@ namespace Saves
 
                 return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughOrRight"]
                     , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]
-                    , throughFrequency["red"], throughFrequency["yellow"]
-                    , throughFrequency["green"]);
+                    , throughFrequency[TrafficLight.LightState.Red], throughFrequency[TrafficLight.LightState.Yellow]
+                    , throughFrequency[TrafficLight.LightState.Green]);
             }
         }
         
@@ -191,7 +192,7 @@ namespace Saves
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
-            public Dictionary<string, int> upDownFrequency { get; set; }
+            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -234,8 +235,8 @@ namespace Saves
 
                 return new DataTypes.CrossSection(EMPTY_PREFAB, actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]
-                    , upDownFrequency["red"], upDownFrequency["yellow"]
-                    , upDownFrequency["green"]);
+                    , upDownFrequency[TrafficLight.LightState.Red], upDownFrequency[TrafficLight.LightState.Yellow]
+                    , upDownFrequency[TrafficLight.LightState.Green]);
             }
         }
     }

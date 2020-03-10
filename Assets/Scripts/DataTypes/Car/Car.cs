@@ -29,9 +29,9 @@ namespace DataTypes
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; } = 0;
-        public Speed speed { get; private set; } = Speed.FromMetersPerSecond(30 + Random.value*50);
-        public Acceleration acceleration { get; set; } = Acceleration.Zero;
-        public IDriver driver { get; private set; }
+        public Speed speed { get; private set; } = Speed.Zero;
+        public Acceleration acceleration => driver.acceleration;
+        private IDriver driver { get; set; } = new NullDriver();
 
         public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
         {
@@ -53,7 +53,6 @@ namespace DataTypes
         private void Drive()
         {
             SelectDriver();
-            acceleration = driver.GetAcceleration();
             ExecuteMove();
         }
 

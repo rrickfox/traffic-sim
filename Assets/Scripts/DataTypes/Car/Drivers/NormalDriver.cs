@@ -9,33 +9,38 @@ namespace DataTypes.Drivers
     {
         private Car _myCar { get; }
         private Car _frontCar { get; }
-        private Acceleration _acceleration { get; set; }
+        public Acceleration acceleration { get; private set; }
 
         public NormalDriver(Car myCar, Car frontCar)
         {
             _myCar = myCar;
             _frontCar = frontCar;
-            _acceleration = Acceleration.Zero;
+            acceleration = Acceleration.Zero;
+
+            InitializeAcceleration();
         }
 
-        public Acceleration GetAcceleration()
+        private void InitializeAcceleration()
         {
             SimulateHumanness();
-            
+
             if (_frontCar == null)
-                return _myCar.maxAcceleration;
+                acceleration = _myCar.maxAcceleration;
 
             // TODO
-            if (_frontCar.positionOnRoad == _myCar.positionOnRoad)
-                return Random.value * _myCar.maxAcceleration;
-
-            var minimumDistance = GetMinimumDistance();
-            var collisionTime = GetCollisionTime();
-            var frontDistance = _frontCar.positionOnRoad - _myCar.positionOnRoad;
-            var computedAcceleration = _frontCar.acceleration
-                                       + 2 * (frontDistance - minimumDistance) / collisionTime / collisionTime
-                                       + 2 * (_frontCar.speed - _myCar.speed) / collisionTime;
-            return Formulas.Min(computedAcceleration, _myCar.maxAcceleration);
+            else if (_frontCar.positionOnRoad == _myCar.positionOnRoad)
+                acceleration =  Random.value * _myCar.maxAcceleration;
+            
+            else
+            {
+                var minimumDistance = GetMinimumDistance();
+                var collisionTime = GetCollisionTime();
+                var frontDistance = _frontCar.positionOnRoad - _myCar.positionOnRoad;
+                var computedAcceleration = _frontCar.acceleration
+                                           + 2 * (frontDistance - minimumDistance) / collisionTime / collisionTime
+                                           + 2 * (_frontCar.speed - _myCar.speed) / collisionTime;
+                acceleration = Formulas.Min(computedAcceleration, _myCar.maxAcceleration);
+            }
         }
 
         // The Time to Collision
@@ -49,7 +54,7 @@ namespace DataTypes.Drivers
         private void SimulateHumanness()
         {
             if (Random.value * 1000000 < 1)
-                _acceleration -= Acceleration.FromMetersPerSecondSquared(_myCar.speed.MetersPerSecond / 3);
+                acceleration -= Acceleration.FromMetersPerSecondSquared(_myCar.speed.MetersPerSecond / 3);
         }
     }
 }

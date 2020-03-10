@@ -13,23 +13,23 @@ namespace Cameras
         public float minTurnAngle = 20f;
         [Header("Zoom Settings")]
         public float minZoom = 10f;
-        public float maxZoom = 20f;
-        public float zoomSpeed = 10f;
+        public float maxZoom = 150f;
+        public float zoomSpeed = 20f;
         [Header("Borders")]
         public Vector3 border1;
         public Vector3 border2;
 
+        public bool _following;
+        public Transform _targetCar;
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
-        Transform _targetCar;
-        bool _following;
         float _scroll;
 
         // Setting camera right, focus the center
         void Start()
         {
-            _cam = Camera.main;
+            _cam = GetComponentInChildren<Camera>(true);
             _cam.transform.LookAt(transform.position);
         }
 

@@ -7,6 +7,8 @@ namespace DataTypes
 {
     public class Car : GameObjectData
     {
+        public override GameObject prefab { get; } = CONSTANTS.CAR_PREFAB;
+
         public ITrack track => segment.track;
         public float positionOnRoad { get; private set; } = 0;
         public float lane { get; private set; }
@@ -16,7 +18,7 @@ namespace DataTypes
         
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
-        public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
+        public Car(float lane, List<RouteSegment> route)
         {
             this.route = route;
             segment = route.PopAt(0);

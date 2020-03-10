@@ -1,5 +1,6 @@
 using System;
 using UnitsNet;
+using UnityEngine;
 using Utility;
 using Random = UnityEngine.Random;
 
@@ -28,9 +29,12 @@ namespace DataTypes.Drivers
                 acceleration = _myCar.maxAcceleration;
 
             // TODO
-            else if (_frontCar.positionOnRoad == _myCar.positionOnRoad)
+            else if (_frontCar.positionOnRoad - _myCar.positionOnRoad < (_myCar.length + _frontCar.length) / 2)
+            {
+                Debug.LogWarning("Cars are crashing into each other");
                 acceleration =  Random.value * _myCar.maxAcceleration;
-            
+            }
+
             else
             {
                 var minimumDistance = GetMinimumDistance();
@@ -45,7 +49,13 @@ namespace DataTypes.Drivers
 
         // The Time to Collision
         private TimeSpan GetCollisionTime()
-            => (_frontCar.positionOnRoad - _myCar.positionOnRoad - _myCar.length).DividedBy(_myCar.speed - _frontCar.speed);
+        {
+            if (_myCar.speed - _frontCar.speed < Speed.FromMillimetersPerSecond(1))
+                return TimeSpan.MaxValue;
+            
+            return (_frontCar.positionOnRoad - _myCar.positionOnRoad - _myCar.length)
+                .DividedBy(_myCar.speed - _frontCar.speed);
+        }
 
         private Length GetMinimumDistance()
             => 1.5 * (_myCar.speed.Squared() - _frontCar.speed.Squared()).DividedBy(_myCar.maxAcceleration) + _myCar.bufferDistance;

@@ -1,0 +1,90 @@
+# a list of edges
+# vertices reference an edge by an id
+edges:
+  1:
+    shape:
+      # roadShape
+      # contains a list of bezierCurves
+      - start: {x: 0, y: 70}
+        control: {x: 0, y: 40}
+        end: {x: 0, y: 10}
+        # bezierCurves save start, control and endpoint
+    outgoingLanes:
+      # contains a list of outgoing lane objects
+      - [leftTurn]  # lane objects contain a hashset of lane types
+      - [through]
+      - [rightTurn]
+    incomingLanes:
+      - [through]
+      - [through]
+      - [through]
+  2:
+    shape:
+      - start: {x: 140, y: 0}
+        control: {x: 75, y: 0}
+        end: {x: 10, y: 0}
+    outgoingLanes:
+      - [leftTurn]
+      - [through]
+      - [rightTurn]
+    incomingLanes:
+      - [through]
+      - [through]
+      - [through]
+  3:
+    shape:
+      # roadShape
+      # contains a list of bezierCurves
+      - start: {x: 0, y: -70}
+        control: {x: 0, y: -40}
+        end: {x: 0, y: -10}
+        # bezierCurves save start, control and endpoint
+    outgoingLanes:
+      - [leftTurn]
+      - [through]
+      - [rightTurn]
+    incomingLanes:
+      - [through]
+      - [through]
+      - [through]
+  4:
+    shape:
+      - start: {x: -140, y: 0}
+        control: {x: -75, y: 0}
+        end: {x: -10, y: 0}
+    outgoingLanes:
+      - [leftTurn]
+      - [through]
+      - [rightTurn]
+    incomingLanes:
+      - [through]
+      - [through]
+      - [through]
+
+# a list of vertices
+vertices:
+  - !endpoint
+    edge: 1a
+    frequencies: [75, 50, 75]
+    weights: [1, 1, 1]
+  - !endpoint
+    edge: 2a
+    frequencies: [75, 50, 75]
+    weights: [1, 1, 1]
+  - !endpoint
+    edge: 3a
+    frequencies: [75, 50, 75]
+    weights: [1, 1, 1]
+  - !endpoint
+    edge: 4a
+    frequencies: [75, 50, 75]
+    weights: [1, 1, 1]
+  - !crosssection
+    up:
+      1b
+    right:
+      2b
+    down:
+      3b
+    left:
+      4b

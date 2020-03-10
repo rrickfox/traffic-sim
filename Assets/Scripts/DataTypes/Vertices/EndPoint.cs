@@ -9,7 +9,7 @@ namespace DataTypes
 {
     public class EndPoint : Vertex
     {
-        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+        public override GameObject prefab { get; } = EMPTY_PREFAB;
 
         private Edge _edge { get; }
         // ticks before a car spawns on a lane (index)

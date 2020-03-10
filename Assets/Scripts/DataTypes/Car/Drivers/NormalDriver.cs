@@ -43,7 +43,7 @@ namespace DataTypes.Drivers
             => (_frontCar.positionOnRoad - _myCar.positionOnRoad - CONSTANTS.CAR_LENGTH).DividedBy(_myCar.speed - _frontCar.speed);
 
         private Length GetMinimumDistance()
-            => 1.5 * (_myCar.speed.Squared() - _frontCar.speed.Squared()).DividedBy(_myCar.maxAcceleration);
+            => 1.5 * (_myCar.speed.Squared() - _frontCar.speed.Squared()).DividedBy(_myCar.maxAcceleration) + _myCar.bufferDistance;
 
         // Add an aspect of randomness to the car's behaviour
         private void SimulateHumanness()

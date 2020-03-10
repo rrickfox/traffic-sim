@@ -43,7 +43,10 @@ namespace DataTypes.Drivers
                 var computedAcceleration = _frontCar.acceleration
                                            + 2 * (frontDistance - minimumDistance) / collisionTime / collisionTime
                                            + 2 * (_frontCar.speed - _myCar.speed) / collisionTime;
-                acceleration = Formulas.Min(computedAcceleration, _myCar.maxAcceleration);
+                // ensure that the acceleration does not exceed the maximum acceleration
+                var minAcceleration = Formulas.Min(computedAcceleration, _myCar.maxAcceleration);
+                // ensure that the acceleration is not below zero
+                acceleration = Formulas.Max(minAcceleration, Acceleration.Zero);
             }
         }
 

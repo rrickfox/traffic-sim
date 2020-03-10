@@ -44,6 +44,9 @@ namespace Utility
         public static Acceleration Min(params Acceleration[] accelerations)
             => accelerations.Min();
         
+        public static Acceleration Max(params Acceleration[] accelerations)
+            => accelerations.Max();
+        
         // https://de.wikipedia.org/wiki/Bremsweg
         public static Length BrakingDistance(Speed speed, Acceleration brakingDeceleration)
             => speed.Squared().DividedBy(2 * brakingDeceleration);

@@ -54,11 +54,11 @@ namespace DataTypes
                     try
                     {
                         track = segment.edge.other.vertex.routes[segment][(int) lane];
-                    } catch(KeyNotFoundException e)
+                    } catch
                     {
+                        Debug.LogWarning("Car tried to take route it cannot reach.");
                         track.cars.Remove(this);
                         Dispose();
-                        throw new System.Exception("Car tried to take route it cannot reach.", e);
                     }
                     track.cars.Add(this);
                 }

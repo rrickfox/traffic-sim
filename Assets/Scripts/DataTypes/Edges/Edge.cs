@@ -117,7 +117,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length.ToUnityDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt(shape.length.ToDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 
@@ -202,7 +202,7 @@ namespace DataTypes
         public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane)
         {
             // get first estimation of position from saved array of points
-            var unityPositionOnRoad = Mathf.Clamp(positionOnRoad.ToUnityDistanceUnits(), 0, length.ToUnityDistanceUnits());
+            var unityPositionOnRoad = Mathf.Clamp(positionOnRoad.ToDistanceUnits(), 0, length.ToDistanceUnits());
             var index = Mathf.RoundToInt(unityPositionOnRoad);
             var absolutePosition = shape.points[index];
 

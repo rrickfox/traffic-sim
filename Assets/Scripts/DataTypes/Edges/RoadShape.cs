@@ -66,7 +66,7 @@ namespace DataTypes
                     evenlySpacedPoints.Add(newRoadPoint);
 
                     // length in DISTANCE_UNITS
-                    length += 1f.FromUnityDistanceUnits();
+                    length += 1f.DistanceUnitsToLength();
                     
                     lastPoint = newEvenlySpacedPoint;
                 }

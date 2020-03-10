@@ -6,16 +6,16 @@ namespace Utility
 {
     public static class Formulas
     {
-        public static float ToUnityTimeUnits(this TimeSpan timeSpan)
+        public static float ToTimeUnits(this TimeSpan timeSpan)
             => timeSpan.Seconds * CONSTANTS.TIME_UNIT;
 
-        public static TimeSpan FromUnityTimeUnits(this float timeUnits)
+        public static TimeSpan TimeUnitsToTimeSpan(this float timeUnits)
             => TimeSpan.FromSeconds(timeUnits / CONSTANTS.TIME_UNIT);
 
-        public static float ToUnityDistanceUnits(this Length length)
+        public static float ToDistanceUnits(this Length length)
             => (float) length.Meters * CONSTANTS.DISTANCE_UNIT;
 
-        public static Length FromUnityDistanceUnits(this float distanceUnits)
+        public static Length DistanceUnitsToLength(this float distanceUnits)
             => Length.FromMeters(distanceUnits / CONSTANTS.DISTANCE_UNIT);
 
         public static Acceleration DividedBy(this Speed speed, TimeSpan timeSpan)

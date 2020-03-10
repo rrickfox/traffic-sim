@@ -15,6 +15,6 @@ namespace DataTypes
         }
 
         // inverts the forward vector
-        public RoadPoint Invert() => new RoadPoint(position, forward * -1);
+        public RoadPoint Invert() => new RoadPoint(position, - forward);
     }
 }

@@ -3,14 +3,22 @@ using UnityEngine;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static Pathfinding.Pathfinding;
+using SFB;
 
 namespace Saves
 {
+    public class SavePath
+    {
+        public static string[] paths = new string[] { "Assets/Saves/sample.yaml" };
+
+        public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
+    }
+
     public class SaveLoader : MonoBehaviour
     {
         private void Start()
         {
-            Load("Assets/Saves/sample.yaml");
+            Load(SavePath.paths[0]);
         }
 
         public void Load(string pathName)

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SFB;
+using Saves;
 
 namespace Interface
 {
@@ -72,6 +74,12 @@ namespace Interface
         public void Quit()
         {
             Application.Quit();
+        }
+
+
+        public void LoadPath()
+        {
+            SavePath.paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", SavePath.extension, false);
         }
     }
 }

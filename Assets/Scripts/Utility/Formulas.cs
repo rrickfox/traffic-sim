@@ -33,6 +33,9 @@ namespace Utility
         public static Length DividedBy(this SpecificEnergy specificEnergy, Acceleration acceleration)
             => Length.FromMeters(specificEnergy.JoulesPerKilogram / acceleration.MetersPerSecondSquared);
 
+        public static TimeSpan DividedBy(this Length length, Speed speed)
+            => TimeSpan.FromSeconds(length.Meters / speed.MetersPerSecond);
+
         public static Speed Times(this Acceleration acceleration, TimeSpan timeSpan)
             => Speed.FromMetersPerSecond(acceleration.MetersPerSecondSquared * timeSpan.Seconds);
 

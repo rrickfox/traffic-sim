@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnitsNet;
 
 namespace Utility
 {
@@ -40,6 +41,6 @@ namespace Utility
         public static readonly float STANDARD_ACCELERATION = 0.05f;
         // acceleration with which a car brakes
         public static readonly float BRAKE_ACCELERATION = -1f;
-        public static readonly float CAR_LENGTH = 5f;
+        public static readonly Length CAR_LENGTH = 5f.FromUnityDistanceUnits();
     }
 }

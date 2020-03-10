@@ -29,7 +29,8 @@ namespace DataTypes
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; }
         public Speed speed { get; private set; } = Speed.FromMetersPerSecond(30 + Random.value*50);
-        
+        public Acceleration acceleration { get; set; } = Acceleration.Zero;
+
         private CarState _state { get; set; }
         private enum CarState { DriveNormally, WantToChangeLane }
 
@@ -71,31 +72,6 @@ namespace DataTypes
             Accelerate(GetAcceleration(frontCar));
         }
         
-        private Length GetMaxStoppingDistance()
-            => Formulas.BrakingDistance(speed, _MAX_BRAKING_DECELERATION) + _BUFFER_DISTANCE;
-        
-        private Acceleration GetAcceleration(Car frontCar)
-        {
-            // keep current speed
-            if (speed >= track.speedLimit)
-                return Acceleration.Zero;
-            
-            // maximum acceleration
-            if (frontCar == null)
-                return _MAX_ACCELERATION;
-            
-            var maxStoppingDistance = GetMaxStoppingDistance();
-            var brakingDistance = frontCar.positionOnRoad - positionOnRoad;
-            var distanceQuotient = brakingDistance / maxStoppingDistance;
-            
-            // decelerate
-            if (distanceQuotient < 1)
-                return Formulas.BrakingDeceleration(speed, brakingDistance);
-
-            var computedAcceleration = Acceleration.FromMetersPerSecondSquared(Math.Pow(distanceQuotient, 0.2f));
-            return Formulas.Min(computedAcceleration, _MAX_ACCELERATION);
-        }
-        
         // Accelerate in Units per Timestep
         private void Accelerate(Acceleration acceleration)
             => speed += acceleration.Times(TimeSpan.FromSeconds(1));
@@ -105,7 +81,32 @@ namespace DataTypes
         {
             return track.cars.AllGreater(this).FirstOrDefault(other => other.lane == lane);
         }
-        
+
+        //Returns the Time to Collision
+        private TimeSpan GetCollisionTime(Car frontCar)
+            => (frontCar.positionOnRoad - positionOnRoad - CAR_LENGTH).DividedBy(speed - frontCar.speed);
+
+        private Length GetMinimumDistance(Car frontCar)
+            => 3/2 * (speed.Squared() - frontCar.speed.Squared()).DividedBy(_MAX_ACCELERATION);
+
+        private Acceleration GetAcceleration(Car frontCar)
+        {
+            if (frontCar == null)
+                return _MAX_ACCELERATION;
+
+            // TODO
+            if (frontCar.positionOnRoad == positionOnRoad)
+                return Random.value * _MAX_ACCELERATION;
+
+            var minimumDistance = GetMinimumDistance(frontCar);
+            var collisionTime = GetCollisionTime(frontCar);
+            var frontDistance = frontCar.positionOnRoad - positionOnRoad;
+            var computedAcceleration = frontCar.acceleration
+                + 2 * (frontDistance - minimumDistance) / collisionTime / collisionTime
+                + 2 * (frontCar.speed - speed) / collisionTime;
+            return Formulas.Min(computedAcceleration, _MAX_ACCELERATION);
+        }
+
         // Add an aspect of randomness to the car's behaviour
         private void SimulateHumanness()
         {

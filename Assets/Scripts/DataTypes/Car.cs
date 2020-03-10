@@ -24,7 +24,7 @@ namespace DataTypes
             this.lane = lane;
 
             // give car a random color
-            gameObject.GetComponent<MeshRenderer>().material.color = UnityEngine.Random.ColorHSV();
+            transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material.color = UnityEngine.Random.ColorHSV();
 
             UpdatePosition();
             

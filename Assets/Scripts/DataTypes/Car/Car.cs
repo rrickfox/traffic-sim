@@ -14,7 +14,8 @@ namespace DataTypes
     public class Car : GameObjectData, ISortableListNode
     {
         public static TypePublisher typePublisher { get; } = new TypePublisher();
-        
+        public override GameObject prefab { get; } = CAR_PREFAB;
+
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
         
@@ -34,7 +35,7 @@ namespace DataTypes
         public Acceleration acceleration => driver.acceleration;
         private IDriver driver { get; set; } = new NullDriver();
 
-        public Car(GameObject prefab, float lane, List<RouteSegment> route) : base(prefab)
+        public Car(float lane, List<RouteSegment> route)
         {
             this.route = route;
             segment = route.PopAt(0);

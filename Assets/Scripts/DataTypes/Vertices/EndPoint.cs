@@ -9,8 +9,9 @@ namespace DataTypes
 {
     public class EndPoint : Vertex
     {
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+
         private Edge _edge { get; }
-        private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
@@ -20,10 +21,9 @@ namespace DataTypes
         // updates only happen after all car updates
         public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
 
-        public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
+        public EndPoint(Edge edge, Frequencies frequencies, int[] weights) : base(edge)
         {
             _edge = edge;
-            _carPrefab = carPrefab;
             _frequencies = frequencies;
             _cumulativeProbabilities = MathUtils.CalculateCumulative(weights);
 
@@ -41,9 +41,9 @@ namespace DataTypes
             foreach (var lane in _frequencies.CurrentActiveIndices())
             {
                 // only spawn car if no other car is in range of beginning
-                var firstCarOnLane = _edge.cars.Where(c => c.lane == lane).FirstOrDefault();
+                var firstCarOnLane = _edge.cars.FirstOrDefault(c => c.lane == lane);
                 if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length)
-                    new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(
+                    new Car(lane, routingTable[Utility.Random.Choose(
                         cumulativeProbabilities: _cumulativeProbabilities, 
                         destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());
             }

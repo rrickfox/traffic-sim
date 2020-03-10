@@ -42,7 +42,7 @@ namespace DataTypes
             {
                 // only spawn car if no other car is in range of beginning
                 var firstCarOnLane = _edge.cars.Where(c => c.lane == lane).FirstOrDefault();
-                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > CAR_LENGTH)
+                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length)
                     new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(
                         cumulativeProbabilities: _cumulativeProbabilities, 
                         destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());

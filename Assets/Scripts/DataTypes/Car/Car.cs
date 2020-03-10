@@ -26,6 +26,7 @@ namespace DataTypes
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4f);
         public Acceleration maxBrakingDeceleration { get; } = - Acceleration.FromMetersPerSecondSquared(10f);
         public Length bufferDistance { get; } = Length.FromMeters(2);
+        public Length length { get; } = 5f.FromUnityDistanceUnits();
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; } = 0;

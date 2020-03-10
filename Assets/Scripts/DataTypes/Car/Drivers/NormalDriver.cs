@@ -45,7 +45,7 @@ namespace DataTypes.Drivers
 
         // The Time to Collision
         private TimeSpan GetCollisionTime()
-            => (_frontCar.positionOnRoad - _myCar.positionOnRoad - CONSTANTS.CAR_LENGTH).DividedBy(_myCar.speed - _frontCar.speed);
+            => (_frontCar.positionOnRoad - _myCar.positionOnRoad - _myCar.length).DividedBy(_myCar.speed - _frontCar.speed);
 
         private Length GetMinimumDistance()
             => 1.5 * (_myCar.speed.Squared() - _frontCar.speed.Squared()).DividedBy(_myCar.maxAcceleration) + _myCar.bufferDistance;

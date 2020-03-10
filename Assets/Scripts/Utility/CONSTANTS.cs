@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnitsNet;
 
 namespace Utility
 {
@@ -37,10 +36,5 @@ namespace Utility
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
         public static readonly GameObject CAR_PREFAB = Resources.Load("Car", typeof(GameObject)) as GameObject;
         public static readonly GameObject ROAD_PREFAB = Resources.Load("Road", typeof(GameObject)) as GameObject;
-        // acceleration a car has when driving freely
-        public static readonly float STANDARD_ACCELERATION = 0.05f;
-        // acceleration with which a car brakes
-        public static readonly float BRAKE_ACCELERATION = -1f;
-        public static readonly Length CAR_LENGTH = 5f.FromUnityDistanceUnits();
     }
 }

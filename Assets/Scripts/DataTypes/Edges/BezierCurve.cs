@@ -21,9 +21,7 @@ namespace DataTypes
         public IEnumerable<Vector2> CalculatePoints()
         {
             for(var i = BEZIER_RESOLUTION; i <= 1; i += BEZIER_RESOLUTION)
-            {
                 yield return EvaluateQuadratic(i);
-            }
         }
 
         // function to calculate a single point on a bezier curve

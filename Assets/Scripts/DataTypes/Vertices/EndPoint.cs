@@ -1,11 +1,12 @@
 using Utility;
 using System.Collections.Generic;
 using System.Linq;
+using Events;
 using UnityEngine;
 
 namespace DataTypes
 {
-    public class EndPoint : Vertex<EndPoint, EndPointBehaviour>
+    public class EndPoint : Vertex
     {
         private Edge _edge { get; }
         private GameObject _carPrefab { get; }
@@ -13,7 +14,10 @@ namespace DataTypes
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
         private List<double> _cumulativeProbabilities { get; }
-        public Dictionary<IVertex, List<RouteSegment>> routingTable { get; } = new Dictionary<IVertex, List<RouteSegment>>();
+        public Dictionary<Vertex, List<RouteSegment>> routingTable { get; } = new Dictionary<Vertex, List<RouteSegment>>();
+        
+        // updates only happen after all car updates
+        public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
 
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, int[] weights) : base(edge)
         {
@@ -24,6 +28,11 @@ namespace DataTypes
 
             if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
+            
+            // subscribe to updates
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(SpawnCars);
+            _publisher.Subscribe(DespawnCars);
         }
 
         public void SpawnCars()
@@ -47,14 +56,5 @@ namespace DataTypes
         }
 
         public override LaneType SubRoute(Edge comingFrom, Edge to) => LaneType.Through;
-    }
-
-    public class EndPointBehaviour : VertexBehaviour<EndPoint>
-    {
-        private void FixedUpdate()
-        {
-            _data.SpawnCars();
-            _data.DespawnCars();
-        }
     }
 }

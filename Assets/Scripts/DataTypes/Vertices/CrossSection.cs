@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace DataTypes
 {
-    public class CrossSection : Vertex<CrossSection, CrossSectionBehaviour>
+    public class CrossSection : Vertex
     {
         private Edge _up { get; }
         private Edge _right { get; }
@@ -672,6 +672,4 @@ namespace DataTypes
                     - (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)); // subtract half the middle line if no lanes incoming
         }
     }
-    
-    public class CrossSectionBehaviour : VertexBehaviour<CrossSection> { }
 }

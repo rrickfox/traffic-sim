@@ -8,12 +8,12 @@ namespace DataTypes
 {
     public class SectionTrack : ITrack
     {
-        public IVertex vertex; // the Vertex this track is on
+        public Vertex vertex; // the Vertex this track is on
         public List<Car> cars { get; } = new List<Car>();
         public RoadShape shape { get; }
         public float length => shape.length;
 
-        public SectionTrack(IVertex vertex, RoadShape shape)
+        public SectionTrack(Vertex vertex, RoadShape shape)
         {
             this.vertex = vertex;
             this.shape = shape;

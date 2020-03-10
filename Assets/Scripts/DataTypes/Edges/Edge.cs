@@ -7,10 +7,10 @@ using static Utility.CONSTANTS;
 namespace DataTypes
 {
     // represents what you can tell about a road if you were to stand at one of its endpoints
-    public class Edge : GameObjectData<Edge, EdgeBehaviour>, ITrack
+    public class Edge : GameObjectData, ITrack
     {
         public RoadPoint originPoint => shape.points[0];
-        public IVertex vertex = null; // the Vertex from which this edge originates
+        public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
         public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
@@ -185,14 +185,15 @@ namespace DataTypes
                 }
             }
             
-            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // left side
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // left border
-            foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
-            if(incomingLanes.Count > 0 && outgoingLanes.Count > 0)
-                foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) yield return color; // middle line
-            foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // right border
-            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // right side
+            foreach(var color in
+                RepeatWidth(ROAD_HEIGHT, COLORS.ROAD) // left side
+                .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // left border
+                .Concat(GetLanesColorRow(incomingLanes.Count)) // incoming lanes
+                .Concat(RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) // middle line
+                .Concat(GetLanesColorRow(outgoingLanes.Count)) // outgoing lanes
+                .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // right border
+                .Concat(RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) // right side
+                ) yield return color;
         }
 
         // retrieves position and forward vector of car on road when given relative position on road and lane 
@@ -214,6 +215,4 @@ namespace DataTypes
             return absolutePosition;
         }
     }
-
-    public class EdgeBehaviour : LinkedBehaviour<Edge> { }
 }

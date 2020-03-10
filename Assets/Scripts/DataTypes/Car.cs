@@ -70,25 +70,25 @@ namespace DataTypes
 
                 // accelerate
                 if (frontDistance >= stoppingDistance && speed < track.speedLimit)
-                    Accelerate(0.05f);
+                    Accelerate(STANDARD_ACCELERATION);
 
                 // slow down
                 if (frontDistance < stoppingDistance)
-                    Accelerate(-1);
+                    Accelerate(BRAKE_ACCELERATION);
             }
             else
             {
                 // accelerate
                 if (speed < track.speedLimit)
                 {
-                    Accelerate(0.05f);
+                    Accelerate(STANDARD_ACCELERATION);
                 }
             }
 
             SimulateHumanness();
         }
         
-        private float GetStoppingDistance() => 20 + speed * 20;
+        private float GetStoppingDistance() => 20f + speed * 20f;
         
         // Accelerate in Units per Timestep
         private void Accelerate(float acceleration) => speed += acceleration;
@@ -99,10 +99,11 @@ namespace DataTypes
             return track.cars.AllGreater(this).FirstOrDefault(other => other.lane == lane);
         }
 
+        // simulates the effect of braking at random
         private void SimulateHumanness()
         {
             if (Random.value * 1000000 < 1)
-                Accelerate(-speed / 3);
+                Accelerate(-speed / 3f);
         }
 
         private void Move()

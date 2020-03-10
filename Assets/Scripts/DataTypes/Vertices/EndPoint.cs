@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Events;
 using UnityEngine;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -39,9 +40,12 @@ namespace DataTypes
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
             {
-                new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(
-                    cumulativeProbabilities: _cumulativeProbabilities, 
-                    destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());
+                // only spawn car if no other car is in range of beginning
+                var firstCarOnLane = _edge.cars.Where(c => c.lane == lane).FirstOrDefault();
+                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > CAR_LENGTH)
+                    new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(
+                        cumulativeProbabilities: _cumulativeProbabilities, 
+                        destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Events;
+using UnitsNet;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -17,8 +18,8 @@ namespace DataTypes
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
-        public float length => shape.length;
-        public float speedLimit { get; } = Conversion.UnitsPerTimeStepFromKPH(120); // maximum speed of cars
+        public Length length => shape.length;
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
         
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
@@ -116,7 +117,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt(shape.length.ToUnityDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 
@@ -196,11 +197,11 @@ namespace DataTypes
         }
 
         // retrieves position and forward vector of car on road when given relative position on road and lane 
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
+        public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane)
         {
             // get first estimation of position from saved array of points
-            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.RoundToInt(positionOnRoad);
+            var unityPositionOnRoad = Mathf.Clamp(positionOnRoad.ToUnityDistanceUnits(), 0, length.ToUnityDistanceUnits());
+            var index = Mathf.RoundToInt(unityPositionOnRoad);
             var absolutePosition = shape.points[index];
 
             // set offset to the right to accommodate different lanes

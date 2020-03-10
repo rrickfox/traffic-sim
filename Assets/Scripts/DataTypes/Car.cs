@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Events;
+using UnitsNet;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -11,8 +12,10 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
-        private static float _ACCELERATION { get; } = 0.05f;
-        private static float _DEACCELERATION { get; } = -1f;
+        // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
+        private static Acceleration _MAX_ACCELERATION { get; } = Acceleration.FromMetersPerSecondSquared(4f);
+        private static Acceleration _MAX_BRAKING_DECELERATION { get; } = - Acceleration.FromMetersPerSecondSquared(10f);
+        private static Length _BUFFER_DISTANCE { get; } = Length.FromMeters(50f);
         
         public static TypePublisher typePublisher { get; } = new TypePublisher();
         
@@ -22,10 +25,10 @@ namespace DataTypes
         public ITrack track => segment.track;
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
-        
-        public float positionOnRoad { get; private set; }
+
+        public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; }
-        public float speed { get; private set; } = Conversion.UnitsPerTimeStepFromKPH(Random.value*50 + 30); // Laengeneinheiten pro Zeiteinheit
+        public Speed speed { get; private set; } = Speed.FromMetersPerSecond(30 + Random.value*50);
         
         private CarState _state { get; set; }
         private enum CarState { DriveNormally, WantToChangeLane }
@@ -38,7 +41,7 @@ namespace DataTypes
             this.lane = lane;
 
             // give car a random color
-            gameObject.GetComponent<MeshRenderer>().material.color = UnityEngine.Random.ColorHSV();
+            gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 
             UpdatePosition();
             
@@ -63,36 +66,39 @@ namespace DataTypes
 
         private void DriveNormally()
         {
-            var stoppingDistance = GetStoppingDistance();
-
             var frontCar = GetFrontCar();
-            
-            if (frontCar != null)
-            {
-                var frontDistance = frontCar.positionOnRoad - positionOnRoad;
-
-                // accelerate
-                if (frontDistance >= stoppingDistance && speed < track.speedLimit)
-                    Accelerate(_ACCELERATION);
-
-                // slow down
-                if (frontDistance < stoppingDistance)
-                    Accelerate(_DEACCELERATION);
-            }
-            else
-            {
-                // accelerate
-                if (speed < track.speedLimit)
-                    Accelerate(_ACCELERATION);
-            }
-
             SimulateHumanness();
+            Accelerate(GetAcceleration(frontCar));
         }
         
-        private float GetStoppingDistance() => 20 + speed * 20;
+        private Length GetMaxStoppingDistance()
+            => Formulas.BrakingDistance(speed, _MAX_BRAKING_DECELERATION) + _BUFFER_DISTANCE;
+        
+        private Acceleration GetAcceleration(Car frontCar)
+        {
+            // keep current speed
+            if (speed >= track.speedLimit)
+                return Acceleration.Zero;
+            
+            // maximum acceleration
+            if (frontCar == null)
+                return _MAX_ACCELERATION;
+            
+            var maxStoppingDistance = GetMaxStoppingDistance();
+            var brakingDistance = frontCar.positionOnRoad - positionOnRoad;
+            var distanceQuotient = brakingDistance / maxStoppingDistance;
+            
+            // decelerate
+            if (distanceQuotient < 1)
+                return Formulas.BrakingDeceleration(speed, brakingDistance);
+
+            var computedAcceleration = Acceleration.FromMetersPerSecondSquared(Math.Pow(distanceQuotient, 0.2f));
+            return Formulas.Min(computedAcceleration, _MAX_ACCELERATION);
+        }
         
         // Accelerate in Units per Timestep
-        private void Accelerate(float acceleration) => speed += acceleration;
+        private void Accelerate(Acceleration acceleration)
+            => speed += acceleration.Times(TimeSpan.FromSeconds(1));
 
         // Returns the Car in front of the current Car
         private Car GetFrontCar()
@@ -104,12 +110,12 @@ namespace DataTypes
         private void SimulateHumanness()
         {
             if (Random.value * 1000000 < 1)
-                Accelerate(-speed / 3);
+                Accelerate(Acceleration.FromMetersPerSecondSquared(-speed.MetersPerSecond / 3));
         }
 
         private void Move()
         {
-            positionOnRoad += speed;
+            positionOnRoad += speed * TimeSpan.FromSeconds(1);
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
             transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
 

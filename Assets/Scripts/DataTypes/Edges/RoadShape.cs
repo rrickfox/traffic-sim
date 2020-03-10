@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnitsNet;
+using Utility;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -9,7 +11,7 @@ namespace DataTypes
     {
         private List<BezierCurve> _curves;
         public RoadPoint[] points;
-        public float length = 0;
+        public Length length = Length.Zero;
 
         // create RoadShape from list of curves
         public RoadShape(List<BezierCurve> curves)
@@ -20,7 +22,7 @@ namespace DataTypes
         }
 
         // create a RoadShape from existing parameters
-        private RoadShape(List<BezierCurve> curves, RoadPoint[] points, float length)
+        private RoadShape(List<BezierCurve> curves, RoadPoint[] points, Length length)
         {
             _curves = curves;
             this.points = points;
@@ -64,7 +66,7 @@ namespace DataTypes
                     evenlySpacedPoints.Add(newRoadPoint);
 
                     // length in DISTANCE_UNITS
-                    length++;
+                    length += Formulas.FromUnityDistanceUnits(1);
                     
                     lastPoint = newEvenlySpacedPoint;
                 }

@@ -1,12 +1,13 @@
+using UnitsNet;
 using Utility;
 
 namespace DataTypes
 {
     public interface ITrack
     {
-        float length { get; }
-        float speedLimit { get; }
+        Length length { get; }
+        Speed speedLimit { get; }
         SortableLinkedList<Car> cars { get; }
-        RoadPoint GetAbsolutePosition(float positionOnRoad, float lane);
+        RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane);
     }
 }

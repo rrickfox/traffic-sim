@@ -173,13 +173,15 @@ namespace DataTypes
                 }
             }
             
-            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // left side
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // left border
-            foreach (var color in GetLanesColorRow(incomingLanes.Count)) yield return color; // incoming lanes
-            foreach(var color in RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) yield return color; // middle line
-            foreach (var color in GetLanesColorRow(outgoingLanes.Count)) yield return color; // outgoing lanes
-            foreach(var color in RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) yield return color; // right border
-            foreach(var color in RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) yield return color; // right side
+            foreach(var color in
+                RepeatWidth(ROAD_HEIGHT, COLORS.ROAD) // left side
+                .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // left border
+                .Concat(GetLanesColorRow(incomingLanes.Count)) // incoming lanes
+                .Concat(RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) // middle line
+                .Concat(GetLanesColorRow(outgoingLanes.Count)) // outgoing lanes
+                .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // right border
+                .Concat(RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) // right side
+                ) yield return color;
         }
 
         // retrieves position and forward vector of car on road when given relative position on road and lane 

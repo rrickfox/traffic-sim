@@ -4,6 +4,6 @@ namespace Utility
 {
     public class NetworkConfigurationError : Exception
     {
-        public NetworkConfigurationError(string message) : base(message) {}
+        public NetworkConfigurationError(string message) : base(message) { }
     }
 }

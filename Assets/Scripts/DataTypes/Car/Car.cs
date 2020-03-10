@@ -66,7 +66,7 @@ namespace DataTypes
 
         // Returns the Car in front of the current Car
         private Car GetFrontCar()
-            => track.cars.AllGreater(this).FirstOrDefault(other => other.lane == lane);
+            => track.cars.LookAhead(this).FirstOrDefault(other => other.lane == lane && other.positionOnRoad > positionOnRoad);
 
         private void ExecuteMove()
         {

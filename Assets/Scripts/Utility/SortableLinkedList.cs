@@ -35,7 +35,7 @@ namespace Utility
             if (first == null) yield break;
             
             yield return first;
-            foreach (var node in LookForward(first))
+            foreach (var node in LookAhead(first))
                 yield return node;
         }
 
@@ -131,7 +131,7 @@ namespace Utility
         
         // Get the nodes after a node in the list.
         // This is implemented as efficiently as possible since the next element can always be accessed immediately.
-        private static IEnumerable<TNode> LookForward(TNode node)
+        public IEnumerable<TNode> LookAhead(TNode node)
         {
             var current = node.next;
             while (current != null)
@@ -143,7 +143,7 @@ namespace Utility
 
         // Get the nodes before a node in the list.
         // This is implemented as efficiently as possible since the next element can always be accessed immediately.
-        private static IEnumerable<TNode> LookBackward(TNode node)
+        public IEnumerable<TNode> LookBack(TNode node)
         {
             var current = node.previous;
             while (current != null)
@@ -151,25 +151,6 @@ namespace Utility
                 yield return (TNode) current;
                 current = current.previous;
             }
-        }
-        
-        // Get the nodes in the list which are greater than the specified node.
-        // This is implemented as efficiently as possible since the next element can always be accessed immediately.
-        public IEnumerable<TNode> AllGreater(TNode node)
-            => LookForward(node).Where(otherNode => _comparer.Compare(node, otherNode) < 0);
-
-        // Get the nodes in the list which are greater than or equal to the specified node.
-        // This is implemented as efficiently as possible since the next element can always be accessed immediately.
-        public IEnumerable<TNode> AllGreaterOrEqual(TNode node)
-        {
-            foreach (var otherNode in LookBackward(node))
-            {
-                if (_comparer.Compare(node, otherNode) > 0)
-                    break;
-                yield return otherNode;
-            }
-            foreach (var otherNode in LookForward(node))
-                yield return otherNode;
         }
     }
 }

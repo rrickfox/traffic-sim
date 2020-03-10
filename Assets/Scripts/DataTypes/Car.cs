@@ -58,7 +58,7 @@ namespace DataTypes
                     {
                         Debug.LogWarning("Car tried to take route it cannot reach.");
                         track.cars.Remove(this);
-                        Dispose();
+                        segment.edge.other.vertex.carsToRemove.Add(this);
                     }
                     track.cars.Add(this);
                 }

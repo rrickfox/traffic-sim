@@ -4,6 +4,7 @@ using static Utility.CONSTANTS;
 using static Utility.COLORS;
 using System.Collections.Generic;
 using System.Linq;
+using Events;
 
 namespace DataTypes
 {
@@ -30,6 +31,9 @@ namespace DataTypes
             GenerateRoute(_down, _left, _up, _right);
             GenerateRoute(_left, _up, _right, _down);
             ShowTracks();
+
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(DeleteCars);
         }
 
         public void ShowTracks()

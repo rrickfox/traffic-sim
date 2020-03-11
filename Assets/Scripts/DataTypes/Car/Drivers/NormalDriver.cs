@@ -60,6 +60,7 @@ namespace DataTypes.Drivers
                 .DividedBy(_myCar.speed - _frontCar.speed);
         }
 
+        // Get the minimal distance that is to be kept between this car and the next one
         private Length GetMinimumDistance()
             => 1.5 * (_myCar.speed.Squared() - _frontCar.speed.Squared()).DividedBy(_myCar.maxAcceleration) + _myCar.bufferDistance;
 

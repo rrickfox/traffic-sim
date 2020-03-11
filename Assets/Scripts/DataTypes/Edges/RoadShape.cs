@@ -64,8 +64,7 @@ namespace DataTypes
                     var newEvenlySpacedPoint = lastPoint + (point - lastPoint).normalized * DISTANCE_UNIT;
                     var newRoadPoint = new RoadPoint(newEvenlySpacedPoint, (point - lastPoint).normalized);
                     evenlySpacedPoints.Add(newRoadPoint);
-
-                    // length in DISTANCE_UNITS
+                    
                     length += 1f.DistanceUnitsToLength();
                     
                     lastPoint = newEvenlySpacedPoint;

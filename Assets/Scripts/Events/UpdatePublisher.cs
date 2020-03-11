@@ -10,6 +10,8 @@ namespace Events
 
         private void FixedUpdate()
         {
+            if (Manager.pause)
+                return;
             foreach (var publisher in _publishers)
                 publisher.Publish();
             // reset the publishers' states so they know that

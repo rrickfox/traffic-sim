@@ -75,11 +75,5 @@ namespace Interface
         {
             Application.Quit();
         }
-
-
-        public void LoadPath()
-        {
-            SavePath.paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", SavePath.extension, false);
-        }
     }
 }

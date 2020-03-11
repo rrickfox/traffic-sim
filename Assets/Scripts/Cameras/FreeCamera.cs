@@ -35,12 +35,18 @@ namespace Cameras
 
         private void Update()
         {
+            if (Manager.menu)
+                return;
+
             SelectCar();
             _scroll = Input.GetAxis("Mouse ScrollWheel");
         }
 
         void FixedUpdate()
         {
+            if (Manager.menu)
+                return;
+
             if (!_cam.enabled)
             {
                 // reset camera

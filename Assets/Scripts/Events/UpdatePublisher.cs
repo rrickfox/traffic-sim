@@ -21,5 +21,7 @@ namespace Events
         }
 
         public static void RegisterTypePublisher(TypePublisher typePublisher) => _publishers.Add(typePublisher);
+
+        public static void ResetPublisher() => _publishers.Clear();
     }
 }

@@ -4,21 +4,44 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static Pathfinding.Pathfinding;
 using SFB;
+using Events;
+using Utility;
 
 namespace Saves
 {
-    public class SavePath
-    {
-        public static string[] paths = new string[] { "Assets/Saves/sample.yaml" };
-
-        public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
-    }
-
     public class SaveLoader : MonoBehaviour
     {
+        public static GameObject simulation;
+        public static string[] paths = new string[] { "Assets/Saves/sample.yaml" };
+        public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
+
         private void Start()
         {
-            Load(SavePath.paths[0]);
+            simulation = Instantiate(CONSTANTS.EMPTY_PREFAB);
+            simulation.name = "Simulation";
+            Manager.pause = true;
+            Load(paths[0]);
+        }
+
+        public void LoadPath()
+        {
+            try
+            {
+                UpdatePublisher.ResetPublisher();
+                paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", extension, false);
+                Unload();
+                Load(paths[0]);
+                Manager.pause = false;
+            }
+            catch { }
+        }
+
+        private void Unload()
+        {
+            UpdatePublisher.ResetPublisher();
+            Destroy(simulation);
+            simulation = Instantiate(CONSTANTS.EMPTY_PREFAB);
+            simulation.name = "Simulation";
         }
 
         public void Load(string pathName)

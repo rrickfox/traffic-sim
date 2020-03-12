@@ -34,5 +34,7 @@ namespace Utility
                 return result;
             }).ToList();
         }
+
+        public static float Square(float value) => value * value;
     }
 }

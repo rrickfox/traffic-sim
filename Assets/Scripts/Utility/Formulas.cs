@@ -4,7 +4,7 @@ using UnitsNet;
 
 namespace Utility
 {
-    public static class Formulas
+    public static partial class Formulas
     {
         public static float ToTimeUnits(this TimeSpan timeSpan)
             => timeSpan.Seconds * CONSTANTS.TIME_UNIT;
@@ -39,7 +39,12 @@ namespace Utility
         public static Speed Times(this Acceleration acceleration, TimeSpan timeSpan)
             => Speed.FromMetersPerSecond(acceleration.MetersPerSecondSquared * timeSpan.Seconds);
 
+        public static SpecificEnergy Times(this Acceleration acceleration, Length length)
+            => SpecificEnergy.FromJoulesPerKilogram(acceleration.MetersPerSecondSquared * length.Meters);
+
         public static SpecificEnergy Squared(this Speed speed) => speed * speed;
+
+        public static Area Squared(this Length length) => length * length;
 
         public static Acceleration Min(params Acceleration[] accelerations)
             => accelerations.Min();

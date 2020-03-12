@@ -32,8 +32,7 @@ namespace DataTypes
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; } = 0;
         public Speed speed { get; private set; } = Speed.Zero;
-        public Acceleration acceleration => driver.acceleration;
-        private IDriver driver { get; set; } = new NullDriver();
+        public Acceleration acceleration { get; private set; }
 
         public Car(float lane, List<RouteSegment> route)
         {
@@ -61,7 +60,8 @@ namespace DataTypes
         private void SelectDriver()
         {
             // TODO: figure out what state the car is in
-            driver = new NormalDriver(this, GetFrontCar());
+            var frontCar = GetFrontCar();
+            acceleration = NormalDriver.NormalAcceleration(this, frontCar);
         }
 
         // Returns the Car in front of the current Car

@@ -1,21 +1,11 @@
 ﻿using Interface;
 using UnityEngine;
+using Saves;
 
 namespace Cameras
 {
     public class FreeCamera : MonoBehaviour
     {
-        [Header("Fly Settings")]
-        public float flySpeed = 0.5f;
-        public bool moveOnEdges = false;
-        [Header("Rotation Settings")]
-        public float turnSpeed = 5f;
-        public float maxTurnAngle = 90f;
-        public float minTurnAngle = 20f;
-        [Header("Zoom Settings")]
-        public float minZoom = 10f;
-        public float maxZoom = 150f;
-        public float zoomSpeed = 20f;
         [Header("Borders")]
         public Vector3 border1;
         public Vector3 border2;
@@ -69,9 +59,9 @@ namespace Cameras
         {
             if (Input.GetMouseButton(1))
             {
-                transform.Rotate(0f, Input.GetAxis("Mouse X") * turnSpeed, 0f);
-                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * turnSpeed;
-                targetRotation = Mathf.Clamp(targetRotation, minTurnAngle, maxTurnAngle);
+                transform.Rotate(0f, Input.GetAxis("Mouse X") * UserSettings.turnSpeed, 0f);
+                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * UserSettings.turnSpeed;
+                targetRotation = Mathf.Clamp(targetRotation, UserSettings.minTurnAngle, UserSettings.maxTurnAngle);
                 _cam.transform.RotateAround(transform.position, _cam.transform.right, targetRotation - _cam.transform.rotation.eulerAngles.x);
             }
         }
@@ -81,23 +71,23 @@ namespace Cameras
             _newPosition = transform.position;
 
             // Moving with W,A,S,D or arrow keys
-            _newPosition += transform.forward * Input.GetAxis("Vertical") * flySpeed;
-            _newPosition += transform.right * Input.GetAxis("Horizontal") * flySpeed;
+            _newPosition += transform.forward * Input.GetAxis("Vertical") * UserSettings.flySpeed;
+            _newPosition += transform.right * Input.GetAxis("Horizontal") * UserSettings.flySpeed;
 
             if (_newPosition != transform.position)
                 _following = false;
 
             // Moving if mouse is near to the edge of the game window
-            if (!Input.GetMouseButton(1) && moveOnEdges)
+            if (!Input.GetMouseButton(1) && UserSettings.moveOnEdges)
             {
                 if (Input.mousePosition.x < 5)
-                    _newPosition -= transform.right * flySpeed * Mathf.Clamp((5f - Input.mousePosition.x) / 5f, 0f, 1f);
+                    _newPosition -= transform.right * UserSettings.flySpeed * Mathf.Clamp((5f - Input.mousePosition.x) / 5f, 0f, 1f);
                 if (Input.mousePosition.x > Screen.width - 5)
-                    _newPosition += transform.right * flySpeed * Mathf.Clamp((5f + Input.mousePosition.x - Screen.width) / 5f, 0f, 1f);
+                    _newPosition += transform.right * UserSettings.flySpeed * Mathf.Clamp((5f + Input.mousePosition.x - Screen.width) / 5f, 0f, 1f);
                 if (Input.mousePosition.y < 5)
-                    _newPosition -= transform.forward * flySpeed * Mathf.Clamp((5f - Input.mousePosition.y) / 5f, 0f, 1f);
+                    _newPosition -= transform.forward * UserSettings.flySpeed * Mathf.Clamp((5f - Input.mousePosition.y) / 5f, 0f, 1f);
                 if (Input.mousePosition.y > Screen.height - 5)
-                    _newPosition += transform.forward * flySpeed * Mathf.Clamp((5f + Input.mousePosition.y - Screen.height) / 5f, 0f, 1f);
+                    _newPosition += transform.forward * UserSettings.flySpeed * Mathf.Clamp((5f + Input.mousePosition.y - Screen.height) / 5f, 0f, 1f);
             }
 
             // Keeping Position inside the Borders
@@ -107,11 +97,11 @@ namespace Cameras
             transform.position = _newPosition;
         }
 
-        // Zooming with the mousewheel between maxZoom and minZoom
+        // Zooming with the mousewheel between UserSettings.maxZoom and UserSettings.minZoom
         void Zoom()
         {
-            _camDistance -= _scroll * zoomSpeed;
-            _camDistance = Mathf.Clamp(_camDistance, minZoom, maxZoom);
+            _camDistance -= _scroll * UserSettings.zoomSpeed;
+            _camDistance = Mathf.Clamp(_camDistance, UserSettings.minZoom, UserSettings.maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
         }
 

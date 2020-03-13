@@ -65,7 +65,7 @@ namespace Pathfinding
             // calculates pathDistance and corresponding previousVertex for entire graph
             while (tempVertices.Any(v => v.GetPathDistance() != null))
             {
-                // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
+                // finds vertex with lowest pathDistance, updates its neighbourhood and removes it from tempVertices
                 var minVertex = tempVertices.Where(v => v.GetPathDistance() != null).MinBy(v => v.GetPathDistance()).First();
                 minVertex.CheckNeighbourhood();
                 tempVertices.Remove(minVertex);

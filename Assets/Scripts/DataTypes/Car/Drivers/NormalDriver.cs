@@ -26,9 +26,26 @@ namespace DataTypes.Drivers
                 else
                 {
                     var frontDistance = midpointFrontDistance - averageLength;
-                    // the minimal distance that is to be kept between this car and the next one
-                    var minimumDistance = -1.5 * (myCar.speed.Squared() - frontCar.speed.Squared()).DividedBy(myCar.maxBrakingDeceleration) - myCar.bufferDistance;
-                    var computedAcceleration = frontCar.acceleration + 2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance) * (minimumDistance / frontDistance);
+                    
+                    Acceleration computedAcceleration;
+                    if (myCar.speed > frontCar.speed)
+                    {
+                        // the minimal distance that is to be kept between this car and the next one
+                        var minimumDistance =
+                            1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
+                                  .DividedBy(myCar.maxBrakingDeceleration)
+                            + myCar.bufferDistance;
+                        
+                        computedAcceleration = frontCar.acceleration -
+                                                   2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance)
+                                                   * (minimumDistance / frontDistance);
+                    }
+                    else
+                    {
+                        // TODO: use a formula that's greater the further away the car in front is and the slower myCar is
+                        computedAcceleration = 1.1 * frontCar.acceleration;
+                    }
+                    
                     // ensure that the acceleration does not exceed the maximum acceleration
                     acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
                 }

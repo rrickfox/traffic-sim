@@ -14,7 +14,6 @@ namespace DataTypes
 
         protected GameObjectData()
         {
-            this.prefab = prefab;
             gameObject = Object.Instantiate(prefab, Saves.SaveLoader.simulation.transform);
             // set default name
             gameObject.name = $"{prefab.name} ({gameObject.GetInstanceID()})";

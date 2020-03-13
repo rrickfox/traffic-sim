@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using UnitsNet;
 using UnityEngine;
 using Utility;
@@ -11,8 +12,48 @@ namespace DataTypes.Drivers
         {
             var acceleration = SimulateHumanness(myCar);
 
-            if (frontCar == null)
+            if (myCar.track is Edge && frontCar == null)
+            {
+                switch (myCar.track.light.state)
+                {
+                    case TrafficLight.LightState.Green:
+                    {
+                        if (Formulas.BrakingDeceleration(myCar.speed
+                                , myCar.track.length - myCar.positionOnRoad)
+                            > myCar.maxBrakingDeceleration)
+                        {
+                            acceleration = Acceleration.FromMetersPerSecondSquared(-1);
+                            break;
+                        }
+                        acceleration += myCar.maxAcceleration;
+                        break;
+                    }
+                    case TrafficLight.LightState.Yellow:
+                    {
+                        if (Formulas.BrakingDeceleration(myCar.speed
+                                , myCar.track.length - myCar.positionOnRoad)
+                            > myCar.maxBrakingDeceleration)
+                        {
+                            acceleration += myCar.maxAcceleration;
+                            break;
+                        }
+
+                        acceleration = Formulas.BrakingDeceleration(myCar.speed
+                            , myCar.track.length - myCar.positionOnRoad);
+                        break;
+                    }
+                    case TrafficLight.LightState.Red:
+                    {
+                        acceleration = Formulas.BrakingDeceleration(myCar.speed
+                            , myCar.track.length - myCar.positionOnRoad);
+                        break;
+                    }
+                }
+            }
+            else if (frontCar == null)
+            {
                 acceleration += myCar.maxAcceleration;
+            }
             else
             {
                 var midpointFrontDistance = frontCar.positionOnRoad - myCar.positionOnRoad;

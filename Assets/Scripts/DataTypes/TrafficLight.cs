@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Events;
 using UnityEngine;
 
@@ -13,37 +11,7 @@ namespace DataTypes
         private int _yellowToRed { get; }
         private int _greenToYellow { get; }
         public enum LightState { Green, Yellow, Red }
-
-        private LightState _state;
-
-        // return different information for cars depending on state
-        // (velocity, stopping distance)
-        public Tuple<int, int?> State
-        {
-            get
-            {
-                switch (_state)
-                {
-                    case LightState.Red:
-                    {
-                        return new Tuple<int, int?>(0, null);
-                    }
-                    case LightState.Yellow:
-                    {
-                        // calculates distance a car with intersection velocity will travel while light is yellow
-                        return new Tuple<int, int?>(0, _yellowToRed * _section.edges.Select(e => e.speedLimit).Min());
-                    }
-                    case LightState.Green:
-                    {
-                        // returns velocity for intersection
-                        return new Tuple<int, int?>(_section.edges.Select(e => e.speedLimit).Min(), null);
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
-        
+        public LightState state { get; private set; }
         private Vertex _section { get; }
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
@@ -64,14 +32,14 @@ namespace DataTypes
         public void ChangeState()
         {
             _ticks++;
-            switch (_state)
+            switch (state)
             {
                 case LightState.Red:
                 {
                     if (_ticks % _redToGreen == 0)
                     {
                         _ticks = 0;
-                        _state = LightState.Green;
+                        state = LightState.Green;
                     }
 
                     break;
@@ -81,7 +49,7 @@ namespace DataTypes
                     if (_ticks % _yellowToRed == 0)
                     {
                         _ticks = 0;
-                        _state = LightState.Red;
+                        state = LightState.Red;
                     }
 
                     break;
@@ -91,14 +59,14 @@ namespace DataTypes
                     if (_ticks % _greenToYellow == 0)
                     {
                         _ticks = 0;
-                        _state = LightState.Red;
+                        state = LightState.Red;
                     }
 
                     break;
                 }
                 default:
                 {
-                    _state = LightState.Red;
+                    state = LightState.Red;
                     break;
                 }
             }

@@ -3792,7 +3792,7 @@ GameObject:
   - component: {fileID: 1156568056}
   - component: {fileID: 1156568057}
   m_Layer: 0
-  m_Name: Manager
+  m_Name: Simulation Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3822,7 +3822,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dba2e83d6fd30fc4491a6eb4fcb79f96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveLoader: {fileID: 1156568056}
   simulationCanvas: {fileID: 1876111109}
   menuCanvas: {fileID: 1855971410}
 --- !u!4 &1156568058

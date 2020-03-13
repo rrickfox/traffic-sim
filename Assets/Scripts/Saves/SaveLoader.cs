@@ -15,17 +15,18 @@ namespace Saves
         public static string[] paths;
         public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
 
+        public SimulationManager simulationManager;
+
         public void LoadPath()
         {
-            try
-            {
-                UpdatePublisher.ResetPublisher();
-                paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", extension, false);
-                Unload();
-                Load(paths[0]);
-                Manager.pause = false;
-            }
-            catch { }
+            paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", extension, false);
+            if (paths.Length == 0)
+                return;
+            UpdatePublisher.ResetPublisher();
+            Unload();
+            Load(paths[0]);
+            SimulationManager.pause = false;
+            simulationManager.SwitchToSimulation();
         }
 
         private void Unload()

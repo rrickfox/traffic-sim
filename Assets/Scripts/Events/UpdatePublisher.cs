@@ -11,7 +11,7 @@ namespace Events
 
         private void FixedUpdate()
         {
-            if (Manager.pause || Manager.menu)
+            if (SimulationManager.pause || SimulationManager.menu)
                 return;
             foreach (var publisher in _publishers)
                 publisher.Publish();

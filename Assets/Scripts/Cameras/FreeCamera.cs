@@ -35,7 +35,7 @@ namespace Cameras
 
         private void Update()
         {
-            if (Manager.menu)
+            if (SimulationManager.menu)
                 return;
 
             SelectCar();
@@ -44,7 +44,7 @@ namespace Cameras
 
         void FixedUpdate()
         {
-            if (Manager.menu)
+            if (SimulationManager.menu)
                 return;
 
             if (!_cam.enabled)

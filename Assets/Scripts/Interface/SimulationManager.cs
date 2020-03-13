@@ -1,15 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using SFB;
+﻿using UnityEngine;
 using Saves;
 
-public class Manager : MonoBehaviour
+public class SimulationManager : MonoBehaviour
 {
     public static bool pause;
     public static bool menu;
 
-    public SaveLoader saveLoader;
     public GameObject simulationCanvas;
     public GameObject menuCanvas;
 

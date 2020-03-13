@@ -38,6 +38,7 @@ namespace DataTypes
         {
             this.route = route;
             segment = route.PopAt(0);
+            track = segment.edge;
             track.cars.AddFirst(this);
             this.lane = lane;
 

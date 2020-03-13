@@ -11,7 +11,7 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
-        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+        public override GameObject prefab { get; } = ROAD_PREFAB;
 
         private Edge _up { get; }
         private Edge _right { get; }

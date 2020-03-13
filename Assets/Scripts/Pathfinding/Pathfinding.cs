@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
 using Utility;
+//temporary
+using UnityEngine;
 
 namespace Pathfinding
 {
@@ -15,8 +17,11 @@ namespace Pathfinding
             var endPoints = vertices.OfType<EndPoint>().ToList();
 
             foreach (var start in endPoints)
+            {
                 foreach (var end in endPoints.Where(end => end != start))
                     start.FindPath(end, verticesSet);
+                
+            }
         }
     }
 

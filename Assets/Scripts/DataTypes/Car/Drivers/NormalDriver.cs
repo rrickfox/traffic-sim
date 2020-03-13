@@ -12,19 +12,12 @@ namespace DataTypes.Drivers
         {
             var acceleration = SimulateHumanness(myCar);
 
-            if (myCar.track is Edge && frontCar == null)
+            if (myCar.track.light != null && frontCar == null)
             {
                 switch (myCar.track.light.state)
                 {
                     case TrafficLight.LightState.Green:
                     {
-                        if (Formulas.BrakingDeceleration(myCar.speed
-                                , myCar.track.length - myCar.positionOnRoad)
-                            > myCar.maxBrakingDeceleration)
-                        {
-                            acceleration = Acceleration.FromMetersPerSecondSquared(-1);
-                            break;
-                        }
                         acceleration += myCar.maxAcceleration;
                         break;
                     }
@@ -37,7 +30,6 @@ namespace DataTypes.Drivers
                             acceleration += myCar.maxAcceleration;
                             break;
                         }
-
                         acceleration = Formulas.BrakingDeceleration(myCar.speed
                             , myCar.track.length - myCar.positionOnRoad);
                         break;

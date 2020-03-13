@@ -1,11 +1,12 @@
 using Events;
 using UnityEngine;
+using Utility;
 
 namespace DataTypes
 {
     public class TrafficLight : GameObjectData
     {
-        public override GameObject prefab { get; }
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
         private int _ticks { get; set; }
         private int _redToGreen { get; }
         private int _yellowToRed { get; }

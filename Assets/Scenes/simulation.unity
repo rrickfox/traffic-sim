@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5556,7 +5556,7 @@ Transform:
   m_GameObject: {fileID: 1693468260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.5, z: 0}
-  m_LocalScale: {x: 300, y: 1, z: 150}
+  m_LocalScale: {x: 2000, y: 1, z: 2000}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -6547,6 +6547,7 @@ MonoBehaviour:
   freeCamera: {fileID: 1954474996}
   speedText: {fileID: 1042834813}
   panel: {fileID: 662377828}
+  accelerationText: {fileID: 0}
 --- !u!1 &1910591894
 GameObject:
   m_ObjectHideFlags: 0
@@ -7056,7 +7057,7 @@ MonoBehaviour:
   maxZoom: 150
   zoomSpeed: 20
   border1: {x: -150, y: 0, z: -75}
-  border2: {x: 150, y: 0, z: 75}
+  border2: {x: 1000, y: 0, z: 1000}
   _following: 0
   _targetCar: {fileID: 0}
 --- !u!1 &2024565242

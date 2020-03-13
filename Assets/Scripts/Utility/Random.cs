@@ -27,10 +27,16 @@ namespace Utility
                 debug += "]";
             }
             Debug.Log(debug);
+
             double sumWeights = 0;
-            weights.Select(kvp => sumWeights += (double) kvp.Value);
+            foreach(var kvp in weights)
+                sumWeights += (double) kvp.Value;
+            Debug.Log("sumweights: " + sumWeights);
+
             // generate distribution probability
             var distribution = weights.Select(v => v.Value / sumWeights).ToArray();
+            Debug.Log(string.Join(", ", distribution));
+
             var sum = 0d;
             // first change shape of your distribution probability array
             // we need it to be cumulative, that is:
@@ -41,6 +47,7 @@ namespace Utility
                 sum += c;
                 return result;
             }).ToList();
+            Debug.Log(string.Join(", ", cumulative));
 
             // now generate random double. It will always be in range from 0 to 1
             var r = RANDOM.NextDouble();

@@ -34,7 +34,8 @@ namespace DataTypes
             GenerateRoute(_right, _down, _left, _up);
             GenerateRoute(_down, _left, _up, _right);
             GenerateRoute(_left, _up, _right, _down);
-            ShowTracks();
+            // TODO: toggle visibility of tracks via UI
+            // ShowTracks();
 
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(DeleteCars);

@@ -5,6 +5,7 @@ using YamlDotNet.Serialization.NamingConventions;
 using static Pathfinding.Pathfinding;
 using SFB;
 using Events;
+using Interface;
 using Utility;
 
 namespace Saves
@@ -13,7 +14,7 @@ namespace Saves
     {
         public static GameObject simulation;
         public static string[] paths;
-        public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
+        public static ExtensionFilter[] extension = { new ExtensionFilter("Simulation Files", "yaml") };
 
         public SimulationManager simulationManager;
 

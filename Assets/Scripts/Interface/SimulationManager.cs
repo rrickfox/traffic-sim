@@ -1,53 +1,56 @@
-﻿using UnityEngine;
-using Saves;
+﻿using Saves;
+using UnityEngine;
 
-public class SimulationManager : MonoBehaviour
+namespace Interface
 {
-    public static bool pause;
-    public static bool menu;
-
-    public GameObject simulationCanvas;
-    public GameObject menuCanvas;
-
-    private void Start()
+    public class SimulationManager : MonoBehaviour
     {
-        menuCanvas.SetActive(true);
-        simulationCanvas.SetActive(false);
-        menu = true;
-    }
+        public static bool pause;
+        public static bool menu;
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Escape) && SaveLoader.paths != null)
+        public GameObject simulationCanvas;
+        public GameObject menuCanvas;
+
+        private void Start()
         {
-            ToggleMenu();
+            menuCanvas.SetActive(true);
+            simulationCanvas.SetActive(false);
+            menu = true;
         }
-    }
 
-    public void SetSimulationTime(bool newTime)
-    {
-        pause = newTime;
-    }
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.Escape) && SaveLoader.paths != null)
+            {
+                ToggleMenu();
+            }
+        }
 
-    public void SwitchToMenu()
-    {
-        simulationCanvas.SetActive(false);
-        menuCanvas.SetActive(true);
-        menu = true;
-    }
+        public void SetSimulationTime(bool newTime)
+        {
+            pause = newTime;
+        }
 
-    public void SwitchToSimulation()
-    {
-        simulationCanvas.SetActive(true);
-        menuCanvas.SetActive(false);
-        menu = false;
-    }
+        public void SwitchToMenu()
+        {
+            simulationCanvas.SetActive(false);
+            menuCanvas.SetActive(true);
+            menu = true;
+        }
 
-    public void ToggleMenu()
-    {
-        if (menu)
-            SwitchToSimulation();
-        else
-            SwitchToMenu();
+        public void SwitchToSimulation()
+        {
+            simulationCanvas.SetActive(true);
+            menuCanvas.SetActive(false);
+            menu = false;
+        }
+
+        public void ToggleMenu()
+        {
+            if (menu)
+                SwitchToSimulation();
+            else
+                SwitchToMenu();
+        }
     }
 }

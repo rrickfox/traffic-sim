@@ -28,7 +28,7 @@ namespace DataTypes.Drivers
                     var frontDistance = midpointFrontDistance - averageLength;
                     // the minimal distance that is to be kept between this car and the next one
                     var minimumDistance = 1.5 * (myCar.speed.Squared() - frontCar.speed.Squared()).DividedBy(myCar.maxBrakingDeceleration)
-                                                 + frontDistance + myCar.bufferDistance;
+                                                 + averageLength + myCar.bufferDistance;
                     var computedAcceleration = frontCar.acceleration
                                                - 2 * (myCar.speed - frontCar.speed).Squared()
                                                .DividedBy(frontDistance)

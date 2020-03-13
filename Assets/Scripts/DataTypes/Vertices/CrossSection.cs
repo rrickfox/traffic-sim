@@ -4,6 +4,7 @@ using static Utility.CONSTANTS;
 using static Utility.COLORS;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using Events;
 using UnitsNet;
 
@@ -149,7 +150,7 @@ namespace DataTypes
             #endregion
 
             var meshVertices = new Vector3[24];
-            var triangles = new int[78];
+            var triangles = new int[102];
             var uvs = new Vector2[24];
 
             #region setUpMeshVertices
@@ -190,7 +191,7 @@ namespace DataTypes
 
             // set lower mesh vertices
             for (var i = 0; i < 12; i++)
-                meshVertices[i + 12] = new Vector3(meshVertices[i].x, 0, meshVertices[i].z);
+                meshVertices[i + 12] = new Vector3(meshVertices[i].x, -5, meshVertices[i].z);
 
             #region setTriangles
             // first triangle is middle of crosssection
@@ -221,12 +222,12 @@ namespace DataTypes
             for(var i = 0; i < 4; i++)
             {
                 triangles[triIndex] = 3 * i + 1;
-                triangles[triIndex + 1] = 12 + 3 * i + 2;
-                triangles[triIndex + 2] = 12 + 3 * i + 1;
+                triangles[triIndex + 1] = 12 + 3 * i + 1;
+                triangles[triIndex + 2] = 12 + 3 * i + 2;
 
                 triangles[triIndex + 3] = 3 * i + 1;
-                triangles[triIndex + 4] = 3 * i + 2;
-                triangles[triIndex + 5] = 12 + 3 * i + 2;
+                triangles[triIndex + 4] = 12 + 3 * i + 2;
+                triangles[triIndex + 5] = 3 * i + 2;
 
                 triIndex += 6;
             }
@@ -235,12 +236,26 @@ namespace DataTypes
             for(var i = 0; i < 4; i++)
             {
                 triangles[triIndex] = 3 * i;
-                triangles[triIndex + 1] = 12 + 3 * i + 1;
-                triangles[triIndex + 2] = 12 + 3 * i;
+                triangles[triIndex + 1] = 12 + 3 * i;
+                triangles[triIndex + 2] = 12 + 3 * i + 1;
 
                 triangles[triIndex + 3] = 3 * i;
-                triangles[triIndex + 4] = 3 * i + 1;
-                triangles[triIndex + 5] = 12 + 3 * i + 1;
+                triangles[triIndex + 4] = 12 + 3 * i + 1;
+                triangles[triIndex + 5] = 3 * i + 1;
+
+                triIndex += 6;
+            }
+
+            // right side of edge
+            for(var i = 0; i < 4; i++)
+            {
+                triangles[triIndex] = 3 * i;
+                triangles[triIndex + 1] = 3 * ((i + 3) % 4) + 2;
+                triangles[triIndex + 2] = 12 + 3 * i;
+
+                triangles[triIndex + 3] = 12 + 3 * i;
+                triangles[triIndex + 4] = 3 * ((i + 3) % 4) + 2;
+                triangles[triIndex + 5] = 12 + 3 * ((i + 3) % 4) + 2;
 
                 triIndex += 6;
             }
@@ -280,25 +295,36 @@ namespace DataTypes
             uvs[6] = new Vector2(uvs[7].x, uvs[5].y);
             uvs[9] = new Vector2(uvs[8].x, uvs[10].y);
 
-            for(var i = 0; i < 4; i++)
+            
+            // calculate height and width based on origin Points of opposite edges
+            var height = Mathf.RoundToInt(Vector2.Distance(_up.originPoint.position, _down.originPoint.position) * MULTIPLIER_SECTION);
+            var width = Mathf.RoundToInt(Vector2.Distance(_right.originPoint.position, _left.originPoint.position) * MULTIPLIER_SECTION);
+            
+            Func<int, Vector2> GetCorner = i =>
             {
-                var vec = Vector2.zero;
+                var corner = Vector2.zero;
                 switch(i)
                 {
                     case 0:
-                        vec = new Vector2(0, 1); break;
+                        corner = new Vector2(0, 1); break;
                     case 1:
-                        vec = new Vector2(1, 1); break;
+                        corner = new Vector2(1, 1); break;
                     case 2:
-                        vec = new Vector2(1, 0); break;
+                        corner = new Vector2(1, 0); break;
                     case 3:
-                        vec = new Vector2(0, 0); break;
+                        corner = new Vector2(0, 0); break;
                 }
-                uvs[12 + 3 * i] = vec;
-                uvs[12 + 3 * i + 1] = vec;
-                uvs[12 + 3 * i + 2] = vec;
+                return corner;
+            };
+            for(var i = 0; i < 4; i++)
+            {
+                uvs[12 + 3 * i] = GetCorner(i);
+                uvs[12 + 3 * i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
+                uvs[12 + 3 * i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
             }
             #endregion
+            for(var i = 0; i < 24; i++)
+                Debug.Log(i + ": " + meshVertices[i] + ", " + uvs[i]);
 
             gameObject.GetComponent<MeshFilter>().mesh = new Mesh
             {

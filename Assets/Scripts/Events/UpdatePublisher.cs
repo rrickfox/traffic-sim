@@ -10,7 +10,7 @@ namespace Events
 
         private void FixedUpdate()
         {
-            if (Manager.pause)
+            if (Manager.pause || Manager.menu)
                 return;
             foreach (var publisher in _publishers)
                 publisher.Publish();
@@ -22,6 +22,12 @@ namespace Events
 
         public static void RegisterTypePublisher(TypePublisher typePublisher) => _publishers.Add(typePublisher);
 
-        public static void ResetPublisher() => _publishers.Clear();
+        public static void ResetPublisher()
+        {
+            foreach (var publisher in _publishers)
+            {
+                publisher.ResetObjectPublishers();
+            }
+        }
     }
 }

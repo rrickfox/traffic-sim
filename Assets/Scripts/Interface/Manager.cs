@@ -22,7 +22,7 @@ public class Manager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetAxis("Cancel") != 0)
+        if(Input.GetKeyDown(KeyCode.Escape) && SaveLoader.paths != null)
         {
             ToggleMenu();
         }
@@ -53,6 +53,5 @@ public class Manager : MonoBehaviour
             SwitchToSimulation();
         else
             SwitchToMenu();
-        menu = !menu;
     }
 }

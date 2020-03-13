@@ -12,16 +12,8 @@ namespace Saves
     public class SaveLoader : MonoBehaviour
     {
         public static GameObject simulation;
-        public static string[] paths = new string[] { "Assets/Saves/sample.yaml" };
+        public static string[] paths;
         public static ExtensionFilter[] extension = new ExtensionFilter[] { new ExtensionFilter("Simulation Files", "yaml") };
-
-        private void Start()
-        {
-            simulation = Instantiate(CONSTANTS.EMPTY_PREFAB);
-            simulation.name = "Simulation";
-            Manager.pause = true;
-            Load(paths[0]);
-        }
 
         public void LoadPath()
         {

@@ -16,26 +16,12 @@ namespace Utility
         // modified from: https://stackoverflow.com/a/43345968
         public static Vertex Choose(Dictionary<Edge, int> weights)
         {
-            //TODO
-            var debug = "";
-            foreach(var weight in weights)
-            {
-                debug += "[";
-                debug += weight.Key.originPoint.position;
-                debug += ", ";
-                debug += weight.Value;
-                debug += "]";
-            }
-            Debug.Log(debug);
-
             double sumWeights = 0;
             foreach(var kvp in weights)
                 sumWeights += (double) kvp.Value;
-            Debug.Log("sumweights: " + sumWeights);
 
             // generate distribution probability
             var distribution = weights.Select(v => v.Value / sumWeights).ToArray();
-            Debug.Log(string.Join(", ", distribution));
 
             var sum = 0d;
             // first change shape of your distribution probability array

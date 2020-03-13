@@ -38,34 +38,7 @@ namespace DataTypes
         public void SpawnCars()
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
-            {
-                var endPoint = Utility.Random.Choose(_weights);
-                //TODO
-                //Debug.Log(_edge.originPoint.position);
-                //Debug.Log(endPoint.edges.First().originPoint.position);
-                //Debug.Log(string.Join(", ", routingTable[endPoint]));
-                //TODO
-                Debug.Log(endPoint.edges.First().originPoint.position);
-                var debug = "";
-                debug += _edge.originPoint.position;
-                debug += ": ";
-                foreach(var route in routingTable)
-                {
-                    debug += "{";
-                    debug += route.Key.edges.First().originPoint.position;
-                    debug += ": ";
-                    debug += "[";
-                    foreach(var segment in route.Value)
-                    {
-                        debug += segment.track;
-                        debug += ", ";
-                    }
-                    debug += "]}";
-                }
-                Debug.Log(debug);
-
-                new Car(_carPrefab, lane, routingTable[endPoint].ToList());
-            }
+                new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(_weights)].ToList());
         }
 
         public void DespawnCars()

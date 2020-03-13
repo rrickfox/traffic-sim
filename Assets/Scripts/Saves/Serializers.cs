@@ -149,7 +149,6 @@ namespace Saves
                             $"Some EndPoint's edge does not specify which edge variant it is ({kvp.Key})"
                             );
                     }
-                    //TODO: Debug.Log(actualEdge.originPoint.position + ", " + kvp.Value);
                     return new KeyValuePair<DataTypes.Edge, int>(actualEdge, kvp.Value);
                 }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             }

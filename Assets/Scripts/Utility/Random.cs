@@ -1,8 +1,6 @@
 using DataTypes;
 using System.Collections.Generic;
 using System.Linq;
-//temporary
-using UnityEngine;
 
 namespace Utility
 {
@@ -33,7 +31,6 @@ namespace Utility
                 sum += c;
                 return result;
             }).ToList();
-            Debug.Log(string.Join(", ", cumulative));
 
             // now generate random double. It will always be in range from 0 to 1
             var r = RANDOM.NextDouble();

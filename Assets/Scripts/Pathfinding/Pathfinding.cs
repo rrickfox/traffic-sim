@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
 using Utility;
-//temporary
-using UnityEngine;
 
 namespace Pathfinding
 {

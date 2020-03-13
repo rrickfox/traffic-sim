@@ -17,8 +17,10 @@ vertices:
   - !endpoint
     edge: 1a
     frequencies: [75, 50, 75]
-    weights: [1]
+    weights:
+      1b: 1
   - !endpoint
     edge: 1b
     frequencies: [75, 50, 75]
-    weights: [1]
+    weights:
+      1a: 1

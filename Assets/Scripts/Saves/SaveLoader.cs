@@ -3,14 +3,39 @@ using UnityEngine;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static Pathfinding.Pathfinding;
+using SFB;
+using Events;
+using Interface;
+using Utility;
 
 namespace Saves
 {
     public class SaveLoader : MonoBehaviour
     {
-        private void Start()
+        public static GameObject simulation;
+        public static string[] paths;
+        public static ExtensionFilter[] extension = { new ExtensionFilter("Simulation Files", "yaml") };
+
+        public SimulationManager simulationManager;
+
+        public void LoadPath()
         {
-            Load("Assets/Saves/sample.yaml");
+            paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", extension, false);
+            if (paths.Length == 0)
+                return;
+            UpdatePublisher.ResetPublisher();
+            Unload();
+            Load(paths[0]);
+            SimulationManager.pause = false;
+            simulationManager.SwitchToSimulation();
+        }
+
+        private void Unload()
+        {
+            UpdatePublisher.ResetPublisher();
+            Destroy(simulation);
+            simulation = Instantiate(CONSTANTS.EMPTY_PREFAB);
+            simulation.name = "Simulation";
         }
 
         public void Load(string pathName)

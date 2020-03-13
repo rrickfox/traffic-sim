@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Interface;
+using UnityEngine;
 
 namespace Cameras
 {
@@ -35,12 +36,18 @@ namespace Cameras
 
         private void Update()
         {
+            if (SimulationManager.menu)
+                return;
+
             SelectCar();
             _scroll = Input.GetAxis("Mouse ScrollWheel");
         }
 
         void FixedUpdate()
         {
+            if (SimulationManager.menu)
+                return;
+
             if (!_cam.enabled)
             {
                 // reset camera

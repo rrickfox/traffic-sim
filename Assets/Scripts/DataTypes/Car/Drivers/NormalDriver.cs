@@ -24,20 +24,20 @@ namespace DataTypes.Drivers
                     case TrafficLight.LightState.Yellow:
                     {
                         if (Formulas.BrakingDeceleration(myCar.speed
-                                , myCar.track.length - myCar.positionOnRoad)
+                                , myCar.track.length - myCar.positionOnRoad - myCar.length)
                             > myCar.maxBrakingDeceleration)
                         {
                             acceleration += myCar.maxAcceleration;
                             break;
                         }
                         acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad);
+                            , myCar.track.length - myCar.positionOnRoad - myCar.length);
                         break;
                     }
                     case TrafficLight.LightState.Red:
                     {
                         acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad);
+                            , myCar.track.length - myCar.positionOnRoad - myCar.length * 1000);
                         break;
                     }
                 }

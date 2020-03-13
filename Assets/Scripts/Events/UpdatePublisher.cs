@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Interface;
 using UnityEngine;
 using Utility;
 
@@ -11,6 +12,8 @@ namespace Events
 
         private void FixedUpdate()
         {
+            if (SimulationManager.pause || SimulationManager.menu)
+                return;
             foreach (var publisher in _publishers)
                 publisher.Publish();
             // reset the publishers' states so they know that
@@ -20,5 +23,13 @@ namespace Events
         }
 
         public static void RegisterTypePublisher(TypePublisher typePublisher) => _publishers.Add(typePublisher);
+
+        public static void ResetPublisher()
+        {
+            foreach (var publisher in _publishers)
+            {
+                publisher.ResetObjectPublishers();
+            }
+        }
     }
 }

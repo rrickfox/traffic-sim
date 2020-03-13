@@ -43,7 +43,10 @@ namespace Utility
             if (idx > cumulative.Count - 1)
                 idx = cumulative.Count - 1; // very rare case when probabilities do not sum to 1 because of double precision issues (so sum is 0.999943 and so on)
             // return item at given index
-            return weights.Keys.ElementAt(idx).vertex;
+            var vertex = weights.Keys.ElementAt(idx).vertex;
+            if(!(vertex is EndPoint))
+                throw new NetworkConfigurationError("Weight is not referencing an Endpoint");
+            return vertex;
         }
     }
 }

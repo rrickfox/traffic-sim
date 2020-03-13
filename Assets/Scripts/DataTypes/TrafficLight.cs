@@ -37,7 +37,7 @@ namespace DataTypes
             {
                 case LightState.Red:
                 {
-                    if (_ticks % _redToGreen == 0)
+                    if (_ticks == _redToGreen)
                     {
                         _ticks = 0;
                         state = LightState.Green;
@@ -47,7 +47,7 @@ namespace DataTypes
                 }
                 case LightState.Yellow:
                 {
-                    if (_ticks % _yellowToRed == 0)
+                    if (_ticks == _yellowToRed)
                     {
                         _ticks = 0;
                         state = LightState.Red;
@@ -57,17 +57,12 @@ namespace DataTypes
                 }
                 case LightState.Green:
                 {
-                    if (_ticks % _greenToYellow == 0)
+                    if (_ticks == _greenToYellow)
                     {
                         _ticks = 0;
                         state = LightState.Red;
                     }
 
-                    break;
-                }
-                default:
-                {
-                    state = LightState.Red;
                     break;
                 }
             }

@@ -70,7 +70,7 @@ namespace DataTypes
 
         private void ExecuteMove()
         {
-            var newSpeed = speed + acceleration.Times(TimeSpan.FromSeconds(1));
+            var newSpeed = speed + acceleration.Times(Formulas.TimeUnitsToTimeSpan(1));
             if (newSpeed > track.speedLimit)
             {
                 // enforce the speed limit
@@ -88,7 +88,7 @@ namespace DataTypes
                 speed = newSpeed;
             }
             
-            positionOnRoad += speed * TimeSpan.FromSeconds(1);
+            positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
             
             UpdatePosition();
             

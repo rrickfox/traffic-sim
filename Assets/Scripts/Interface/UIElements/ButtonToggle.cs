@@ -6,6 +6,12 @@ namespace Interface {
         public GameObject playImage;
         public GameObject pauseImage;
 
+        private void Start()
+        {
+            playImage.SetActive(false);
+            pauseImage.SetActive(true);
+        }
+
         public void ToggleState()
         {
             SimulationManager.pause = !SimulationManager.pause;

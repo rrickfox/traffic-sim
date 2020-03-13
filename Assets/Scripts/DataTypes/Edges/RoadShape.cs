@@ -29,9 +29,17 @@ namespace DataTypes
             this.length = length;
         }
 
+        // change start position of first curve
+        public void UpdateOrigin(Vector2 newOrigin)
+        {
+            _curves.First().startPoint = newOrigin;
+            CalculateEvenlySpacedPoints();
+        }
+
         // calculates points in regular intervals
         private void CalculateEvenlySpacedPoints()
         {
+            length = Length.Zero;
             // first point not included in any list of points to avoid duplication
             var tempPoints = new List<Vector2> {_curves[0].startPoint};
             
@@ -49,6 +57,8 @@ namespace DataTypes
             // save lastPoint to interpolate between calculated points with distance greater than DISTANCE_UNIT
             var lastPoint = tempPoints[0];
             float dstSinceLastEvenPoint = 0;
+
+            
 
             foreach(var point in tempPoints)
             {
@@ -70,10 +80,7 @@ namespace DataTypes
                     lastPoint = newEvenlySpacedPoint;
                 }
 
-                if(dstSinceLastEvenPoint == 0)
-                {
-                    lastPoint = point;
-                }
+                lastPoint = point;
             }
 
             _curves.Last().endPoint = lastPoint;

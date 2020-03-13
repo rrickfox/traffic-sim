@@ -2,12 +2,12 @@ namespace DataTypes
 {
     public struct RouteSegment
     {
-        public ITrack track;
+        public Edge edge;
         public LaneType laneType;
 
-        public RouteSegment(ITrack track, LaneType laneType)
+        public RouteSegment(Edge edge, LaneType laneType)
         {
-            this.track = track;
+            this.edge = edge;
             this.laneType = laneType;
         }
     }

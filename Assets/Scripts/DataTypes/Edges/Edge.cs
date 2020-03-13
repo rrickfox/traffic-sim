@@ -22,6 +22,7 @@ namespace DataTypes
         public RoadShape shape { get; protected set; }
         public Length length => shape.length;
         public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
+        protected bool display { get; }
         
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
@@ -30,7 +31,7 @@ namespace DataTypes
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
             other = new Edge(this, incomingLanes);
-
+            this.display = true;
             Display();
             
             InitializeSubscriptions();
@@ -42,6 +43,7 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+            this.display = false;
             
             InitializeSubscriptions();
         }
@@ -57,10 +59,10 @@ namespace DataTypes
         {
             shape.UpdateOrigin(newOriginPoint);
             other.shape = shape.Inverse();
-            if (gameObject.GetComponent<MeshFilter>() == null)
-                other.Display();
-            else
+            if (display)
                 Display();
+            else
+                other.Display();
         }
 
         protected void Display()

@@ -12,5 +12,12 @@ namespace Utility
             list.RemoveAt(index);
             return r;
         }
+
+        public static void SwapAt<T>(this IList<T> list, int i1, int i2)
+        {
+            var copy = list[i1];
+            list[i1] = list[i2];
+            list[i2] = copy;
+        }
     }
 }

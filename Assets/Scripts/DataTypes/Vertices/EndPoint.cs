@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using Events;
 using UnityEngine;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
     public class EndPoint : Vertex
     {
+        public override GameObject prefab { get; } = EMPTY_PREFAB;
+
         private Edge _edge { get; }
-        private GameObject _carPrefab { get; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
@@ -22,7 +24,6 @@ namespace DataTypes
         public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, Dictionary<Edge, int> weights) : base(edge)
         {
             _edge = edge;
-            _carPrefab = carPrefab;
             _frequencies = frequencies;
             _weights = weights;
 
@@ -38,7 +39,12 @@ namespace DataTypes
         public void SpawnCars()
         {
             foreach (var lane in _frequencies.CurrentActiveIndices())
-                new Car(_carPrefab, lane, routingTable[Utility.Random.Choose(_weights)].ToList());
+            {
+                // only spawn car if no other car is in range of beginning
+                var firstCarOnLane = _edge.cars.FirstOrDefault(c => c.lane == lane);
+                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length)
+                    new Car(lane, routingTable[Utility.Random.Choose(_weights)].ToList());
+            }
         }
 
         public void DespawnCars()
@@ -46,8 +52,8 @@ namespace DataTypes
             // removes incoming cars
             foreach (var car in _edge.other.cars.ToList().Where(car => car.positionOnRoad >= _edge.length))
             {
-                car.Dispose();
                 _edge.other.cars.Remove(car);
+                car.Dispose();
             }
         }
 

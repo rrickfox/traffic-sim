@@ -37,7 +37,6 @@ namespace Saves
 
             public DataTypes.Edge Deserialize()
                 => new DataTypes.Edge(
-                    ROAD_PREFAB,
                     shape.Deserialize(),
                     outgoingLanes.Deserialize(),
                     incomingLanes.Deserialize()
@@ -199,7 +198,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
 
-                return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughOrRight"]
+                return new DataTypes.TeeSection(actualEdges["throughOrRight"]
                     , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]);
             }
         }
@@ -250,7 +249,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
 
-                return new DataTypes.CrossSection(EMPTY_PREFAB, actualEdges["up"]
+                return new DataTypes.CrossSection(actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]);
             }
         }

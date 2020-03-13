@@ -21,7 +21,7 @@ namespace DataTypes
         // updates only happen after all car updates
         public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
 
-        public EndPoint(Edge edge, GameObject carPrefab, Frequencies frequencies, Dictionary<Edge, int> weights) : base(edge)
+        public EndPoint(Edge edge, Frequencies frequencies, Dictionary<Edge, int> weights) : base(edge)
         {
             _edge = edge;
             _frequencies = frequencies;

@@ -117,7 +117,7 @@ namespace Saves
                         );
                 }
 
-                return new DataTypes.EndPoint(actualEdge, CAR_PREFAB, frequencies.Deserialize(), weights.Deserialize(verticesLookup));
+                return new DataTypes.EndPoint(actualEdge, frequencies.Deserialize(), weights.Deserialize(verticesLookup));
             }
         }
         

@@ -7,7 +7,7 @@ namespace DataTypes
 {
     public class TrafficLight : GameObjectData
     {
-        private GameObject _trafficLightPrefab { get; }
+        public override GameObject prefab { get; }
         private int _ticks { get; set; }
         private int _redToGreen { get; }
         private int _yellowToRed { get; }
@@ -48,9 +48,8 @@ namespace DataTypes
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
 
-        public TrafficLight(GameObject prefab, int red, int yellow, int green, Vertex interSection) : base(prefab)
+        public TrafficLight(int red, int yellow, int green, Vertex interSection)
         {
-            _trafficLightPrefab = prefab;
             _redToGreen = red;
             _yellowToRed = yellow;
             _greenToYellow = green;

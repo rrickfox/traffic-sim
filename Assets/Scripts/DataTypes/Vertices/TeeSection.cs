@@ -5,20 +5,22 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+
         private Edge _throughOrRight { get; }
         private Edge _throughOrLeft { get; }
         private Edge _leftOrRight { get; }
-
-        public TeeSection(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, int red, int yellow, int green)
-            : base(prefab, throughOrRight, throughOrLeft, leftOrRight)
+        
+        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, int red, int yellow, int green)
+            : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
+            _throughOrRight.light = new TrafficLight(red, yellow, green, this);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
+            _throughOrLeft.light = new TrafficLight(red, yellow, green, this);
             _leftOrRight = leftOrRight;
             // calculates cycles based on perpendicular street
-            _leftOrRight.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, yellow + green, yellow, red - yellow, this);
+            _leftOrRight.light = new TrafficLight(yellow + green, yellow, red - yellow, this);
         }
 
         // returns necessary lane to go from an edge to another edge

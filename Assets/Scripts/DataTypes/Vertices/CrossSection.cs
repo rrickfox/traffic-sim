@@ -5,19 +5,21 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+
         private Edge _up { get; }
         private Edge _right { get; }
         private Edge _down { get; }
         private Edge _left { get; }
-
-        public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left, int red, int yellow, int green)
-            : base(prefab, up, right, down, left)
+        
+        public CrossSection(Edge up, Edge right, Edge down, Edge left, int red, int yellow, int green)
+            : base(up, right, down, left)
         {
             _up = up;
-            _up.other.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, red, yellow, green, this);
+            _up.other.light = new TrafficLight(red, yellow, green, this);
             _right = right;
             // calculates cycles based on perpendicular street
-            _right.other.light = new TrafficLight(CONSTANTS.EMPTY_PREFAB, yellow + green, yellow, red - yellow, this);
+            _right.other.light = new TrafficLight(yellow + green, yellow, red - yellow, this);
             _down = down;
             _down.other.light = _up.other.light;
             _left = left;

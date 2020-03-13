@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using UnitsNet;
+using Utility;
 
 namespace DataTypes
 {
     public interface ITrack
     {
-        float length { get; }
-        List<Car> cars { get; }
-        // needed for access by cars
         [CanBeNull] TrafficLight light { get; set; }
-        RoadPoint GetAbsolutePosition(float positionOnRoad, float lane);
+        Length length { get; }
+        Speed speedLimit { get; }
+        SortableLinkedList<Car> cars { get; }
+        RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane);
     }
 }

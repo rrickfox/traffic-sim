@@ -1,30 +1,25 @@
 using Events;
 using UnityEngine;
-using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
     public abstract class GameObjectData
     {
-        public GameObject prefab { get; }
+        public abstract GameObject prefab { get; }
         public GameObject gameObject { get; }
         public Transform transform { get; }
         public LinkedBehaviour behaviour { get; }
         protected ObjectPublisher _publisher { get; set; }
 
-        protected GameObjectData(GameObject prefab)
+        protected GameObjectData()
         {
-            this.prefab = prefab;
-            gameObject = Object.Instantiate(this.prefab);
+            gameObject = Object.Instantiate(prefab);
             // set default name
-            gameObject.name = $"{this.prefab.name} ({gameObject.GetInstanceID()})";
+            gameObject.name = $"{prefab.name} ({gameObject.GetInstanceID()})";
             transform = gameObject.transform;
             behaviour = gameObject.AddComponent<LinkedBehaviour>();
             behaviour.data = this;
         }
-
-        // construct using an empty prefab
-        protected GameObjectData() : this(EMPTY_PREFAB) { }
 
         public void Dispose()
         {

@@ -148,11 +148,11 @@ namespace DataTypes
                 + SECTION_BUFFER_LENGTH));
             #endregion
 
-            var meshVertices = new Vector3[12];
-            var triangles = new int[30];
-            var uvs = new Vector2[12];
+            var meshVertices = new Vector3[24];
+            var triangles = new int[78];
+            var uvs = new Vector2[24];
 
-            #region setMeshVertices
+            #region setUpMeshVertices
             // set mesh Vertices in plus shape
             var leftUpCorner = center + GetSectionCorner(_left, _up);
             meshVertices[0] = new Vector3(leftUpCorner.x, ROAD_HEIGHT, leftUpCorner.y);
@@ -188,6 +188,10 @@ namespace DataTypes
             meshVertices[11] = new Vector3(leftBufferRight.x, ROAD_HEIGHT, leftBufferRight.y);
             #endregion
 
+            // set lower mesh vertices
+            for (var i = 0; i < 12; i++)
+                meshVertices[i + 12] = new Vector3(meshVertices[i].x, 0, meshVertices[i].z);
+
             #region setTriangles
             // first triangle is middle of crosssection
             triangles[0] = 0;
@@ -209,6 +213,34 @@ namespace DataTypes
                 triangles[triIndex + 3] = i;
                 triangles[triIndex + 4] = i + 2;
                 triangles[triIndex + 5] = (i + 3) % 12;
+
+                triIndex += 6;
+            }
+
+            // outsides towards edges
+            for(var i = 0; i < 4; i++)
+            {
+                triangles[triIndex] = 3 * i + 1;
+                triangles[triIndex + 1] = 12 + 3 * i + 2;
+                triangles[triIndex + 2] = 12 + 3 * i + 1;
+
+                triangles[triIndex + 3] = 3 * i + 1;
+                triangles[triIndex + 4] = 3 * i + 2;
+                triangles[triIndex + 5] = 12 + 3 * i + 2;
+
+                triIndex += 6;
+            }
+            
+            // left side of edge
+            for(var i = 0; i < 4; i++)
+            {
+                triangles[triIndex] = 3 * i;
+                triangles[triIndex + 1] = 12 + 3 * i + 1;
+                triangles[triIndex + 2] = 12 + 3 * i;
+
+                triangles[triIndex + 3] = 3 * i;
+                triangles[triIndex + 4] = 3 * i + 1;
+                triangles[triIndex + 5] = 12 + 3 * i + 1;
 
                 triIndex += 6;
             }
@@ -247,6 +279,25 @@ namespace DataTypes
             uvs[3] = new Vector2(uvs[2].x, uvs[4].y);
             uvs[6] = new Vector2(uvs[7].x, uvs[5].y);
             uvs[9] = new Vector2(uvs[8].x, uvs[10].y);
+
+            for(var i = 0; i < 4; i++)
+            {
+                var vec = Vector2.zero;
+                switch(i)
+                {
+                    case 0:
+                        vec = new Vector2(0, 1); break;
+                    case 1:
+                        vec = new Vector2(1, 1); break;
+                    case 2:
+                        vec = new Vector2(1, 0); break;
+                    case 3:
+                        vec = new Vector2(0, 0); break;
+                }
+                uvs[12 + 3 * i] = vec;
+                uvs[12 + 3 * i + 1] = vec;
+                uvs[12 + 3 * i + 2] = vec;
+            }
             #endregion
 
             gameObject.GetComponent<MeshFilter>().mesh = new Mesh
@@ -494,6 +545,49 @@ namespace DataTypes
             }
             #endregion
 
+            #region postFillTexture
+
+            downLeftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position, 
+                    new Vector2(meshVertices[8].x, meshVertices[8].z)));
+            leftBelowRoad = (Vector2.Distance(center, _down.originPoint.position)
+                - Vector2.Distance(_left.originPoint.position,
+                    new Vector2(meshVertices[10].x, meshVertices[10].z)));
+            for(int x = 0; x < Mathf.RoundToInt(downLeftOfRoad * MULTIPLIER_SECTION); x++)
+                for(int y = 0; y < Mathf.RoundToInt(leftBelowRoad * MULTIPLIER_SECTION); y++)
+                    texture.SetPixel(x: x, y:y, color: ROAD);
+
+            downRightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
+                - Vector2.Distance(_down.originPoint.position,
+                    new Vector2(meshVertices[7].x, meshVertices[7].z)));
+            rightBelowRoad = (Vector2.Distance(center, _down.originPoint.position)
+                - Vector2.Distance(_right.originPoint.position,
+                    new Vector2(meshVertices[5].x, meshVertices[5].z)));
+            for(var x = width; x > width - Mathf.RoundToInt(downRightOfRoad * MULTIPLIER_SECTION); x--)
+                for(var y = 0; y < Mathf.RoundToInt(rightBelowRoad * MULTIPLIER_SECTION); y++)
+                    texture.SetPixel(x: x, y: y, color: ROAD);
+                
+            upLeftOfRoad = (Vector2.Distance(center, _left.originPoint.position)
+                - Vector2.Distance(_up.originPoint.position, 
+                    new Vector2(meshVertices[1].x, meshVertices[1].z)));
+            leftAboveRoad = (Vector2.Distance(center, _up.originPoint.position)
+                - Vector2.Distance(_left.originPoint.position,
+                    new Vector2(meshVertices[11].x, meshVertices[11].z)));
+            for(var x = 0; x < Mathf.RoundToInt(upLeftOfRoad * MULTIPLIER_SECTION); x++)
+                for(var y = height; y > height - Mathf.RoundToInt(leftAboveRoad * MULTIPLIER_SECTION); y--)
+                    texture.SetPixel(x: x, y: y, color: ROAD);
+            
+            upRightOfRoad = (Vector2.Distance(center, _right.originPoint.position)
+                - Vector2.Distance(_up.originPoint.position,
+                    new Vector2(meshVertices[2].x, meshVertices[2].z)));
+            rightAboveRoad = (Vector2.Distance(center, _up.originPoint.position)
+                - Vector2.Distance(_right.originPoint.position,
+                    new Vector2(meshVertices[4].x, meshVertices[4].z)));
+            for(var x = width; x > width - Mathf.RoundToInt(upRightOfRoad * MULTIPLIER_SECTION); x--)
+                for(var y = height; y > height - Mathf.RoundToInt(rightAboveRoad * MULTIPLIER_SECTION); y--)
+                    texture.SetPixel(x: x, y: y, color: ROAD);
+            #endregion
+            
             texture.Apply();
 
             return texture;

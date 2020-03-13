@@ -3,7 +3,6 @@ using System.Linq;
 using MoreLinq;
 using UnityEngine;
 using Utility;
-using static Utility.CONSTANTS;
 
 namespace Saves
 {
@@ -37,7 +36,6 @@ namespace Saves
 
             public DataTypes.Edge Deserialize()
                 => new DataTypes.Edge(
-                    ROAD_PREFAB,
                     shape.Deserialize(),
                     outgoingLanes.Deserialize(),
                     incomingLanes.Deserialize()
@@ -118,7 +116,7 @@ namespace Saves
                         );
                 }
 
-                return new DataTypes.EndPoint(actualEdge, CAR_PREFAB, frequencies.Deserialize(), weights.Deserialize());
+                return new DataTypes.EndPoint(actualEdge, frequencies.Deserialize(), weights.Deserialize(verticesLookup));
             }
         }
         
@@ -127,9 +125,31 @@ namespace Saves
             public DataTypes.Frequencies Deserialize() => new DataTypes.Frequencies(ToArray());
         }
         
-        public class Weights : List<int>
+        public class Weights : Dictionary<string, int>
         {
-            public int[] Deserialize() => ToArray();
+            public Dictionary<DataTypes.Edge, int> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
+            {
+                return this.Select(kvp => {
+                    DataTypes.Edge actualEdge;
+                    if (string.IsNullOrEmpty(kvp.Key))
+                        throw new NetworkConfigurationError("Some EndPoint's destination edge is empty");
+
+                    if (!int.TryParse(string.Concat(kvp.Key.SkipLast(1)), out var key))
+                        throw new NetworkConfigurationError($"Some EndPoint's destination edge is not an integer ({kvp.Key})");
+
+                    if (!verticesLookup.TryGetValue(key, out var maybeEdge))
+                        throw new NetworkConfigurationError($"Some EndPoint refers to a non-existent edge ({kvp.Value})");
+                    switch (kvp.Key.Last())
+                    {
+                        case 'a': actualEdge = maybeEdge; break;
+                        case 'b': actualEdge = maybeEdge.other; break;
+                        default: throw new NetworkConfigurationError(
+                            $"Some EndPoint's edge does not specify which edge variant it is ({kvp.Key})"
+                            );
+                    }
+                    return new KeyValuePair<DataTypes.Edge, int>(actualEdge, kvp.Value);
+                }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            }
         }
         
         public class TeeSection : IVertex<DataTypes.TeeSection>
@@ -177,7 +197,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
 
-                return new DataTypes.TeeSection(EMPTY_PREFAB, actualEdges["throughOrRight"]
+                return new DataTypes.TeeSection(actualEdges["throughOrRight"]
                     , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]);
             }
         }
@@ -228,7 +248,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
 
-                return new DataTypes.CrossSection(EMPTY_PREFAB, actualEdges["up"]
+                return new DataTypes.CrossSection(actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]);
             }
         }

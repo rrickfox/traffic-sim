@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Events;
+using UnitsNet;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -9,22 +11,29 @@ namespace DataTypes
     // represents what you can tell about a road if you were to stand at one of its endpoints
     public class Edge : GameObjectData, ITrack
     {
+        public override GameObject prefab { get; } = ROAD_PREFAB;
+        
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
-        public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
+        public SortableLinkedList<Car> cars { get; } = new SortableLinkedList<Car>(new CarComparer()); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
-        public float length => shape.length;
+        public Length length => shape.length;
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
         
-        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
+        public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
+        
+        public Edge(RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
             other = new Edge(this, incomingLanes);
 
             Display();
+            
+            InitializeSubscriptions();
         }
 
         // construct an Edge where other is already constructed
@@ -33,6 +42,14 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+            
+            InitializeSubscriptions();
+        }
+
+        private void InitializeSubscriptions()
+        {
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(cars.Sort);
         }
 
         private void Display()
@@ -102,7 +119,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt(shape.length.ToDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 
@@ -184,11 +201,11 @@ namespace DataTypes
         }
 
         // retrieves position and forward vector of car on road when given relative position on road and lane 
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
+        public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane)
         {
             // get first estimation of position from saved array of points
-            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.RoundToInt(positionOnRoad);
+            var unityPositionOnRoad = Mathf.Clamp(positionOnRoad.ToDistanceUnits(), 0, length.ToDistanceUnits());
+            var index = Mathf.RoundToInt(unityPositionOnRoad);
             var absolutePosition = shape.points[index];
 
             // set offset to the right to accommodate different lanes

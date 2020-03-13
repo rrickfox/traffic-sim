@@ -15,14 +15,14 @@ namespace DataTypes
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
-        private List<double> _cumulativeProbabilities { get; }
+        private Dictionary<Edge, int> _weights { get; }
         public Dictionary<Vertex, List<RouteSegment>> routingTable { get; } = new Dictionary<Vertex, List<RouteSegment>>();
 
-        public EndPoint(Edge edge, Frequencies frequencies, int[] weights) : base(edge)
+        public EndPoint(Edge edge, Frequencies frequencies, Dictionary<Edge, int> weights) : base(edge)
         {
             _edge = edge;
             _frequencies = frequencies;
-            _cumulativeProbabilities = MathUtils.CalculateCumulative(weights);
+            _weights = weights;
 
             if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
@@ -40,9 +40,7 @@ namespace DataTypes
                 // only spawn car if no other car is in range of beginning
                 var firstCarOnLane = _edge.cars.FirstOrDefault(c => c.lane == lane);
                 if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length)
-                    new Car(lane, routingTable[Utility.Random.Choose(
-                        cumulativeProbabilities: _cumulativeProbabilities, 
-                        destinations: routingTable.Where(kvp => kvp.Value != null).Select(kvp => kvp.Key).ToList())].ToList());
+                    new Car(lane, routingTable[Utility.Random.Choose(_weights)].ToList());
             }
         }
 

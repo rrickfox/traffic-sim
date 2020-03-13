@@ -9,6 +9,7 @@ namespace Interface
         public Transform freeCamera;
         public TMPro.TMP_Text speedText;
         public GameObject panel;
+        public TMPro.TMP_Text accelerationText;
 
         private FreeCamera _freeCam;
         private Car _car;
@@ -39,7 +40,11 @@ namespace Interface
             }
 
             if (_visible)
-                speedText.text = Mathf.Round((float) _car.speed.KilometersPerHour * 10) / 10f + " km/h";
+            {
+                speedText.text = Mathf.Round((float)_car.speed.MetersPerSecond * 10) / 10f + " m/s";
+                accelerationText.text = Mathf.Round((float)_car.acceleration.MetersPerSecondSquared * 10) / 10f + "m/s^2";
+            }
+
         }
     }
 }

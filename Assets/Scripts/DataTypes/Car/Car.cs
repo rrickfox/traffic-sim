@@ -25,7 +25,7 @@ namespace DataTypes
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-111111);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 

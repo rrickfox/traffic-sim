@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnitsNet;
 using Utility;
 using static Utility.CONSTANTS;
 
@@ -9,9 +10,11 @@ namespace DataTypes
     public class SectionTrack : ITrack
     {
         public Vertex vertex; // the Vertex this track is on
-        public List<Car> cars { get; } = new List<Car>();
+        public SortableLinkedList<Car> cars { get; } = new SortableLinkedList<Car>(new CarComparer());
         public RoadShape shape { get; }
-        public float length => shape.length;
+        public Length length => shape.length;
+        // TODO: calculate accordingly
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(50);
 
         public SectionTrack(Vertex vertex, RoadShape shape)
         {
@@ -19,11 +22,11 @@ namespace DataTypes
             this.shape = shape;
         }
 
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane = 0)
+        public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane = 0)
         {
             // get first estimation of position from saved array of points
-            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.RoundToInt(positionOnRoad);
+            var pos = Mathf.Clamp(positionOnRoad.ToDistanceUnits(), 0, length.ToDistanceUnits());
+            var index = Mathf.RoundToInt(pos);
             return shape.points[index];
         }
     }

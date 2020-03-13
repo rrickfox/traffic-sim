@@ -5,19 +5,22 @@ using static Utility.COLORS;
 using System.Collections.Generic;
 using System.Linq;
 using Events;
+using UnitsNet;
 
 namespace DataTypes
 {
     public class CrossSection : Vertex
     {
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+
         private Edge _up { get; }
         private Edge _right { get; }
         private Edge _down { get; }
         private Edge _left { get; }
         private Vector2 center;
 
-        public CrossSection(GameObject prefab, Edge up, Edge right, Edge down, Edge left)
-            : base(prefab, up, right, down, left)
+        public CrossSection(Edge up, Edge right, Edge down, Edge left)
+            : base(up, right, down, left)
         {
             _up = up;
             _right = right;
@@ -280,7 +283,7 @@ namespace DataTypes
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
                     var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
 
-                    var postCurveEnd = relativeLeft.GetAbsolutePosition(0f, i).position;
+                    var postCurveEnd = relativeLeft.GetAbsolutePosition(Length.Zero, i).position;
                     var udDifference = Mathf.Clamp(oppositeEdge.incomingLanes.Count - edge.outgoingLanes.Count, 0f, Mathf.Infinity);
                     var postCurveStart = postCurveEnd - relativeLeft.originPoint.forward * (STOP_LINE_WIDTH
                             + SECTION_BUFFER_LENGTH
@@ -290,7 +293,7 @@ namespace DataTypes
 
                     var curveControll = center
                         + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeLeft.GetAbsolutePosition(0f, i).position - relativeLeft.originPoint.position;
+                        + relativeLeft.GetAbsolutePosition(Length.Zero, i).position - relativeLeft.originPoint.position;
                     var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
                     track.Add(preCurve);
                     track.Add(curve);
@@ -307,7 +310,7 @@ namespace DataTypes
                         throughOffset = i + 1 - oppositeEdge.outgoingLanes.Count;
                     if (i - throughOffset < 0)
                         throw new NetworkConfigurationError("too many through Lanes");
-                    var postCurveEnd = oppositeEdge.GetAbsolutePosition(0f, i - throughOffset).position;
+                    var postCurveEnd = oppositeEdge.GetAbsolutePosition(Length.Zero, i - throughOffset).position;
                     var postCurveStart = postCurveEnd - oppositeEdge.originPoint.forward * (STOP_LINE_WIDTH 
                         + SECTION_BUFFER_LENGTH
                         + lrDifference * LANE_WIDTH
@@ -337,7 +340,7 @@ namespace DataTypes
                     var postCurveEnd = new Vector2();
                     var rDifference = relativeRight.outgoingLanes.Count - edge.incomingLanes.Count;
                     if (i + rDifference >= 0)
-                        postCurveEnd = relativeRight.GetAbsolutePosition(0f, i + rDifference).position;
+                        postCurveEnd = relativeRight.GetAbsolutePosition(Length.Zero, i + rDifference).position;
                     else
                         throw new NetworkConfigurationError("too many right turns");
                     var udDifference = Mathf.Clamp(oppositeEdge.outgoingLanes.Count - edge.incomingLanes.Count, 0f, Mathf.Infinity);
@@ -349,7 +352,7 @@ namespace DataTypes
 
                     var curveControll = center
                         + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeRight.GetAbsolutePosition(0f, i).position - relativeRight.originPoint.position;
+                        + relativeRight.GetAbsolutePosition(Length.Zero, i).position - relativeRight.originPoint.position;
                     var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
                     track.Add(preCurve);
                     track.Add(curve);

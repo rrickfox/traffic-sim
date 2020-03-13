@@ -1,11 +1,13 @@
-using System.Collections.Generic;
+using UnitsNet;
+using Utility;
 
 namespace DataTypes
 {
     public interface ITrack
     {
-        float length { get; }
-        List<Car> cars { get; }
-        RoadPoint GetAbsolutePosition(float positionOnRoad, float lane);
+        Length length { get; }
+        Speed speedLimit { get; }
+        SortableLinkedList<Car> cars { get; }
+        RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane);
     }
 }

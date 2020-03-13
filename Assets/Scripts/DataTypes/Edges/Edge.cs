@@ -21,7 +21,7 @@ namespace DataTypes
         public RoadShape shape { get; }
         public TrafficLight light { get; set; }
         public Length length => shape.length;
-        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(50); // maximum speed of cars
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
         
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
@@ -119,7 +119,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length.ToDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt((float) length.Meters / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 

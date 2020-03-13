@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes.Drivers;
@@ -24,8 +23,8 @@ namespace DataTypes
         public RouteSegment segment { get; private set; }
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-111111);
+        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 

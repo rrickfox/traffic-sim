@@ -51,5 +51,7 @@ namespace Events
         }
 
         public void ResetState() => _state = PublishingState.ToDo;
+
+        public void ResetObjectPublishers() => _publishers.Clear();
     }
 }

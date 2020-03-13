@@ -24,8 +24,8 @@ namespace DataTypes
         public RouteSegment segment { get; private set; }
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4f);
-        public Acceleration maxBrakingDeceleration { get; } = - Acceleration.FromMetersPerSecondSquared(30f);
+        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-111111);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -70,8 +70,25 @@ namespace DataTypes
 
         private void ExecuteMove()
         {
-            speed += acceleration.Times(TimeSpan.FromSeconds(1));
-            positionOnRoad += speed * TimeSpan.FromSeconds(1);
+            var newSpeed = speed + acceleration.Times(Formulas.TimeUnitsToTimeSpan(1));
+            if (newSpeed > track.speedLimit)
+            {
+                // enforce the speed limit
+                speed = track.speedLimit;
+                acceleration = Acceleration.Zero;
+            }
+            else if (newSpeed.MetersPerSecond <= 0)
+            {
+                // ensure that the car does not drive backwards
+                speed = Speed.Zero;
+                acceleration = Acceleration.Zero;
+            }
+            else
+            {
+                speed = newSpeed;
+            }
+            
+            positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
             
             UpdatePosition();
             

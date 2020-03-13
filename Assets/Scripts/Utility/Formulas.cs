@@ -46,11 +46,11 @@ namespace Utility
 
         public static Area Squared(this Length length) => length * length;
 
-        public static Acceleration Min(params Acceleration[] accelerations)
-            => accelerations.Min();
+        public static Acceleration Min(params Acceleration[] accelerations) => accelerations.Min();
         
-        public static Acceleration Max(params Acceleration[] accelerations)
-            => accelerations.Max();
+        public static Acceleration Max(params Acceleration[] accelerations) => accelerations.Max();
+        
+        public static Speed Max(params Speed[] speeds) => speeds.Max();
         
         // https://de.wikipedia.org/wiki/Bremsweg
         public static Length BrakingDistance(Speed speed, Acceleration brakingDeceleration)

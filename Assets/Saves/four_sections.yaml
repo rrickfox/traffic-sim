@@ -10,7 +10,7 @@ edges:
               control: {x: 0, y: 40}
               end: {x: 0, y: 10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
-        incomingLanes: [[through], [through], [through]]
+        incomingLanes: [[leftTurn], [through], [rightTurn]]
     #   |   |
     # --+---+--
     #   |   |
@@ -58,7 +58,7 @@ edges:
               control: {x: 450, y: 40}
               end: {x: 450, y: 10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
-        incomingLanes: [[through], [through], [through]]
+        incomingLanes: [[leftTurn], [through], [rightTurn]]
     #   |   |
     # --+---+--
     #   |   |

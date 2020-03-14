@@ -18,8 +18,9 @@ namespace DataTypes
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
 
-        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex interSection)
+        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex interSection, LightState start)
         {
+            state = start;
             _redToGreen = frequencies[LightState.Red];
             _yellowToRed = frequencies[LightState.Yellow];
             _greenToYellow = frequencies[LightState.Green];
@@ -29,8 +30,9 @@ namespace DataTypes
             _publisher.Subscribe(ChangeState);
         }
         
-        public TrafficLight(int red, int yellow, int green, Vertex interSection)
+        public TrafficLight(int red, int yellow, int green, Vertex interSection, LightState start)
         {
+            state = start;
             _redToGreen = red;
             _yellowToRed = yellow;
             _greenToYellow = green;

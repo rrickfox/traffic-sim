@@ -12,7 +12,7 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
-        public static TypePublisher typePublisher { get; } = new TypePublisher();
+        public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher);
         public override GameObject prefab { get; } = CAR_PREFAB;
 
         public ISortableListNode previous { get; set; }
@@ -24,7 +24,7 @@ namespace DataTypes
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -65,7 +65,10 @@ namespace DataTypes
             {
                 acceleration = TrafficLightDriver.LightAcceleration(this);
             }
-            acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+            else
+            {
+                acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+            }
         }
 
         // Returns the Car in front of the current Car

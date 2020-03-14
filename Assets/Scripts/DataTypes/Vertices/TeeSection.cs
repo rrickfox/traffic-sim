@@ -16,13 +16,13 @@ namespace DataTypes
             : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.light = new TrafficLight(lightFrequencies, this);
+            _throughOrRight.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.light = new TrafficLight(lightFrequencies, this);
+            _throughOrLeft.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _leftOrRight = leftOrRight;
             // calculates cycles based on perpendicular street
             _leftOrRight.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this);
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
         }
 
         // returns necessary lane to go from an edge to another edge

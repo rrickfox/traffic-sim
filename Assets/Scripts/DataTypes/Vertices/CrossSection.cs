@@ -23,15 +23,15 @@ namespace DataTypes
         private Vector2 center;
         
         public CrossSection(Edge up, Edge right, Edge down, Edge left
-            , Dictionary<TrafficLight.LightState, int> lightFreqencies)
+            , Dictionary<TrafficLight.LightState, int> lightFrequencies)
             : base(up, right, down, left)
         {
             _up = up;
-            _up.other.light = new TrafficLight(lightFreqencies, this);
+            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _right = right;
             // calculates cycles based on perpendicular street
-            _right.other.light = new TrafficLight(lightFreqencies[TrafficLight.LightState.Yellow] + lightFreqencies[TrafficLight.LightState.Green]
-                , lightFreqencies[TrafficLight.LightState.Yellow], lightFreqencies[TrafficLight.LightState.Red] - lightFreqencies[TrafficLight.LightState.Yellow], this);
+            _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
             _down = down;
             _down.other.light = _up.other.light;
             _left = left;

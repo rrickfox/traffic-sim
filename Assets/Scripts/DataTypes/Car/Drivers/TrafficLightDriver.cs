@@ -8,10 +8,15 @@ namespace DataTypes.Drivers
     {
         public static Acceleration LightAcceleration(Car myCar)
         {
-            var acceleration = SimulateHumanness(myCar);
+           // var acceleration = SimulateHumanness(myCar);
+            var acceleration = Acceleration.Zero;
 
             if (myCar.track.light != null)
             {
+                var brakingDeceleration = Formulas.BrakingDeceleration(myCar.speed,
+                    myCar.track.length - myCar.positionOnRoad + myCar.length / 2 -
+                    CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength());
+                
                 switch (myCar.track.light.state)
                 {
                     case TrafficLight.LightState.Green:
@@ -21,26 +26,21 @@ namespace DataTypes.Drivers
                     }
                     case TrafficLight.LightState.Yellow:
                     {
-                        if (Formulas.BrakingDeceleration(myCar.speed
-                                , myCar.track.length - myCar.positionOnRoad - myCar.length)
-                            > myCar.maxBrakingDeceleration)
+                        if (brakingDeceleration > myCar.maxBrakingDeceleration)
                         {
                             acceleration += myCar.maxAcceleration;
                             break;
                         }
-                        acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad - myCar.length);
+                        acceleration = brakingDeceleration;
                         break;
                     }
                     case TrafficLight.LightState.Red:
                     {
-                        acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad - myCar.length);
+                        acceleration = brakingDeceleration;
                         break;
                     }
                 }
             }
-            acceleration += myCar.maxAcceleration;
             return acceleration;
         }
 

@@ -96,25 +96,29 @@ namespace DataTypes
             if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
-                if(track is SectionTrack)
+                switch (track)
                 {
-                    track.cars.Remove(this);
-                    segment = route.PopAt(0);
-                    track = segment.edge;
-                    track.cars.AddFirst(this);
-                } else if (track is Edge) // could also be standard else
-                {
-                    track.cars.Remove(this);
-                    try
-                    {
-                        track = segment.edge.other.vertex.routes[segment][(int) lane];
-                    } catch
-                    {
-                        Debug.LogWarning("Car tried to take route it cannot reach.");
+                    case SectionTrack _:
                         track.cars.Remove(this);
-                        segment.edge.other.vertex.carsToRemove.Add(this);
-                    }
-                    track.cars.AddFirst(this);
+                        segment = route.PopAt(0);
+                        track = segment.edge;
+                        track.cars.AddFirst(this);
+                        break;
+
+                    case Edge _:
+                        track.cars.Remove(this);
+                        try
+                        {
+                            track = segment.edge.other.vertex.routes[segment][(int) lane];
+                        }
+                        catch
+                        {
+                            Debug.LogWarning("Car tried to take route it cannot reach.");
+                            track.cars.Remove(this);
+                            segment.edge.other.vertex.carsToRemove.Add(this);
+                        }
+                        track.cars.AddFirst(this);
+                        break;
                 }
             }
         }

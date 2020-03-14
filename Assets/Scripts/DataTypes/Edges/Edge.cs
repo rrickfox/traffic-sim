@@ -25,7 +25,7 @@ namespace DataTypes
         protected bool display { get; }
 
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
-        
+
         public Edge(Speed velocity, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
             speedLimit = velocity;
@@ -34,7 +34,7 @@ namespace DataTypes
             other = new Edge(this, velocity, incomingLanes);
             this.display = true;
             Display();
-            
+
             InitializeSubscriptions();
         }
 
@@ -46,7 +46,7 @@ namespace DataTypes
             this.speedLimit = velocity;
             this.shape = other.shape.Inverse();
             this.display = false;
-            
+
             InitializeSubscriptions();
         }
 
@@ -117,14 +117,14 @@ namespace DataTypes
                 uvs.Add(new Vector2(0f, relativePos));
                 uvs.Add(new Vector2(1f, relativePos));
             }
-            
+
             var triangles =
                 Enumerable.Range(0, shape.points.Length - 1)
                 .Select(i => 4 * i)
                 .Aggregate(
                     Enumerable.Empty<int>(),
                     // create Triangles from one point to the next
-                    (ints, i) => ints.Concat(new []{i, i + 4, i + 1, i + 1, i + 4, i + 5, // middle triangles
+                    (ints, i) => ints.Concat(new[]{i, i + 4, i + 1, i + 1, i + 4, i + 5, // middle triangles
                         i + 2, i + 6, i, i, i + 6, i + 4, // left side
                         i + 1, i + 5, i + 3, i + 3, i + 5, i + 7}) // right side
                 );
@@ -136,7 +136,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt((float) length.Meters / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt((float)length.Meters / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 
@@ -169,16 +169,16 @@ namespace DataTypes
 
             var colorsWithLine = GetColorRow(true).ToArray();
             var colorsWithoutLine = GetColorRow(false).ToArray();
-            
-            for(var y = 0; y < textureHeight; y++)
+
+            for (var y = 0; y < textureHeight; y++)
             {
-                for(var x = 0; x < textureWidth; x++)
+                for (var x = 0; x < textureWidth; x++)
                 {
                     texture.SetPixel(
                         x: x,
                         y: y,
                         // check whether y is above oder below the line segment in the middle of the texture
-                        color: y < (LINE_RATIO / 2) * heightMultiplier || y >= (LINE_RATIO / 2 + 1) * heightMultiplier 
+                        color: y < (LINE_RATIO / 2) * heightMultiplier || y >= (LINE_RATIO / 2 + 1) * heightMultiplier
                             ? colorsWithoutLine[x]
                             : colorsWithLine[x]
                     );
@@ -192,21 +192,21 @@ namespace DataTypes
 
         private IEnumerable<Color> GetColorRow(bool lines)
         {
-            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER_ROAD));
-            
+            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int)(width * WIDTH_MULTIPLIER_ROAD));
+
             IEnumerable<Color> GetLanesColorRow(int laneCount)
             {
-                for(var j = 0; j < laneCount; j++)
+                for (var j = 0; j < laneCount; j++)
                 {
-                    if(j > 0)
-                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
+                    if (j > 0)
+                        for (var i = 0; i < (int)(LINE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                             yield return lines ? COLORS.LINE : COLORS.ROAD;
-                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
+                    for (var i = 0; i < (int)(LANE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                         yield return COLORS.ROAD;
                 }
             }
-            
-            foreach(var color in
+
+            foreach (var color in
                 RepeatWidth(ROAD_HEIGHT, COLORS.ROAD) // left side
                 .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // left border
                 .Concat(GetLanesColorRow(incomingLanes.Count)) // incoming lanes

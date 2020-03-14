@@ -23,6 +23,7 @@ namespace Interface
         // Update is called once per frame
         private void Update()
         {
+            // if freeCam is following a car, then display the stats otherwise not
             if (_freeCam._following)
             {
                 if (!_visible)
@@ -38,10 +39,9 @@ namespace Interface
                 panel.SetActive(false);
             }
 
+            // display speed of car
             if (_visible)
-            {
-                speedText.text = Mathf.Round((float)_car.speed.MetersPerSecond * 10) / 10f + " m/s";
-            }
+                speedText.text = Mathf.Round((float) _car.speed.KilometersPerHour * 10) / 10f + " km/h";
         }
     }
 }

@@ -18,6 +18,7 @@ namespace Saves
 
         public SimulationManager simulationManager;
 
+        // load a path from file browser, unload loaded scene
         public void LoadPath()
         {
             paths = StandaloneFileBrowser.OpenFilePanel("Open Simulation File", "", extension, false);
@@ -30,6 +31,7 @@ namespace Saves
             simulationManager.SwitchToSimulation();
         }
 
+        // unloads the current scene by delating the simulation gameobject with all his temporary childs
         private void Unload()
         {
             UpdatePublisher.ResetPublisher();
@@ -38,6 +40,7 @@ namespace Saves
             simulation.name = "Simulation";
         }
 
+        // load a yaml-file
         public void Load(string pathName)
         {
             var file = File.OpenText(pathName);

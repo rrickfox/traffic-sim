@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes.Drivers;
@@ -17,11 +18,11 @@ namespace DataTypes
 
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
-        
+
         public ITrack track;
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
-        
+
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
@@ -48,7 +49,7 @@ namespace DataTypes
             gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 
             UpdatePosition();
-            
+
             // subscribe to updates
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(Drive);
@@ -64,27 +65,27 @@ namespace DataTypes
         {
             // switch lanes
             // TODO: don't warp the cars
-            if (! laneTypes.Contains(segment.laneType))
+            if (!laneTypes.Contains(segment.laneType))
             {
                 switch (segment.laneType)
                 {
                     case LaneType.LeftTurn:
                         lane--;
                         break;
-                    
+
                     case LaneType.Through:
                         if (lane < 1)
                             lane++;
                         else
                             lane--;
                         break;
-                    
+
                     case LaneType.RightTurn:
                         lane++;
                         break;
                 }
             }
-            
+
             var frontCar = GetFrontCar();
             if (frontCar == null && track.light != null)
             {
@@ -119,13 +120,13 @@ namespace DataTypes
             {
                 speed = newSpeed;
             }
-            
+
             positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
-            
+
             UpdatePosition();
-            
+
             // if car is at end of RouteSegment, get next routeSegment if there is one
-            if(positionOnRoad >= track.length && route.Count > 0)
+            if (positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
                 switch (track)

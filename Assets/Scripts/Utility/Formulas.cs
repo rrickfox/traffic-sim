@@ -14,7 +14,7 @@ namespace Utility
             => TimeSpan.FromSeconds(timeUnits * CONSTANTS.TIME_UNIT);
 
         public static float ToDistanceUnits(this Length length)
-            => (float) length.Meters * CONSTANTS.DISTANCE_UNIT;
+            => (float) length.Meters / CONSTANTS.DISTANCE_UNIT;
 
         public static Length DistanceUnitsToLength(this float distanceUnits)
             => Length.FromMeters(distanceUnits * CONSTANTS.DISTANCE_UNIT);

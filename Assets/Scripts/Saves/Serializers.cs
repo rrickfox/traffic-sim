@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using DataTypes;
 using MoreLinq;
 using UnitsNet;
 using UnitsNet.Units;
 using UnityEngine;
 using Utility;
-using static Utility.CONSTANTS;
 
 namespace Saves
 {
@@ -30,7 +30,7 @@ namespace Saves
                     .Select(kvp => new KeyValuePair<int, DataTypes.Edge>(kvp.Key, kvp.Value.Deserialize()))
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
-
+        
         public class Edge
         {
             public int speedLimit { get; set; }
@@ -46,13 +46,13 @@ namespace Saves
                     incomingLanes.Deserialize()
                 );
         }
-
+        
         public class Shape : List<BezierCurve>
         {
             public DataTypes.RoadShape Deserialize()
                 => new DataTypes.RoadShape(this.Select(curve => curve.Deserialize()).ToList());
         }
-
+        
         public class BezierCurve
         {
             public Point2D start { get; set; }
@@ -62,7 +62,7 @@ namespace Saves
             public DataTypes.BezierCurve Deserialize()
                 => new DataTypes.BezierCurve(start.Deserialize(), control.Deserialize(), end.Deserialize());
         }
-
+        
         public class Point2D
         {
             public float x { get; set; }
@@ -70,30 +70,30 @@ namespace Saves
 
             public Vector2 Deserialize() => new Vector2(x, y);
         }
-
+        
         public class Lanes : List<Lane>
         {
             public List<DataTypes.Lane> Deserialize()
                 => this.Select(lane => lane.Deserialize()).ToList();
         }
-
+        
         public class Lane : HashSet<DataTypes.LaneType>
         {
             public DataTypes.Lane Deserialize() => new DataTypes.Lane(this.ToHashSet());
         }
-
+        
         public class Vertices : List<IVertex<DataTypes.Vertex>>
         {
             public List<DataTypes.Vertex> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
                 => this.Select(vertex => vertex.Deserialize(verticesLookup)).ToList();
         }
-
+        
         public interface IVertex<out TDeserialized>
             where TDeserialized : DataTypes.Vertex
         {
             TDeserialized Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup);
         }
-
+        
         public class EndPoint : IVertex<DataTypes.EndPoint>
         {
             public string edge { get; set; }
@@ -129,7 +129,7 @@ namespace Saves
         {
             public DataTypes.Frequencies Deserialize() => new DataTypes.Frequencies(ToArray());
         }
-
+        
         public class Weights : Dictionary<string, int>
         {
             public Dictionary<DataTypes.Edge, int> Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
@@ -162,6 +162,7 @@ namespace Saves
             public string throughOrRight { get; set; }
             public string throughOrLeft { get; set; }
             public string leftOrRight { get; set; }
+            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
 
             public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -201,9 +202,10 @@ namespace Saves
                     }
                     actualEdges.Add(edge.Key, actualEdge);
                 }
-
+                
                 return new DataTypes.TeeSection(actualEdges["throughOrRight"]
-                    , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]);
+                    , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]
+                    , throughFrequency);
             }
         }
         
@@ -213,6 +215,7 @@ namespace Saves
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
+            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -252,9 +255,10 @@ namespace Saves
                     }
                     actualEdges.Add(edge.Key, actualEdge);
                 }
-
+                
                 return new DataTypes.CrossSection(actualEdges["up"]
-                    , actualEdges["right"], actualEdges["down"], actualEdges["left"]);
+                    , actualEdges["right"], actualEdges["down"], actualEdges["left"]
+                    , upDownFrequency);
             }
         }
     }

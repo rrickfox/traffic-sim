@@ -12,13 +12,13 @@ namespace DataTypes
     public class Edge : GameObjectData, ITrack
     {
         public override GameObject prefab { get; } = ROAD_PREFAB;
-        
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
         public SortableLinkedList<Car> cars { get; } = new SortableLinkedList<Car>(new CarComparer()); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
+        public TrafficLight light { get; set; }
         public RoadShape shape { get; protected set; }
         public Length length => shape.length;
         public Speed speedLimit { get; private set; } // maximum speed of cars

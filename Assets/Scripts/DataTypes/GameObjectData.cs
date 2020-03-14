@@ -1,6 +1,5 @@
 using Events;
 using UnityEngine;
-using static Utility.CONSTANTS;
 
 namespace DataTypes
 {

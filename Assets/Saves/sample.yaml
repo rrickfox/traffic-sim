@@ -96,11 +96,11 @@ vertices:
       2a : 1
       3a : 1
   - !crosssection
-    up:
-      1b
-    right:
-      2b
-    down:
-      3b
-    left:
-      4b
+    upDownFrequency: 
+        red: 500
+        yellow: 30
+        green: 200
+    up: 1b
+    right: 2b
+    down: 3b
+    left: 4b

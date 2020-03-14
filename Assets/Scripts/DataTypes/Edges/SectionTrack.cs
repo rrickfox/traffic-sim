@@ -13,6 +13,8 @@ namespace DataTypes
         // TODO: calculate accordingly
         public Speed speedLimit { get; } = Speed.FromKilometersPerHour(50);
 
+        public TrafficLight light { get; set; }
+
         public SectionTrack(Vertex vertex, RoadShape shape)
         {
             this.vertex = vertex;

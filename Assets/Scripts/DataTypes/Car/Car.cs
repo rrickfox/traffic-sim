@@ -42,7 +42,7 @@ namespace DataTypes
             track.cars.AddFirst(this);
             this.lane = lane;
             // set starting speed to half of the speed limit
-            speed = 0.5 * track.speedLimit;
+            speed = 0.1 * track.speedLimit;
 
             // give car a random color
             gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();

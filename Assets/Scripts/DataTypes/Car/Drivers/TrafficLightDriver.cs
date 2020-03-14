@@ -8,7 +8,6 @@ namespace DataTypes.Drivers
     {
         public static Acceleration LightAcceleration(Car myCar)
         {
-            //var acceleration = SimulateHumanness(myCar);
             var acceleration = Acceleration.Zero;
 
             if (myCar.track.light != null)
@@ -46,11 +45,5 @@ namespace DataTypes.Drivers
             }
             return acceleration;
         }
-
-        // Add an aspect of randomness to the car's behaviour
-        private static Acceleration SimulateHumanness(Car myCar)
-            => Random.value * 1000000 < 1
-                ? - Acceleration.FromMetersPerSecondSquared(myCar.speed.MetersPerSecond / 3)
-                : Acceleration.Zero;
     }
 }

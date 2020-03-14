@@ -29,12 +29,12 @@ namespace DataTypes
         public Length length { get; } = Length.FromMeters(5);
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
-        public float lane { get; private set; } = 0;
-        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[(int) lane].types;
+        public int lane { get; private set; } = 0;
+        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[lane].types;
         public Speed speed { get; private set; }
         public Acceleration acceleration { get; private set; }
 
-        public Car(float lane, List<RouteSegment> route)
+        public Car(int lane, List<RouteSegment> route)
         {
             this.route = route;
             segment = route.PopAt(0);
@@ -134,7 +134,7 @@ namespace DataTypes
                         track.cars.Remove(this);
                         try
                         {
-                            track = segment.edge.other.vertex.routes[segment][(int) lane];
+                            track = segment.edge.other.vertex.routes[segment][lane];
                         }
                         catch
                         {

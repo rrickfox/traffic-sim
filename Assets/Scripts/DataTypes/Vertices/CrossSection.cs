@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -18,16 +19,19 @@ namespace DataTypes
         private Edge _right { get; }
         private Edge _down { get; }
         private Edge _left { get; }
+        
         private Vector2 center;
         
-        public CrossSection(Edge up, Edge right, Edge down, Edge left, int red, int yellow, int green)
+        public CrossSection(Edge up, Edge right, Edge down, Edge left
+            , Dictionary<TrafficLight.LightState, int> lightFreqencies)
             : base(up, right, down, left)
         {
             _up = up;
-            _up.other.light = new TrafficLight(red, yellow, green, this);
+            _up.other.light = new TrafficLight(lightFreqencies, this);
             _right = right;
             // calculates cycles based on perpendicular street
-            _right.other.light = new TrafficLight(yellow + green, yellow, red - yellow, this);
+            _right.other.light = new TrafficLight(lightFreqencies[TrafficLight.LightState.Yellow] + lightFreqencies[TrafficLight.LightState.Green]
+                , lightFreqencies[TrafficLight.LightState.Yellow], lightFreqencies[TrafficLight.LightState.Red] - lightFreqencies[TrafficLight.LightState.Yellow], this);
             _down = down;
             _down.other.light = _up.other.light;
             _left = left;

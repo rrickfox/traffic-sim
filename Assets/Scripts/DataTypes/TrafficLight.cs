@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Events;
 using UnityEngine;
 using Utility;
@@ -17,6 +18,17 @@ namespace DataTypes
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
 
+        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex interSection)
+        {
+            _redToGreen = frequencies[LightState.Red];
+            _yellowToRed = frequencies[LightState.Yellow];
+            _greenToYellow = frequencies[LightState.Green];
+            _section = interSection;
+            
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(ChangeState);
+        }
+        
         public TrafficLight(int red, int yellow, int green, Vertex interSection)
         {
             _redToGreen = red;
@@ -27,7 +39,7 @@ namespace DataTypes
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(ChangeState);
         }
-        
+
         // counts ticks and compares to given length of each traffic light cycle
         // changes state accordingly and resets counter
         public void ChangeState()

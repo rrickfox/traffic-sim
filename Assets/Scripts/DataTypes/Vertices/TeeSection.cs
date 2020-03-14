@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Utility;
 using UnityEngine;
 
@@ -11,16 +12,17 @@ namespace DataTypes
         private Edge _throughOrLeft { get; }
         private Edge _leftOrRight { get; }
         
-        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, int red, int yellow, int green)
+        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, Dictionary<TrafficLight.LightState, int> lightFrequencies)
             : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.light = new TrafficLight(red, yellow, green, this);
+            _throughOrRight.light = new TrafficLight(lightFrequencies, this);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.light = new TrafficLight(red, yellow, green, this);
+            _throughOrLeft.light = new TrafficLight(lightFrequencies, this);
             _leftOrRight = leftOrRight;
             // calculates cycles based on perpendicular street
-            _leftOrRight.light = new TrafficLight(yellow + green, yellow, red - yellow, this);
+            _leftOrRight.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this);
         }
 
         // returns necessary lane to go from an edge to another edge

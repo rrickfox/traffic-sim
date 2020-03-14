@@ -201,8 +201,7 @@ namespace Saves
                 
                 return new DataTypes.TeeSection(actualEdges["throughOrRight"]
                     , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]
-                    , throughFrequency[TrafficLight.LightState.Red], throughFrequency[TrafficLight.LightState.Yellow]
-                    , throughFrequency[TrafficLight.LightState.Green]);
+                    , throughFrequency);
             }
         }
         
@@ -212,7 +211,7 @@ namespace Saves
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
-            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
+            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -255,8 +254,7 @@ namespace Saves
                 
                 return new DataTypes.CrossSection(actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]
-                    , upDownFrequency[TrafficLight.LightState.Red], upDownFrequency[TrafficLight.LightState.Yellow]
-                    , upDownFrequency[TrafficLight.LightState.Green]);
+                    , throughFrequency);
             }
         }
     }

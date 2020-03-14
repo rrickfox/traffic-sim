@@ -21,9 +21,9 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; protected set; }
         public Length length => shape.length;
-        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(60); // maximum speed of cars
         protected bool display { get; }
-        
+
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
         public Edge(RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
@@ -134,7 +134,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length.ToDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt((float) length.Meters / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 

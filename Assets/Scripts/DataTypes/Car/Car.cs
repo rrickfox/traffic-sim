@@ -45,7 +45,7 @@ namespace DataTypes
             speed = 0.1 * track.speedLimit;
 
             // give car a random color
-            gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+            gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 
             UpdatePosition();
             

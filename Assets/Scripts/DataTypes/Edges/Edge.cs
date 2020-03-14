@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Events;
+using UnitsNet;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -9,22 +11,30 @@ namespace DataTypes
     // represents what you can tell about a road if you were to stand at one of its endpoints
     public class Edge : GameObjectData, ITrack
     {
+        public override GameObject prefab { get; } = ROAD_PREFAB;
+        
         public RoadPoint originPoint => shape.points[0];
         public Vertex vertex = null; // the Vertex from which this edge originates
         public Edge other { get; } // represents how the road would look like from its other endpoint
-        public List<Car> cars { get; } = new List<Car>(); // the cars on the outgoing side of the road
+        public SortableLinkedList<Car> cars { get; } = new SortableLinkedList<Car>(new CarComparer()); // the cars on the outgoing side of the road
         public List<Lane> outgoingLanes { get; }
         public List<Lane> incomingLanes => other.outgoingLanes;
-        public RoadShape shape { get; }
-        public float length => shape.length;
+        public RoadShape shape { get; protected set; }
+        public Length length => shape.length;
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
+        protected bool display { get; }
         
-        public Edge(GameObject prefab, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes) : base(prefab)
+        public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
+        
+        public Edge(RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
             other = new Edge(this, incomingLanes);
-
+            this.display = true;
             Display();
+            
+            InitializeSubscriptions();
         }
 
         // construct an Edge where other is already constructed
@@ -33,9 +43,29 @@ namespace DataTypes
             this.other = other;
             this.outgoingLanes = outgoingLanes;
             this.shape = other.shape.Inverse();
+            this.display = false;
+            
+            InitializeSubscriptions();
         }
 
-        private void Display()
+        private void InitializeSubscriptions()
+        {
+            _publisher = new ObjectPublisher(typePublisher);
+            _publisher.Subscribe(cars.Sort);
+        }
+
+        // change origin point and update other edge
+        public void UpdateOriginPoint(Vector2 newOriginPoint)
+        {
+            shape.UpdateOrigin(newOriginPoint);
+            other.shape = shape.Inverse();
+            if (display)
+                Display();
+            else
+                other.Display();
+        }
+
+        protected void Display()
         {
             var meshVertices = new List<Vector3>();
             var uvs = new List<Vector2>();
@@ -49,13 +79,15 @@ namespace DataTypes
 
             var leftOffset = LANE_WIDTH * incomingLanes.Count
                 + LINE_WIDTH * lineCountIncoming
-                + MIDDLE_LINE_WIDTH / 2
-                + BORDER_LINE_WIDTH;
+                + MIDDLE_LINE_WIDTH / 2f
+                + BORDER_LINE_WIDTH
+                - ((incomingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
 
             var rightOffset = LANE_WIDTH * outgoingLanes.Count
                 + LINE_WIDTH * lineCountOutgoing
-                + MIDDLE_LINE_WIDTH / 2
-                + BORDER_LINE_WIDTH;
+                + MIDDLE_LINE_WIDTH / 2f
+                + BORDER_LINE_WIDTH
+                - ((outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
 
             for (var i = 0; i < shape.points.Length; i++)
             {
@@ -72,7 +104,7 @@ namespace DataTypes
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);
                 var relativeInnerPos = ROAD_HEIGHT / (
-                    MIDDLE_LINE_WIDTH // middle line
+                    ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
                     + 2 * ROAD_HEIGHT // sides
                     + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
@@ -85,7 +117,7 @@ namespace DataTypes
             }
             
             var triangles =
-                Enumerable.Range(0, shape.points.Length - 4)
+                Enumerable.Range(0, shape.points.Length - 1)
                 .Select(i => 4 * i)
                 .Aggregate(
                     Enumerable.Empty<int>(),
@@ -102,7 +134,7 @@ namespace DataTypes
                 triangles = triangles.ToArray(),
                 uv = uvs.ToArray()
             };
-            var tiling = Mathf.RoundToInt(shape.length * DISTANCE_UNIT / LINE_LENGTH);
+            var tiling = Mathf.RoundToInt(shape.length.ToDistanceUnits() * DISTANCE_UNIT / LINE_LENGTH);
 
             var texture = GetTexture(tiling);
 
@@ -122,8 +154,8 @@ namespace DataTypes
             // texture contains (left to right):
             // border, road and lines, middle, road and lines, border
             var textureWidth = Mathf.RoundToInt(
-                WIDTH_MULTIPLIER * (
-                    MIDDLE_LINE_WIDTH // middle line
+                WIDTH_MULTIPLIER_ROAD * (
+                    ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
                     + 2 * BORDER_LINE_WIDTH // borders
                     + 2 * ROAD_HEIGHT // sides
                     + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
@@ -158,16 +190,16 @@ namespace DataTypes
 
         private IEnumerable<Color> GetColorRow(bool lines)
         {
-            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER));
+            IEnumerable<Color> RepeatWidth(float width, Color color) => Enumerable.Repeat(color, (int) (width * WIDTH_MULTIPLIER_ROAD));
             
             IEnumerable<Color> GetLanesColorRow(int laneCount)
             {
                 for(var j = 0; j < laneCount; j++)
                 {
                     if(j > 0)
-                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER); i++)
+                        for(var i = 0; i < (int) (LINE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                             yield return lines ? COLORS.LINE : COLORS.ROAD;
-                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER); i++)
+                    for(var i = 0; i < (int) (LANE_WIDTH * WIDTH_MULTIPLIER_ROAD); i++)
                         yield return COLORS.ROAD;
                 }
             }
@@ -184,11 +216,11 @@ namespace DataTypes
         }
 
         // retrieves position and forward vector of car on road when given relative position on road and lane 
-        public RoadPoint GetAbsolutePosition(float positionOnRoad, float lane)
+        public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane)
         {
             // get first estimation of position from saved array of points
-            positionOnRoad = Mathf.Clamp(positionOnRoad, 0, length);
-            var index = Mathf.RoundToInt(positionOnRoad);
+            var unityPositionOnRoad = Mathf.Clamp(positionOnRoad.ToDistanceUnits(), 0, length.ToDistanceUnits());
+            var index = Mathf.RoundToInt(unityPositionOnRoad);
             var absolutePosition = shape.points[index];
 
             // set offset to the right to accommodate different lanes

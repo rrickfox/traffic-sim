@@ -1,18 +1,21 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using UnityEngine;
+using Events;
 
 namespace DataTypes
 {
     public abstract class Vertex : GameObjectData
     {
         public ImmutableArray<Edge> edges { get; private set; }
+        public Dictionary<RouteSegment, Dictionary<int, SectionTrack>> routes { get; set; }
+        public HashSet<Car> carsToRemove = new HashSet<Car>();
+        // updates only happen after all car updates
+        public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
         
         protected Vertex(IEnumerable<Edge> edges) => SetEdges(edges);
-        protected Vertex(GameObject prefab, IEnumerable<Edge> edges) : base(prefab) => SetEdges(edges);
         // constructor aliases that use a variable amount of parameters instead of an enumerable
         protected Vertex(params Edge[] edges) : this(edges.ToImmutableArray()) { }
-        protected Vertex(GameObject prefab, params Edge[] edges) : this(prefab, edges.ToImmutableArray()) { }
         
         private void SetEdges(IEnumerable<Edge> edges)
         {
@@ -21,6 +24,15 @@ namespace DataTypes
             {
                 edge.vertex = this;
             }
+        }
+
+        protected void DeleteCars()
+        {
+            foreach(var car in carsToRemove)
+            {
+                car.Dispose();
+            }
+            carsToRemove.Clear();
         }
 
         public abstract LaneType SubRoute(Edge comingFrom, Edge to);

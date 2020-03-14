@@ -5,12 +5,14 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
+        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+
         private Edge _throughOrRight { get; }
         private Edge _throughOrLeft { get; }
         private Edge _leftOrRight { get; }
 
-        public TeeSection(GameObject prefab, Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
-            : base(prefab, throughOrRight, throughOrLeft, leftOrRight)
+        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight)
+            : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
             _throughOrLeft = throughOrLeft;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using DataTypes;
 using MoreLinq.Extensions;
+using UnitsNet;
 using Utility;
 
 namespace Pathfinding
@@ -26,9 +27,9 @@ namespace Pathfinding
             new ConditionalWeakTable<Vertex, VertexExtensionsData>();
 
         // distance value relative to start point of pathfinding
-        private static float? GetPathDistance(this Vertex self)
+        private static Length? GetPathDistance(this Vertex self)
             => _DATA.GetOrCreateValue(self).pathDistance;
-        private static void SetPathDistance(this Vertex self, float? value)
+        private static void SetPathDistance(this Vertex self, Length? value)
             => _DATA.GetOrCreateValue(self).pathDistance = value;
         
         // current candidate for predecessor in path
@@ -59,7 +60,7 @@ namespace Pathfinding
         public static void FindPath(this EndPoint self, EndPoint end, ICollection<Vertex> vertices)
         {
             var tempVertices = vertices.ToHashSet();
-            self.SetPathDistance(0);
+            self.SetPathDistance(Length.Zero);
 
             // calculates pathDistance and corresponding previousVertex for entire graph
             while (tempVertices.Any(v => v.GetPathDistance() != null))
@@ -100,10 +101,10 @@ namespace Pathfinding
                 vertexPath.Skip(1),
                 vertexPath.Skip(2),
                 (v1, v2, v3) =>
-                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
+                    new RouteSegment(edge: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
             ).ToList();
             path.Add(new RouteSegment(
-                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                edge: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
                 laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
             ));
             return path;
@@ -112,7 +113,7 @@ namespace Pathfinding
     
     public class VertexExtensionsData
     {
-        public float? pathDistance; // distance value relative to start point of pathfinding
+        public Length? pathDistance; // distance value relative to start point of pathfinding
         public Vertex previousVertex; // current candidate for predecessor in path
     }
 }

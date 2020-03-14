@@ -1,8 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
 using static Utility.COLORS;
-using System.Collections.Generic;
 using System.Linq;
 using System;
 using Events;
@@ -18,15 +18,23 @@ namespace DataTypes
         private Edge _right { get; }
         private Edge _down { get; }
         private Edge _left { get; }
+        
         private Vector2 center;
-
-        public CrossSection(Edge up, Edge right, Edge down, Edge left)
+        
+        public CrossSection(Edge up, Edge right, Edge down, Edge left
+            , Dictionary<TrafficLight.LightState, int> lightFrequencies)
             : base(up, right, down, left)
         {
             _up = up;
+            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _right = right;
+            // calculates cycles based on perpendicular street
+            _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
             _down = down;
+            _down.other.light = _up.other.light;
             _left = left;
+            _left.other.light = _right.other.light;
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();
             routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
@@ -38,7 +46,6 @@ namespace DataTypes
             // ShowTracks();
 
             _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(DeleteCars);
         }
 
         public void ShowTracks()

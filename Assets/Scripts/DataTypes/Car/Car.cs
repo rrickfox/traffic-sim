@@ -13,7 +13,7 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
-        public static TypePublisher typePublisher { get; } = new TypePublisher();
+        public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher);
         public override GameObject prefab { get; } = CAR_PREFAB;
 
         public ISortableListNode previous { get; set; }
@@ -24,8 +24,8 @@ namespace DataTypes
         public RouteSegment segment { get; private set; }
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4f);
-        public Acceleration maxBrakingDeceleration { get; } = - Acceleration.FromMetersPerSecondSquared(10f);
+        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -43,7 +43,7 @@ namespace DataTypes
             this.lane = lane;
 
             // give car a random color
-            gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+            gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 
             UpdatePosition();
             
@@ -62,7 +62,14 @@ namespace DataTypes
         {
             // TODO: figure out what state the car is in
             var frontCar = GetFrontCar();
-            acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+            if (frontCar == null && track.light != null)
+            {
+                acceleration = TrafficLightDriver.LightAcceleration(this);
+            }
+            else
+            {
+                acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+            }
         }
 
         // Returns the Car in front of the current Car
@@ -71,8 +78,25 @@ namespace DataTypes
 
         private void ExecuteMove()
         {
-            speed += acceleration.Times(TimeSpan.FromSeconds(1));
-            positionOnRoad += speed * TimeSpan.FromSeconds(1);
+            var newSpeed = speed + acceleration.Times(Formulas.TimeUnitsToTimeSpan(1));
+            if (newSpeed > track.speedLimit)
+            {
+                // enforce the speed limit
+                speed = track.speedLimit;
+                // acceleration = Acceleration.Zero;
+            }
+            else if (newSpeed.MetersPerSecond <= 0)
+            {
+                // ensure that the car does not drive backwards
+                speed = Speed.Zero;
+                acceleration = Acceleration.Zero;
+            }
+            else
+            {
+                speed = newSpeed;
+            }
+            
+            positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
             
             UpdatePosition();
             
@@ -96,9 +120,9 @@ namespace DataTypes
                     {
                         Debug.LogWarning("Car tried to take route it cannot reach.");
                         track.cars.Remove(this);
-                        segment.edge.other.vertex.carsToRemove.Add(this);
-                    }
-                    track.cars.AddFirst(this);
+                        track = segment.edge.other.vertex.routes[segment][lane];
+                        track.cars.AddFirst(this);
+                        break;
                 }
             }
         }

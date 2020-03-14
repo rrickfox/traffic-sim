@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace Utility
 {
@@ -58,6 +59,13 @@ namespace Utility
 
         // https://de.wikipedia.org/wiki/Bremsverz%C3%B6gerung
         public static Acceleration BrakingDeceleration(Speed speed, Length brakingDistance)
-            => -speed.Squared().DividedBy(2 * brakingDistance);
+        {
+            if (brakingDistance == Length.Zero)
+            {
+                return Acceleration.Zero;
+            }
+
+            return -speed.Squared().DividedBy(2 * brakingDistance);
+        }
     }
 }

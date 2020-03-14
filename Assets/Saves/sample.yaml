@@ -2,6 +2,7 @@
 # vertices reference an edge by an id
 edges:
   1:
+    speedLimit: 60
     shape:
       # roadShape
       # contains a list of bezierCurves
@@ -19,6 +20,7 @@ edges:
       - [through]
       - [through]
   2:
+    speedLimit: 60
     shape:
       - start: {x: 140, y: 0}
         control: {x: 75, y: 0}
@@ -32,6 +34,7 @@ edges:
       - [through]
       - [through]
   3:
+    speedLimit: 60
     shape:
       # roadShape
       # contains a list of bezierCurves
@@ -48,6 +51,7 @@ edges:
       - [through]
       - [through]
   4:
+    speedLimit: 60
     shape:
       - start: {x: -140, y: 0}
         control: {x: -75, y: 0}
@@ -92,11 +96,11 @@ vertices:
       2a : 1
       3a : 1
   - !crosssection
-    up:
-      1b
-    right:
-      2b
-    down:
-      3b
-    left:
-      4b
+    upDownFrequency: 
+        red: 500
+        yellow: 30
+        green: 200
+    up: 1b
+    right: 2b
+    down: 3b
+    left: 4b

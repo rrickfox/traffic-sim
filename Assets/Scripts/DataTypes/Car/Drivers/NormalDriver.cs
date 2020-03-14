@@ -12,30 +12,40 @@ namespace DataTypes.Drivers
             var acceleration = SimulateHumanness(myCar);
 
             if (frontCar == null)
+            {
                 acceleration += myCar.maxAcceleration;
+            }
             else
             {
                 var midpointFrontDistance = frontCar.positionOnRoad - myCar.positionOnRoad;
                 var averageLength = (myCar.length + frontCar.length) / 2;
-                if (midpointFrontDistance < averageLength)
+                var frontDistance = midpointFrontDistance - averageLength;
+
+                if (frontCar.acceleration.MetersPerSecondSquared <= 0)
                 {
-                    // TODO: handle this bet
-                    Debug.LogWarning("Cars are crashing into each other");
-                    acceleration += Random.value * myCar.maxAcceleration;
+                    acceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
+                }
+                else if (myCar.speed > frontCar.speed)
+                {
+                    // the minimal distance that is to be kept between this car and the next one
+                    var minimumDistance =
+                        1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
+                              .DividedBy(myCar.maxBrakingDeceleration)
+                        + myCar.bufferDistance;
+                    
+                    var computedAcceleration = frontCar.acceleration -
+                                               2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance)
+                                                 * (minimumDistance / frontDistance);
+                    
+                    acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
+                }
+                else if (myCar.acceleration < frontCar.acceleration)
+                {
+                    acceleration = frontCar.acceleration;
                 }
                 else
                 {
-                    var frontDistance = midpointFrontDistance - averageLength;
-                    var minimumDistance = MinimumDistance(myCar, frontCar);
-                    var computedAcceleration = frontCar.acceleration
-                                               - 2 * (myCar.speed - frontCar.speed).Squared()
-                                               .DividedBy(frontDistance)
-                                               .Times(minimumDistance + Length.FromMeters(1.5))
-                                               .DividedBy(frontDistance);
-                    // ensure that the acceleration does not exceed the maximum acceleration
-                    var minAcceleration = Formulas.Min(computedAcceleration, myCar.maxAcceleration);
-                    // ensure that the acceleration is not below zero
-                    acceleration += Formulas.Max(minAcceleration, Acceleration.Zero);
+                    acceleration = myCar.acceleration;
                 }
             }
 

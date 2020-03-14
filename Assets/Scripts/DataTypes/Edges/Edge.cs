@@ -21,16 +21,17 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; protected set; }
         public Length length => shape.length;
-        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(60); // maximum speed of cars
+        public Speed speedLimit { get; private set; } // maximum speed of cars
         protected bool display { get; }
 
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         
-        public Edge(RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
+        public Edge(Speed velocity, RoadShape shape, List<Lane> outgoingLanes, List<Lane> incomingLanes)
         {
+            speedLimit = velocity;
             this.shape = shape;
             this.outgoingLanes = outgoingLanes;
-            other = new Edge(this, incomingLanes);
+            other = new Edge(this, velocity, incomingLanes);
             this.display = true;
             Display();
             
@@ -38,10 +39,11 @@ namespace DataTypes
         }
 
         // construct an Edge where other is already constructed
-        private Edge(Edge other, List<Lane> outgoingLanes)
+        private Edge(Edge other, Speed velocity, List<Lane> outgoingLanes)
         {
             this.other = other;
             this.outgoingLanes = outgoingLanes;
+            this.speedLimit = velocity;
             this.shape = other.shape.Inverse();
             this.display = false;
             

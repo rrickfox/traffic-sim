@@ -1,5 +1,6 @@
 edges:
   1:
+    speedLimit: 60
     shape:
       - start: {x: -130, y: 0}
         control: {x: 0, y: 0}

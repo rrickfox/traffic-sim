@@ -5,6 +5,7 @@ edges:
     # --+---+--
     #   |   |
     1:
+        speedLimit: 60
         shape:
             - start: {x: 0, y: 70}
               control: {x: 0, y: 40}
@@ -17,6 +18,7 @@ edges:
     # --+ooo+--
     #   |   |
     2:
+        speedLimit: 60
         shape:
             - start: {x: 440, y: 0}
               control: {x: 200, y: 0}
@@ -29,6 +31,7 @@ edges:
     # --+---+--
     #   O   |
     3:
+        speedLimit: 60
         shape:
             - start: {x: 0, y: -70}
               control: {x: 0, y: -40}
@@ -41,6 +44,7 @@ edges:
     # oo+---+--
     #   |   |
     4:
+        speedLimit: 60
         shape:
             - start: {x: -140, y: 0}
               control: {x: -75, y: 0}
@@ -53,6 +57,7 @@ edges:
     # --+---+--
     #   |   |
     5:
+        speedLimit: 80
         shape:
             - start: {x: 450, y: 70}
               control: {x: 450, y: 40}
@@ -65,6 +70,7 @@ edges:
     # --+---+oo
     #   |   |
     6:
+        speedLimit: 80
         shape:
             - start: {x: 640, y: 0}
               control: {x: 550, y: 0}
@@ -77,6 +83,7 @@ edges:
     # --+---+--
     #   |   O
     7:
+        speedLimit: 80
         shape:
             - start: {x: 450, y: -70}
               control: {x: 450, y: -40}
@@ -89,6 +96,7 @@ edges:
     # --+---+--
     #   |   |
     8:
+        speedLimit: 80
         shape:
             - start: {x: 450, y: 150}
               control: {x: 450, y: 120}
@@ -101,6 +109,7 @@ edges:
     # --+---+--
     #   |   |
     9:
+        speedLimit: 80
         shape:
             - start: {x: 640, y: 80}
               control: {x: 550, y: 80}
@@ -113,6 +122,7 @@ edges:
     # --+---+--
     #   |   |
     10:
+        speedLimit: 80
         shape:
             - start: {x: 440, y: 80}
               control: {x: 200, y: 80}
@@ -125,6 +135,7 @@ edges:
     # --+---+--
     #   |   |
     11:
+        speedLimit: 60
         shape:
             - start: {x: 0, y: 150}
               control: {x: 0, y: 120}
@@ -137,6 +148,7 @@ edges:
     # --+---+--
     #   |   |
     12:
+        speedLimit: 60
         shape:
             - start: {x: -140, y: 80}
               control: {x: -75, y: 80}

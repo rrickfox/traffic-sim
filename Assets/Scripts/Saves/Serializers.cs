@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MoreLinq;
+using UnitsNet;
+using UnitsNet.Units;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
@@ -31,12 +33,14 @@ namespace Saves
 
         public class Edge
         {
+            public int speedLimit { get; set; }
             public Shape shape { get; set; }
             public Lanes outgoingLanes { get; set; }
             public Lanes incomingLanes { get; set; }
 
             public DataTypes.Edge Deserialize()
                 => new DataTypes.Edge(
+                    Speed.From(speedLimit, SpeedUnit.KilometerPerHour),
                     shape.Deserialize(),
                     outgoingLanes.Deserialize(),
                     incomingLanes.Deserialize()

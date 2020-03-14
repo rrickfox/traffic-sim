@@ -112,6 +112,8 @@ namespace Cameras
             {
                 transform.position = Vector3.MoveTowards(transform.position, _targetCar.position, 1000f);
             }
+            else if (_following)
+                _following = false;
         }
 
         // selects a Car with left mouse button to follow

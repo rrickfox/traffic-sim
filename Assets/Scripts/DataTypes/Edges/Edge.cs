@@ -21,7 +21,7 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public RoadShape shape { get; }
         public Length length => shape.length;
-        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(120); // maximum speed of cars
+        public Speed speedLimit { get; } = Speed.FromKilometersPerHour(60); // maximum speed of cars
         
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);
         

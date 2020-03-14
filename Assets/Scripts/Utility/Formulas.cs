@@ -7,7 +7,7 @@ namespace Utility
     public static partial class Formulas
     {
         public static float ToTimeUnits(this TimeSpan timeSpan)
-            => timeSpan.Seconds / CONSTANTS.TIME_UNIT;
+            => (float) timeSpan.TotalSeconds / CONSTANTS.TIME_UNIT;
 
         public static TimeSpan TimeUnitsToTimeSpan(this float timeUnits)
             => TimeSpan.FromSeconds(timeUnits * CONSTANTS.TIME_UNIT);
@@ -19,7 +19,7 @@ namespace Utility
             => Length.FromMeters(distanceUnits * CONSTANTS.DISTANCE_UNIT);
 
         public static Acceleration DividedBy(this Speed speed, TimeSpan timeSpan)
-            => Acceleration.FromMetersPerSecondSquared(speed.MetersPerSecond / timeSpan.Seconds);
+            => Acceleration.FromMetersPerSecondSquared(speed.MetersPerSecond / timeSpan.TotalSeconds);
         
         public static TimeSpan DividedBy(this Speed speed, Acceleration acceleration)
             => TimeSpan.FromSeconds(speed.MetersPerSecond / acceleration.MetersPerSecondSquared);
@@ -37,7 +37,7 @@ namespace Utility
             => TimeSpan.FromSeconds(length.Meters / speed.MetersPerSecond);
 
         public static Speed Times(this Acceleration acceleration, TimeSpan timeSpan)
-            => Speed.FromMetersPerSecond(acceleration.MetersPerSecondSquared * timeSpan.Seconds);
+            => Speed.FromMetersPerSecond(acceleration.MetersPerSecondSquared * timeSpan.TotalSeconds);
 
         public static SpecificEnergy Times(this Acceleration acceleration, Length length)
             => SpecificEnergy.FromJoulesPerKilogram(acceleration.MetersPerSecondSquared * length.Meters);

@@ -211,7 +211,7 @@ namespace Saves
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
-            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
+            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -254,7 +254,7 @@ namespace Saves
                 
                 return new DataTypes.CrossSection(actualEdges["up"]
                     , actualEdges["right"], actualEdges["down"], actualEdges["left"]
-                    , throughFrequency);
+                    , upDownFrequency);
             }
         }
     }

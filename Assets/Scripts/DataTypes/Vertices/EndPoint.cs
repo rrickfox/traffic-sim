@@ -17,9 +17,6 @@ namespace DataTypes
         // cumulative Probabilities of choosing a vertex to route to
         private Dictionary<Edge, int> _weights { get; }
         public Dictionary<Vertex, List<RouteSegment>> routingTable { get; } = new Dictionary<Vertex, List<RouteSegment>>();
-        
-        // updates only happen after all car updates
-        public static TypePublisher typePublisher { get; } = new TypePublisher(Car.typePublisher);
 
         public EndPoint(Edge edge, Frequencies frequencies, Dictionary<Edge, int> weights) : base(edge)
         {

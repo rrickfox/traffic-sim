@@ -25,8 +25,8 @@ namespace Utility
         public static readonly float LINE_RATIO = 2f;
         // length of line segment (line + space)
         public static readonly float LINE_LENGTH = 12f;
-        // value which determines width of texture
-        public static readonly float WIDTH_MULTIPLIER = Mathf.Pow(10, Mathf.Max(
+        // value which determines width of texture of road
+        public static readonly float WIDTH_MULTIPLIER_ROAD = Mathf.Pow(10, Mathf.Max(
             MathUtils.DecimalPlaces(MIDDLE_LINE_WIDTH), 
             MathUtils.DecimalPlaces(LINE_WIDTH), 
             MathUtils.DecimalPlaces(BORDER_LINE_WIDTH),
@@ -35,5 +35,18 @@ namespace Utility
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
         public static readonly GameObject CAR_PREFAB = Resources.Load("Car", typeof(GameObject)) as GameObject;
         public static readonly GameObject ROAD_PREFAB = Resources.Load("Road", typeof(GameObject)) as GameObject;
+        // length of buffer between stopping line and intersection
+        public static readonly float SECTION_BUFFER_LENGTH = 2f;
+        // width of stop line at intersection
+        public static readonly float STOP_LINE_WIDTH = 0.4f;
+        // value which determines width of texture of crosssection
+        public static readonly float MULTIPLIER_SECTION = Mathf.Pow(10, Mathf.Max(
+            MathUtils.DecimalPlaces(MIDDLE_LINE_WIDTH), 
+            MathUtils.DecimalPlaces(LINE_WIDTH), 
+            MathUtils.DecimalPlaces(BORDER_LINE_WIDTH),
+            MathUtils.DecimalPlaces(ROAD_HEIGHT), 
+            MathUtils.DecimalPlaces(LANE_WIDTH),
+            MathUtils.DecimalPlaces(SECTION_BUFFER_LENGTH),
+            MathUtils.DecimalPlaces(STOP_LINE_WIDTH)));
     }
 }

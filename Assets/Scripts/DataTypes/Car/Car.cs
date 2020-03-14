@@ -30,6 +30,7 @@ namespace DataTypes
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; } = 0;
+        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[(int) lane].types;
         public Speed speed { get; private set; } = Speed.Zero;
         public Acceleration acceleration { get; private set; }
 
@@ -59,7 +60,29 @@ namespace DataTypes
 
         private void SelectDriver()
         {
-            // TODO: figure out what state the car is in
+            // switch lanes
+            // TODO: don't warp the cars
+            if (! laneTypes.Contains(segment.laneType))
+            {
+                switch (segment.laneType)
+                {
+                    case LaneType.LeftTurn:
+                        lane--;
+                        break;
+                    
+                    case LaneType.Through:
+                        if (lane < 1)
+                            lane++;
+                        else
+                            lane--;
+                        break;
+                    
+                    case LaneType.RightTurn:
+                        lane++;
+                        break;
+                }
+            }
+            
             var frontCar = GetFrontCar();
             acceleration = NormalDriver.NormalAcceleration(this, frontCar);
         }

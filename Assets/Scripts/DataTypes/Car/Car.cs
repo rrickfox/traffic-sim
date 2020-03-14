@@ -115,14 +115,16 @@ namespace DataTypes
                     track.cars.Remove(this);
                     try
                     {
-                        track = segment.edge.other.vertex.routes[segment][(int) lane];
-                    } catch
+                        track = segment.edge.other.vertex.routes[segment][(int)lane];
+                    }
+                    catch
                     {
                         Debug.LogWarning("Car tried to take route it cannot reach.");
                         track.cars.Remove(this);
-                        track = segment.edge.other.vertex.routes[segment][lane];
+                        track = segment.edge.other.vertex.routes[segment][(int)lane];
                         track.cars.AddFirst(this);
-                        break;
+                        //break;
+                    }
                 }
             }
         }

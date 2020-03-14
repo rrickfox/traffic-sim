@@ -26,11 +26,13 @@ namespace Interface
             }
         }
 
+        // pause or unpause the simulation
         public void SetSimulationTime(bool newTime)
         {
             pause = newTime;
         }
 
+        // show menu, deactivate ingame UI
         public void SwitchToMenu()
         {
             simulationCanvas.SetActive(false);
@@ -38,6 +40,7 @@ namespace Interface
             menu = true;
         }
 
+        // show ingame UI, deactivate menu
         public void SwitchToSimulation()
         {
             simulationCanvas.SetActive(true);
@@ -45,6 +48,7 @@ namespace Interface
             menu = false;
         }
 
+        // toggle from the actual shown UI/menu
         public void ToggleMenu()
         {
             if (menu)

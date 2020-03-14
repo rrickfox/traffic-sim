@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 namespace Interface {
+    // class to switch between two images for pause and play
     public class ButtonToggle : MonoBehaviour
     {
         public GameObject playImage;

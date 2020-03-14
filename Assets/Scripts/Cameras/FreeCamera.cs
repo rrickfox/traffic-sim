@@ -1,6 +1,7 @@
 ﻿using Interface;
 using UnityEngine;
 using Saves;
+using UnityEngine.EventSystems;
 
 namespace Cameras
 {
@@ -121,6 +122,10 @@ namespace Cameras
         {
             if (Input.GetMouseButtonDown(0))
             {
+                // checks if UI is clicked
+                if (EventSystem.current.IsPointerOverGameObject())
+                    return;
+
                 _following = false;
                 // shoots a ray to get a car located at the mousePosition
                 if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))

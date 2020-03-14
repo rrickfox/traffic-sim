@@ -19,7 +19,7 @@ namespace DataTypes
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
         
-        public ITrack track => segment.track;
+        public ITrack track;
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
         
@@ -38,6 +38,7 @@ namespace DataTypes
         {
             this.route = route;
             segment = route.PopAt(0);
+            track = segment.edge;
             track.cars.AddFirst(this);
             this.lane = lane;
 
@@ -79,9 +80,26 @@ namespace DataTypes
             if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
-                track.cars.Remove(this);
-                segment = route.PopAt(0);
-                track.cars.AddFirst(this);
+                if(track is SectionTrack)
+                {
+                    track.cars.Remove(this);
+                    segment = route.PopAt(0);
+                    track = segment.edge;
+                    track.cars.AddFirst(this);
+                } else if (track is Edge) // could also be standard else
+                {
+                    track.cars.Remove(this);
+                    try
+                    {
+                        track = segment.edge.other.vertex.routes[segment][(int) lane];
+                    } catch
+                    {
+                        Debug.LogWarning("Car tried to take route it cannot reach.");
+                        track.cars.Remove(this);
+                        segment.edge.other.vertex.carsToRemove.Add(this);
+                    }
+                    track.cars.AddFirst(this);
+                }
             }
         }
 

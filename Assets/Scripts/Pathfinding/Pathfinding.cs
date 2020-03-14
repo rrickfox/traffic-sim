@@ -65,7 +65,7 @@ namespace Pathfinding
             // calculates pathDistance and corresponding previousVertex for entire graph
             while (tempVertices.Any(v => v.GetPathDistance() != null))
             {
-                // finds vertex with lowest pathDistance, updates its neigbourhood and removes it from tempVertices
+                // finds vertex with lowest pathDistance, updates its neighbourhood and removes it from tempVertices
                 var minVertex = tempVertices.Where(v => v.GetPathDistance() != null).MinBy(v => v.GetPathDistance()).First();
                 minVertex.CheckNeighbourhood();
                 tempVertices.Remove(minVertex);
@@ -101,10 +101,10 @@ namespace Pathfinding
                 vertexPath.Skip(1),
                 vertexPath.Skip(2),
                 (v1, v2, v3) =>
-                    new RouteSegment(track: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
+                    new RouteSegment(edge: v1.GetEdge(v2), laneType: v2.SubRoute(v1.GetEdge(v2), v2.GetEdge(v3)))
             ).ToList();
             path.Add(new RouteSegment(
-                track: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
+                edge: vertexPath.Last.Previous.Value.GetEdge(vertexPath.Last.Value),
                 laneType: LaneType.Through // since last vertex is an EndPoint, LaneType must be Through
             ));
             return path;

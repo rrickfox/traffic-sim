@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes.Drivers;
@@ -19,27 +18,31 @@ namespace DataTypes
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
         
-        public ITrack track => segment.track;
+        public ITrack track;
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4f);
-        public Acceleration maxBrakingDeceleration { get; } = - Acceleration.FromMetersPerSecondSquared(10f);
+        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
-        public float lane { get; private set; } = 0;
-        public Speed speed { get; private set; } = Speed.Zero;
+        public int lane { get; private set; } = 0;
+        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[lane].types;
+        public Speed speed { get; private set; }
         public Acceleration acceleration { get; private set; }
 
-        public Car(float lane, List<RouteSegment> route)
+        public Car(int lane, List<RouteSegment> route)
         {
             this.route = route;
             segment = route.PopAt(0);
+            track = segment.edge;
             track.cars.AddFirst(this);
             this.lane = lane;
+            // set starting speed to half of the speed limit
+            speed = 0.5 * track.speedLimit;
 
             // give car a random color
             gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
@@ -59,7 +62,29 @@ namespace DataTypes
 
         private void SelectDriver()
         {
-            // TODO: figure out what state the car is in
+            // switch lanes
+            // TODO: don't warp the cars
+            if (! laneTypes.Contains(segment.laneType))
+            {
+                switch (segment.laneType)
+                {
+                    case LaneType.LeftTurn:
+                        lane--;
+                        break;
+                    
+                    case LaneType.Through:
+                        if (lane < 1)
+                            lane++;
+                        else
+                            lane--;
+                        break;
+                    
+                    case LaneType.RightTurn:
+                        lane++;
+                        break;
+                }
+            }
+            
             var frontCar = GetFrontCar();
             acceleration = NormalDriver.NormalAcceleration(this, frontCar);
         }
@@ -70,8 +95,25 @@ namespace DataTypes
 
         private void ExecuteMove()
         {
-            speed += acceleration.Times(TimeSpan.FromSeconds(1));
-            positionOnRoad += speed * TimeSpan.FromSeconds(1);
+            var newSpeed = speed + acceleration.Times(Formulas.TimeUnitsToTimeSpan(1));
+            if (newSpeed > track.speedLimit)
+            {
+                // enforce the speed limit
+                speed = track.speedLimit;
+                acceleration = Acceleration.Zero;
+            }
+            else if (newSpeed.MetersPerSecond <= 0)
+            {
+                // ensure that the car does not drive backwards
+                speed = Speed.Zero;
+                acceleration = Acceleration.Zero;
+            }
+            else
+            {
+                speed = newSpeed;
+            }
+            
+            positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
             
             UpdatePosition();
             
@@ -79,9 +121,30 @@ namespace DataTypes
             if(positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
-                track.cars.Remove(this);
-                segment = route.PopAt(0);
-                track.cars.AddFirst(this);
+                switch (track)
+                {
+                    case SectionTrack _:
+                        track.cars.Remove(this);
+                        segment = route.PopAt(0);
+                        track = segment.edge;
+                        track.cars.AddFirst(this);
+                        break;
+
+                    case Edge _:
+                        track.cars.Remove(this);
+                        try
+                        {
+                            track = segment.edge.other.vertex.routes[segment][lane];
+                        }
+                        catch
+                        {
+                            Debug.LogWarning("Car tried to take route it cannot reach.");
+                            track.cars.Remove(this);
+                            segment.edge.other.vertex.carsToRemove.Add(this);
+                        }
+                        track.cars.AddFirst(this);
+                        break;
+                }
             }
         }
 

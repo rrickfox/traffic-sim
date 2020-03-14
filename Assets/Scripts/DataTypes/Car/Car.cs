@@ -31,7 +31,7 @@ namespace DataTypes
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; } = 0;
         public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[(int) lane].types;
-        public Speed speed { get; private set; } = Speed.Zero;
+        public Speed speed { get; private set; }
         public Acceleration acceleration { get; private set; }
 
         public Car(float lane, List<RouteSegment> route)
@@ -41,6 +41,8 @@ namespace DataTypes
             track = segment.edge;
             track.cars.AddFirst(this);
             this.lane = lane;
+            // set starting speed to half of the speed limit
+            speed = 0.5 * track.speedLimit;
 
             // give car a random color
             gameObject.GetComponent<MeshRenderer>().material.color = Random.ColorHSV();

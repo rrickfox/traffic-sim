@@ -20,33 +20,42 @@ namespace DataTypes.Drivers
                 var midpointFrontDistance = frontCar.positionOnRoad - myCar.positionOnRoad;
                 var averageLength = (myCar.length + frontCar.length) / 2;
                 var frontDistance = midpointFrontDistance - averageLength;
+                var criticalDistance = Formulas.BrakingDistance(myCar.speed, 0.2 * myCar.maxAcceleration);
 
-                if (frontCar.acceleration.MetersPerSecondSquared <= 0)
+                Acceleration computedAcceleration;
+                if (frontDistance <= criticalDistance)
                 {
-                    acceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
-                }
-                else if (myCar.speed > frontCar.speed)
-                {
-                    // the minimal distance that is to be kept between this car and the next one
-                    var minimumDistance =
-                        1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
-                              .DividedBy(myCar.maxBrakingDeceleration)
-                        + myCar.bufferDistance;
+                    if (frontCar.acceleration.MetersPerSecondSquared <= 0)
+                    {
+                        // todo what if the frontCat is very far away and myCar has a low speed
+                        computedAcceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
+                    }
+                    else if (myCar.speed > frontCar.speed)
+                    {
+                        // the minimal distance that is to be kept between this car and the next one
+                        var minimumDistance = 1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
+                                              .DividedBy(myCar.maxBrakingDeceleration)
+                                              + myCar.bufferDistance;
 
-                    var computedAcceleration = frontCar.acceleration -
+                        computedAcceleration = frontCar.acceleration -
                                                2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance)
                                                  * (minimumDistance / frontDistance);
-
-                    acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
+                    }
+                    else
+                    {
+                        computedAcceleration = frontCar.acceleration;
+                    }
                 }
                 else if (myCar.acceleration < frontCar.acceleration)
                 {
-                    acceleration = frontCar.acceleration;
+                    computedAcceleration = frontCar.acceleration;
                 }
                 else
                 {
-                    acceleration = myCar.acceleration;
+                    computedAcceleration = myCar.acceleration;
                 }
+                
+                acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
             }
 
             return acceleration;

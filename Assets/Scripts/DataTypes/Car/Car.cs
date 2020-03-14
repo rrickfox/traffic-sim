@@ -60,6 +60,10 @@ namespace DataTypes
         {
             // TODO: figure out what state the car is in
             var frontCar = GetFrontCar();
+            if (frontCar == null)
+            {
+                acceleration = TrafficLightDriver.LightAcceleration(this);
+            }
             acceleration = NormalDriver.NormalAcceleration(this, frontCar);
         }
 

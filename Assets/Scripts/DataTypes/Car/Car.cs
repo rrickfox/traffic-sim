@@ -24,7 +24,7 @@ namespace DataTypes
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -42,7 +42,7 @@ namespace DataTypes
             track.cars.AddFirst(this);
             this.lane = lane;
             // set starting speed to half of the speed limit
-            speed = 0.1 * track.speedLimit;
+            speed = 0.5 * track.speedLimit;
 
             // give car a random color
             gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
@@ -107,7 +107,7 @@ namespace DataTypes
             {
                 // enforce the speed limit
                 speed = track.speedLimit;
-                acceleration = Acceleration.Zero;
+                // acceleration = Acceleration.Zero;
             }
             else if (newSpeed.MetersPerSecond <= 0)
             {
@@ -139,16 +139,7 @@ namespace DataTypes
 
                     case Edge _:
                         track.cars.Remove(this);
-                        try
-                        {
-                            track = segment.edge.other.vertex.routes[segment][lane];
-                        }
-                        catch
-                        {
-                            Debug.LogWarning("Car tried to take route it cannot reach.");
-                            track.cars.Remove(this);
-                            segment.edge.other.vertex.carsToRemove.Add(this);
-                        }
+                        track = segment.edge.other.vertex.routes[segment][lane];
                         track.cars.AddFirst(this);
                         break;
                 }

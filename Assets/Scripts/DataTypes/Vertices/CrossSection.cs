@@ -46,7 +46,6 @@ namespace DataTypes
             // ShowTracks();
 
             _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(DeleteCars);
         }
 
         public void ShowTracks()

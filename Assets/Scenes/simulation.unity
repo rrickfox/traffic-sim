@@ -6547,7 +6547,6 @@ MonoBehaviour:
   freeCamera: {fileID: 1954474996}
   speedText: {fileID: 1042834813}
   panel: {fileID: 662377828}
-  accelerationText: {fileID: 0}
 --- !u!1 &1910591894
 GameObject:
   m_ObjectHideFlags: 0
@@ -7048,14 +7047,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5c2c51a05d12746a2b1cf873890eb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flySpeed: 0.5
+  flySpeed: 1
   moveOnEdges: 0
   turnSpeed: 1
   maxTurnAngle: 89
   minTurnAngle: 20
   minZoom: 10
-  maxZoom: 150
-  zoomSpeed: 20
+  maxZoom: 1000
+  zoomSpeed: 75
   border1: {x: -150, y: 0, z: -75}
   border2: {x: 1000, y: 0, z: 1000}
   _following: 0

@@ -11,37 +11,7 @@ namespace DataTypes.Drivers
         {
             var acceleration = SimulateHumanness(myCar);
 
-            if (myCar.track.light != null && frontCar == null)
-            {
-                switch (myCar.track.light.state)
-                {
-                    case TrafficLight.LightState.Green:
-                    {
-                        acceleration += myCar.maxAcceleration;
-                        break;
-                    }
-                    case TrafficLight.LightState.Yellow:
-                    {
-                        if (Formulas.BrakingDeceleration(myCar.speed
-                                , myCar.track.length - myCar.positionOnRoad - myCar.length)
-                            > myCar.maxBrakingDeceleration)
-                        {
-                            acceleration += myCar.maxAcceleration;
-                            break;
-                        }
-                        acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad - myCar.length);
-                        break;
-                    }
-                    case TrafficLight.LightState.Red:
-                    {
-                        acceleration = Formulas.BrakingDeceleration(myCar.speed
-                            , myCar.track.length - myCar.positionOnRoad - myCar.length * 1000);
-                        break;
-                    }
-                }
-            }
-            else if (frontCar == null)
+            if (frontCar == null)
             {
                 acceleration += myCar.maxAcceleration;
             }

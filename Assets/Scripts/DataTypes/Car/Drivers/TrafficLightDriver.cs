@@ -8,14 +8,14 @@ namespace DataTypes.Drivers
     {
         public static Acceleration LightAcceleration(Car myCar)
         {
-           // var acceleration = SimulateHumanness(myCar);
+            //var acceleration = SimulateHumanness(myCar);
             var acceleration = Acceleration.Zero;
 
             if (myCar.track.light != null)
             {
                 var brakingDeceleration = Formulas.BrakingDeceleration(myCar.speed,
-                    myCar.track.length - myCar.positionOnRoad + myCar.length / 2 -
-                    CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength());
+                    myCar.track.length - CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength() 
+                                       - myCar.positionOnRoad - myCar.length / 2);
                 
                 switch (myCar.track.light.state)
                 {
@@ -36,7 +36,10 @@ namespace DataTypes.Drivers
                     }
                     case TrafficLight.LightState.Red:
                     {
-                        acceleration = brakingDeceleration;
+                        if (brakingDeceleration * 2 > myCar.maxBrakingDeceleration)
+                        {
+                            acceleration = brakingDeceleration;
+                        }
                         break;
                     }
                 }

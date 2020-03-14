@@ -147,37 +147,37 @@ edges:
 vertices:
     - !endpoint
         edge: 3a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {4a: 1, 6a: 1, 7a: 1, 8a: 1, 9a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 4a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 6a: 1, 7a: 1, 8a: 1, 9a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 6a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 7a: 1, 8a: 1, 9a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 7a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 6a: 1, 8a: 1, 9a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 8a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 6a: 1, 7a: 1, 9a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 9a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 6a: 1, 7a: 1, 8a: 1, 11a: 1, 12a: 1}
     - !endpoint
         edge: 11a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 6a: 1, 7a: 1, 8a: 1, 9a: 1, 12a: 1}
     - !endpoint
         edge: 12a
-        frequencies: [75, 50, 75]
+        frequencies: [250, 100, 250]
         weights: {3a: 1, 4a: 1, 6a: 1, 7a: 1, 8a: 1, 9a: 1, 11a: 1}
-    - !crosssection {up: 1b, right: 2b, down: 3b, left: 4b}
-    - !crosssection {up: 5b, right: 6b, down: 7b, left: 2a}
-    - !crosssection {up: 8b, right: 9b, down: 5a, left: 10a}
-    - !crosssection {up: 11b, right: 10b, down: 1a, left: 12b}
+    - !crosssection {upDownFrequency: {red: 500, yellow: 30, green: 300}, up: 1b, right: 2b, down: 3b, left: 4b}
+    - !crosssection {upDownFrequency: {red: 500, yellow: 30, green: 300}, up: 5b, right: 6b, down: 7b, left: 2a}
+    - !crosssection {upDownFrequency: {red: 500, yellow: 30, green: 300}, up: 8b, right: 9b, down: 5a, left: 10a}
+    - !crosssection {upDownFrequency: {red: 500, yellow: 30, green: 300}, up: 11b, right: 10b, down: 1a, left: 12b}

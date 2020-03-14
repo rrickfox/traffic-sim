@@ -24,7 +24,7 @@ namespace DataTypes
         
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -84,7 +84,7 @@ namespace DataTypes
             }
             
             var frontCar = GetFrontCar();
-            if (frontCar == null)
+            if (frontCar == null && track.light != null)
             {
                 acceleration = TrafficLightDriver.LightAcceleration(this);
             }

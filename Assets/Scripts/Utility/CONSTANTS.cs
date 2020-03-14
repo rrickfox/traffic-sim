@@ -33,7 +33,7 @@ namespace Utility
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)));
         public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
-        public static readonly GameObject CAR_PREFAB = Resources.Load("Car", typeof(GameObject)) as GameObject;
+        public static readonly GameObject CAR_PREFAB = Resources.Load("Car-Prefab", typeof(GameObject)) as GameObject;
         public static readonly GameObject ROAD_PREFAB = Resources.Load("Road", typeof(GameObject)) as GameObject;
         // length of buffer between stopping line and intersection
         public static readonly float SECTION_BUFFER_LENGTH = 2f;

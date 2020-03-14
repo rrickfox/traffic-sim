@@ -41,9 +41,7 @@ namespace Interface
 
             // display speed of car
             if (_visible)
-            {
-                speedText.text = Mathf.Round((float)_car.speed.MetersPerSecond * 10) / 10f + " m/s";
-            }
+                speedText.text = Mathf.Round((float) _car.speed.KilometersPerHour * 10) / 10f + " km/h";
         }
     }
 }

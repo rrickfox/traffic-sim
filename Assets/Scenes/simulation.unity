@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -5637,7 +5637,7 @@ Transform:
   m_GameObject: {fileID: 1693468260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.5, z: 0}
-  m_LocalScale: {x: 2000, y: 1, z: 2000}
+  m_LocalScale: {x: 300, y: 1, z: 150}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -6400,61 +6400,6 @@ MonoBehaviour:
   freeCamera: {fileID: 1954474996}
   speedText: {fileID: 1042834813}
   panel: {fileID: 662377828}
-  accelerationText: {fileID: 0}
---- !u!1 &1910591894
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1910591895}
-  - component: {fileID: 1910591897}
-  - component: {fileID: 1910591896}
-  m_Layer: 5
-  m_Name: Text (TMP)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1910591895
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876111109}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children:
-  - {fileID: 459468105}
-  - {fileID: 662377829}
-  m_Father: {fileID: 0}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
---- !u!114 &1876111115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876111109}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6c8318bd0fd47743965ee85f5cd3481, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  freeCamera: {fileID: 1954474996}
-  speedText: {fileID: 1042834813}
-  panel: {fileID: 662377828}
 --- !u!1 &1911254223
 GameObject:
   m_ObjectHideFlags: 0
@@ -6809,7 +6754,7 @@ MonoBehaviour:
   maxZoom: 150
   zoomSpeed: 20
   border1: {x: -150, y: 0, z: -75}
-  border2: {x: 1000, y: 0, z: 1000}
+  border2: {x: 150, y: 0, z: 75}
   _following: 0
   _targetCar: {fileID: 0}
 --- !u!1 &1982966912

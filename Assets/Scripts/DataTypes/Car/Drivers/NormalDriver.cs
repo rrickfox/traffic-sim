@@ -32,11 +32,11 @@ namespace DataTypes.Drivers
                         1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
                               .DividedBy(myCar.maxBrakingDeceleration)
                         + myCar.bufferDistance;
-                    
+
                     var computedAcceleration = frontCar.acceleration -
                                                2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance)
                                                  * (minimumDistance / frontDistance);
-                    
+
                     acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
                 }
                 else if (myCar.acceleration < frontCar.acceleration)
@@ -52,14 +52,10 @@ namespace DataTypes.Drivers
             return acceleration;
         }
 
-        // Get the minimal distance that is to be kept between this car and the next one
-        private static Length MinimumDistance(Car myCar, Car frontCar)
-            => 1.5 * (myCar.speed.Squared() - frontCar.speed.Squared()).DividedBy(myCar.maxAcceleration) + myCar.bufferDistance;
-
         // Add an aspect of randomness to the car's behaviour
         private static Acceleration SimulateHumanness(Car myCar)
             => Random.value * 1000000 < 1
-                ? - Acceleration.FromMetersPerSecondSquared(myCar.speed.MetersPerSecond / 3)
+                ? -Acceleration.FromMetersPerSecondSquared(myCar.speed.MetersPerSecond / 3)
                 : Acceleration.Zero;
     }
 }

@@ -48,7 +48,7 @@ namespace DataTypes.Drivers
             var sideCars = CarsNextTo(myCar, direction, plannedChange).ToList();
 
             return sideCars.Count == 0
-                ? myCar.lane + myCar.laneChangingRate * (int) direction
+                ? myCar.lane + plannedChange
                 : myCar.lane;
         }
 

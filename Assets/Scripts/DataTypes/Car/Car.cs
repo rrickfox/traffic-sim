@@ -30,7 +30,7 @@ namespace DataTypes
         public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
         public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
-        public float laneChangingRate { get; } = 0.05f;
+        public float laneChangingRate { get; } = 0.02f;
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
@@ -142,13 +142,15 @@ namespace DataTypes
 
                     case Edge _:
                         track.cars.Remove(this);
+                        var laneToTrack = segment.edge.other.vertex.routes[segment];
                         try
                         {
-                            track = segment.edge.other.vertex.routes[segment][Mathf.RoundToInt(lane)];
+                            track = laneToTrack[Mathf.RoundToInt(lane)];
                         }
-                        catch (KeyNotFoundException e)
+                        catch (KeyNotFoundException)
                         {
-                            throw new Exception("A Car could not find a way to turn to its desired road", e);
+                            Debug.LogWarning("A Car could not find a way to turn to its desired road");
+                            track = laneToTrack[laneToTrack.Keys.First()];
                         }
                         track.cars.AddFirst(this);
                         break;

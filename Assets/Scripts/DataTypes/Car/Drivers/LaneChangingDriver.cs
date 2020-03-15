@@ -13,7 +13,13 @@ namespace DataTypes.Drivers
         {
             var plannedChange = myCar.laneChangingRate * (int) laneChangeDirection;
             var sideCars = CarsNextTo(myCar, laneChangeDirection, plannedChange).ToList();
-            // todo what if 2 cars next to each other both want to move in opposite directions?
+            /* TODO: when 2 cars stand next to each other at the end of the road
+                     (with 0 speed because the traffic light was red)
+                     then they will just stay there
+               possible Solution:
+                     breakingDistance should be subtracted by the distance it will
+                     take for this car to change to the desired lane
+            */
             if (sideCars.Count > 0)
                 return (
                     lane: myCar.lane,

@@ -14,11 +14,7 @@ namespace Events
             _typePublisher.RegisterObjectPublisher(this);
         }
 
-        public bool Subscribe(Action subscriber)
-        {
-            _action += subscriber;
-            return true;
-        }
+        public void Subscribe(Action subscriber) => _action += subscriber;
 
         public void Dispose() => _typePublisher.Unsubscribe(this);
         

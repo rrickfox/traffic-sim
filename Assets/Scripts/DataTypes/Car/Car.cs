@@ -13,7 +13,10 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
-        public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher);
+        public static TypePublisher LANE_CHANGE_PUBLISHER { get; } = new TypePublisher();
+        public static TypePublisher ACCELERATE_PUBLISHER { get; } = new TypePublisher(LANE_CHANGE_PUBLISHER);
+        public static TypePublisher MOVE_PUBLISHER { get; } = new TypePublisher(ACCELERATE_PUBLISHER);
+        public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher, MOVE_PUBLISHER);
         public override GameObject prefab { get; } = CAR_PREFAB;
 
         public ISortableListNode previous { get; set; }
@@ -24,14 +27,16 @@ namespace DataTypes
         public RouteSegment segment { get; private set; }
 
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
+        public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
+        public float laneChangingRate { get; } = 0.05f;
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
-        public int lane { get; private set; } = 0;
-        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[lane].types;
+        public float lane { get; private set; }
+        public HashSet<LaneType> laneTypes => segment.edge.outgoingLanes[Mathf.RoundToInt(lane)].types;
         public Speed speed { get; private set; }
         public Acceleration acceleration { get; private set; }
 
@@ -51,59 +56,55 @@ namespace DataTypes
             UpdatePosition();
 
             // subscribe to updates
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(Drive);
+            var laneChangePublisher = new ObjectPublisher(LANE_CHANGE_PUBLISHER);
+            laneChangePublisher.Subscribe(ChangeLane);
+            var acceleratePublisher = new ObjectPublisher(ACCELERATE_PUBLISHER);
+            acceleratePublisher.Subscribe(SelectAccelerator);
+            var movePublisher = new ObjectPublisher(MOVE_PUBLISHER);
+            movePublisher.Subscribe(ExecuteMove);
+            _allPublishers.Add(laneChangePublisher);
+            _allPublishers.Add(acceleratePublisher);
+            _allPublishers.Add(movePublisher);
         }
 
-        private void Drive()
+        private void ChangeLane()
         {
-            SelectDriver();
-            ExecuteMove();
-        }
-
-        private void SelectDriver()
-        {
-            // switch lanes
-            // TODO: don't warp the cars
-            if (!laneTypes.Contains(segment.laneType))
+            switch (track)
             {
-                switch (segment.laneType)
-                {
-                    case LaneType.LeftTurn:
-                        lane--;
-                        break;
-
-                    case LaneType.Through:
-                        if (lane < 1)
-                            lane++;
-                        else
-                            lane--;
-                        break;
-
-                    case LaneType.RightTurn:
-                        lane++;
-                        break;
-                }
+                case Edge _:
+                    var direction = LaneChangingDriver.LaneChangeDirection(laneTypes, segment.laneType);
+                    
+                    if (direction == LaneChangingDriver.Direction.None)
+                        lane = LaneChangingDriver.ConvergeToMiddleOfLane(this);
+                    else
+                        (lane, maxAcceleration) = LaneChangingDriver.ChangeLane(this, direction);
+                    
+                    break;
             }
-
+        }
+        
+        // accelerate depending on the context
+        private void SelectAccelerator()
+        {
             var frontCar = GetFrontCar();
+            
             if (frontCar == null && track.light != null)
-            {
                 acceleration = TrafficLightDriver.LightAcceleration(this);
-            }
             else
-            {
                 acceleration = NormalDriver.NormalAcceleration(this, frontCar);
-            }
         }
 
         // Returns the Car in front of the current Car
-        private Car GetFrontCar()
-            => track.cars.LookAhead(this).FirstOrDefault(other => other.lane == lane && other.positionOnRoad > positionOnRoad);
+        public Car GetFrontCar()
+            => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other) && other.positionOnRoad > positionOnRoad);
 
+        public bool IsOnSameLane(Car otherCar) => lane - otherCar.lane < 1;
+        
+        public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Math.Abs((positionOnRoad - otherCar.positionOnRoad).Meters));
+        
         private void ExecuteMove()
         {
-            var newSpeed = speed + acceleration.Times(Formulas.TimeUnitsToTimeSpan(1));
+            var newSpeed = speed.Plus(acceleration.Times(Formulas.TimeUnitsToTimeSpan(1)));
             if (newSpeed > track.speedLimit)
             {
                 // enforce the speed limit
@@ -121,7 +122,7 @@ namespace DataTypes
                 speed = newSpeed;
             }
 
-            positionOnRoad += speed * Formulas.TimeUnitsToTimeSpan(1);
+            positionOnRoad += speed.Times(Formulas.TimeUnitsToTimeSpan(1));
 
             UpdatePosition();
 
@@ -129,6 +130,7 @@ namespace DataTypes
             if (positionOnRoad >= track.length && route.Count > 0)
             {
                 positionOnRoad -= track.length; // add overshot distance to new RouteSegment
+                lane = Mathf.Round(lane);
                 switch (track)
                 {
                     case SectionTrack _:
@@ -140,7 +142,14 @@ namespace DataTypes
 
                     case Edge _:
                         track.cars.Remove(this);
-                        track = segment.edge.other.vertex.routes[segment][lane];
+                        try
+                        {
+                            track = segment.edge.other.vertex.routes[segment][Mathf.RoundToInt(lane)];
+                        }
+                        catch (KeyNotFoundException e)
+                        {
+                            throw new Exception("A Car could not find a way to turn to its desired road", e);
+                        }
                         track.cars.AddFirst(this);
                         break;
                 }

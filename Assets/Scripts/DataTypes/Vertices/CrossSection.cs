@@ -13,7 +13,7 @@ namespace DataTypes
     public class CrossSection : Vertex
     {
         public override GameObject prefab { get; } = ROAD_PREFAB;
-        
+
         private Edge _up { get; }
         private Edge _right { get; }
         private Edge _down { get; }
@@ -26,15 +26,15 @@ namespace DataTypes
             : base(up, right, down, left)
         {
             _up = up;
-            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _up.other);
             _right = right;
             // calculates cycles based on perpendicular street
             _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red, _right.other);
             _down = down;
-            _down.other.light = _up.other.light;
+            _down.other.light = _up.other.light.WithChangedEdge(_down.other);
             _left = left;
-            _left.other.light = _right.other.light;
+            _left.other.light = _right.other.light.WithChangedEdge(_left.other);
 
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();

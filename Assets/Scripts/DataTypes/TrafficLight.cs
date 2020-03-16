@@ -8,35 +8,36 @@ namespace DataTypes
     public class TrafficLight : GameObjectData
     {
         public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+        public enum LightState { Green, Yellow, Red }
+        public LightState state { get; private set; }
+        public static TypePublisher typePublisher { get; } = new TypePublisher();
+        
         private int _ticks { get; set; }
         private int _redToGreen { get; }
         private int _yellowToRed { get; }
         private int _greenToYellow { get; }
-        public enum LightState { Green, Yellow, Red }
-        public LightState state { get; private set; }
         private Vertex _section { get; }
-        public static TypePublisher typePublisher { get; } = new TypePublisher();
 
 
-        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex interSection, LightState start)
+        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex intersection, LightState start)
         {
             state = start;
             _redToGreen = frequencies[LightState.Red];
             _yellowToRed = frequencies[LightState.Yellow];
             _greenToYellow = frequencies[LightState.Green];
-            _section = interSection;
+            _section = intersection;
             
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(ChangeState);
         }
         
-        public TrafficLight(int red, int yellow, int green, Vertex interSection, LightState start)
+        public TrafficLight(int red, int yellow, int green, Vertex intersection, LightState start)
         {
             state = start;
             _redToGreen = red;
             _yellowToRed = yellow;
             _greenToYellow = green;
-            _section = interSection;
+            _section = intersection;
             
             _publisher = new ObjectPublisher(typePublisher);
             _publisher.Subscribe(ChangeState);

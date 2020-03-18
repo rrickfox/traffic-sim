@@ -84,7 +84,7 @@ namespace DataTypes
                     if (_ticks == _greenToYellow)
                     {
                         _ticks = 0;
-                        state = LightState.Red;
+                        state = LightState.Yellow;
                     }
 
                     break;

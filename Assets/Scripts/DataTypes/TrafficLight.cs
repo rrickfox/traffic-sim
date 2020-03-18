@@ -65,6 +65,10 @@ namespace DataTypes
                     {
                         _ticks = 0;
                         state = LightState.Green;
+
+                        var light = transform.GetChild(1);
+                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
+                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
                     }
 
                     break;
@@ -75,6 +79,10 @@ namespace DataTypes
                     {
                         _ticks = 0;
                         state = LightState.Red;
+
+                        var light = transform.GetChild(1);
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
                     }
 
                     break;
@@ -85,6 +93,10 @@ namespace DataTypes
                     {
                         _ticks = 0;
                         state = LightState.Yellow;
+                        
+                        var light = transform.GetChild(1);
+                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
                     }
 
                     break;
@@ -114,6 +126,29 @@ namespace DataTypes
             var light = Object.Instantiate(Resources.Load("TrafficLights/TrafficLight", typeof(GameObject)) as GameObject, position, rotation);
             light.name = $"TrafficLight ({gameObject.GetInstanceID()})";
             light.transform.parent = transform;
+
+            light.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
+            light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+            light.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
+
+            switch(state)
+            {
+                case LightState.Red:
+                {
+                    light.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
+                    break;
+                }
+                case LightState.Yellow:
+                {
+                    light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                    break;
+                }
+                case LightState.Green:
+                {
+                    light.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                    break;
+                }
+            }
         }
     }
 }

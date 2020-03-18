@@ -212,7 +212,7 @@ namespace DataTypes
             }
         }
 
-        public void Display()
+        private void Display()
         {
             #region setOriginPoints
             // move originPoints to be in line with the borders of neighbouring edges
@@ -442,6 +442,9 @@ namespace DataTypes
             texture.wrapMode = TextureWrapMode.Clamp;
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", Vector2.one);
+
+            foreach(var edge in edges)
+                edge.other.light.Display();
         }
 
         private Texture GetTexture(Vector3[] meshVertices)

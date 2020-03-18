@@ -6,8 +6,8 @@ namespace Utility
     {
         // in seconds
         public static readonly float TIME_UNIT = Time.fixedDeltaTime;
-        // Distance a car travels at 5kmph in TIME_STEP seconds
-        // in unity distance units
+        // Distance a car travels at 1m/s in TIME_STEP seconds
+        // in unity distance units (equivalent to real world meters)
         public static readonly float DISTANCE_UNIT = Time.fixedDeltaTime;
         // width of a lane
         public static readonly float LANE_WIDTH = 3f;
@@ -48,5 +48,7 @@ namespace Utility
             MathUtils.DecimalPlaces(LANE_WIDTH),
             MathUtils.DecimalPlaces(SECTION_BUFFER_LENGTH),
             MathUtils.DecimalPlaces(STOP_LINE_WIDTH)));
+        // offset of trafficlight to right side of the road
+        public static readonly float TRAFFICLIGHT_OFFSET = 0.5f;
     }
 }

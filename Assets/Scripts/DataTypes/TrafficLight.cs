@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Events;
 using UnityEngine;
 using Utility;
+using static Utility.CONSTANTS;
 
 namespace DataTypes
 {
@@ -89,6 +90,30 @@ namespace DataTypes
                     break;
                 }
             }
+        }
+
+        public void Display()
+        {
+            transform.parent = _edge.transform;
+            
+            var position = new Vector3(_edge.other.originPoint.position.x, 0, _edge.other.originPoint.position.y);
+            var right = new Vector3(-_edge.other.originPoint.forward.y, 0, _edge.other.originPoint.forward.x);
+            position += right * (LANE_WIDTH * _edge.outgoingLanes.Count
+                + LINE_WIDTH * Mathf.Clamp(_edge.outgoingLanes.Count - 1, 0, Mathf.Infinity)
+                + MIDDLE_LINE_WIDTH / 2f
+                + BORDER_LINE_WIDTH
+                - ((_edge.outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)
+                + TRAFFICLIGHT_OFFSET);
+            var rotation = Quaternion.LookRotation(new Vector3(_edge.other.originPoint.position.x, 0, _edge.other.originPoint.position.y), Vector3.up);
+
+            var stand = Object.Instantiate(Resources.Load("TrafficLights/TrafficLightStand", typeof(GameObject)) as GameObject, position, rotation);
+            stand.name = $"TrafficLightStand ({gameObject.GetInstanceID()})";
+            stand.transform.parent = transform;
+
+            position += Vector3.up * 3;
+            var light = Object.Instantiate(Resources.Load("TrafficLights/TrafficLight", typeof(GameObject)) as GameObject, position, rotation);
+            light.name = $"TrafficLight ({gameObject.GetInstanceID()})";
+            light.transform.parent = transform;
         }
     }
 }

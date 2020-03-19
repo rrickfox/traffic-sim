@@ -8,6 +8,18 @@ using System;
 using Events;
 using UnitsNet;
 
+/*
+
+    possible combinations of trafficlight states
+    
+    up-down: redYellow, left-right: red
+    up-down: green, left-right: red
+    up-down: yellow, left-right: red
+    up-down: red, left-right: redYellow
+    up-down: red, left-right: green
+    up-down: red, left-right: yellow
+
+*/
 namespace DataTypes
 {
     public class CrossSection : Vertex
@@ -29,8 +41,8 @@ namespace DataTypes
             _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _up.other);
             _right = right;
             // calculates cycles based on perpendicular street
-            _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red, _right.other);
+            _right.other.light = new TrafficLight(2 * lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
+                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - 2 * lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red, _right.other);
             _down = down;
             _down.other.light = _up.other.light.WithChangedEdge(_down.other);
             _left = left;

@@ -9,13 +9,13 @@ namespace DataTypes
     public class TrafficLight : GameObjectData
     {
         public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
-        public enum LightState { Green, Yellow, Red }
+        public enum LightState { Green, Yellow, Red, RedYellow }
         public LightState state { get; private set; }
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         private int _ticks { get; set; }
-        private int _redToGreen { get; }
-        private int _yellowToRed { get; }
+        private int _redToRedYellow { get; }
+        private int _yellow { get; }
         private int _greenToYellow { get; }
         private Vertex _section { get; }
         private Edge _edge { get; }
@@ -24,8 +24,8 @@ namespace DataTypes
         public TrafficLight(Dictionary<LightState, int> frequencies, Vertex intersection, LightState start, Edge edge)
         {
             state = start;
-            _redToGreen = frequencies[LightState.Red];
-            _yellowToRed = frequencies[LightState.Yellow];
+            _redToRedYellow = frequencies[LightState.Red];
+            _yellow = frequencies[LightState.Yellow];
             _greenToYellow = frequencies[LightState.Green];
             _section = intersection;
             _edge = edge;
@@ -37,8 +37,8 @@ namespace DataTypes
         public TrafficLight(int red, int yellow, int green, Vertex intersection, LightState start, Edge edge)
         {
             state = start;
-            _redToGreen = red;
-            _yellowToRed = yellow;
+            _redToRedYellow = red;
+            _yellow = yellow;
             _greenToYellow = green;
             _section = intersection;
             _edge = edge;
@@ -49,7 +49,7 @@ namespace DataTypes
 
         public TrafficLight WithChangedEdge(Edge edge)
         {
-            return new TrafficLight(_redToGreen, _yellowToRed, _greenToYellow, _section, state, edge);
+            return new TrafficLight(_redToRedYellow, _yellow, _greenToYellow, _section, state, edge);
         }
 
         // counts ticks and compares to given length of each traffic light cycle
@@ -61,21 +61,20 @@ namespace DataTypes
             {
                 case LightState.Red:
                 {
-                    if (_ticks == _redToGreen)
+                    if (_ticks == _redToRedYellow)
                     {
                         _ticks = 0;
-                        state = LightState.Green;
+                        state = LightState.RedYellow;
 
                         var light = transform.GetChild(1);
-                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
-                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
                     }
 
                     break;
                 }
                 case LightState.Yellow:
                 {
-                    if (_ticks == _yellowToRed)
+                    if (_ticks == _yellow)
                     {
                         _ticks = 0;
                         state = LightState.Red;
@@ -97,6 +96,21 @@ namespace DataTypes
                         var light = transform.GetChild(1);
                         light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
                         light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                    }
+
+                    break;
+                }
+                case LightState.RedYellow:
+                {
+                    if(_ticks == _yellow)
+                    {
+                        _ticks = 0;
+                        state = LightState.Green;
+
+                        var light = transform.GetChild(1);
+                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
                     }
 
                     break;
@@ -146,6 +160,12 @@ namespace DataTypes
                 case LightState.Green:
                 {
                     light.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                    break;
+                }
+                case LightState.RedYellow:
+                {
+                    light.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
+                    light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
                     break;
                 }
             }

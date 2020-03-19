@@ -98,7 +98,7 @@ vertices:
   - !crosssection
     upDownFrequency: 
         red: 500
-        yellow: 30
+        yellow: 50
         green: 200
     up: 1b
     right: 2b

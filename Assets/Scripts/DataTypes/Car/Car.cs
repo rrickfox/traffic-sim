@@ -14,7 +14,7 @@ namespace DataTypes
     public class Car : GameObjectData, ISortableListNode
     {
         public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher);
-        public override GameObject prefab { get; } = CAR_PREFAB;
+        public override GameObject prefab { get; } = CAR_PREFABS.Keys.ElementAt(Utility.Random.RANDOM.Next(CAR_PREFABS.Keys.Count));
 
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
@@ -27,7 +27,7 @@ namespace DataTypes
         public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
         public Length bufferDistance => length / 2;
-        public Length length { get; } = Length.FromMeters(5);
+        public Length length { get; }
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public int lane { get; private set; } = 0;
@@ -37,6 +37,8 @@ namespace DataTypes
 
         public Car(int lane, List<RouteSegment> route)
         {
+            length = Length.FromMeters(CAR_PREFABS[prefab]);
+
             this.route = route;
             segment = route.PopAt(0);
             track = segment.edge;
@@ -46,7 +48,7 @@ namespace DataTypes
             speed = 0.5 * track.speedLimit;
 
             // give car a random color
-            gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+            // gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
 
             UpdatePosition();
 

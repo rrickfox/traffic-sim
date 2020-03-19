@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Utility
 {
@@ -33,7 +34,12 @@ namespace Utility
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)));
         public static readonly GameObject EMPTY_PREFAB = Resources.Load<GameObject>("Empty");
-        public static readonly GameObject CAR_PREFAB = Resources.Load<GameObject>("Car-Prefab");
+        public static readonly Dictionary<GameObject, float> CAR_PREFABS = new Dictionary<GameObject, float>(){
+            {Resources.Load<GameObject>("Car1"), 4},
+            {Resources.Load<GameObject>("Car2"), 8},
+            {Resources.Load<GameObject>("Car3"), 8},
+            {Resources.Load<GameObject>("Car4"), 4.5f}
+        };
         public static readonly GameObject ROAD_PREFAB = Resources.Load<GameObject>("Road");
         // length of buffer between stopping line and intersection
         public static readonly float SECTION_BUFFER_LENGTH = 2f;

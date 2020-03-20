@@ -38,7 +38,13 @@ namespace Utility
             {Resources.Load<GameObject>("Car1"), 4},
             {Resources.Load<GameObject>("Car2"), 8},
             {Resources.Load<GameObject>("Car3"), 8},
-            {Resources.Load<GameObject>("Car4"), 4.5f}
+            {Resources.Load<GameObject>("Car4"), 4.5f},
+            {Resources.Load<GameObject>("Car5"), 4.5f},
+            {Resources.Load<GameObject>("Car6"), 4.5f},
+            {Resources.Load<GameObject>("Car7"), 4.5f},
+            {Resources.Load<GameObject>("Car8"), 4.5f},
+            {Resources.Load<GameObject>("Car9"), 3.75f},
+            {Resources.Load<GameObject>("Car10"), 4.5f}
         };
         public static readonly GameObject ROAD_PREFAB = Resources.Load<GameObject>("Road");
         // length of buffer between stopping line and intersection

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using UnitsNet;
-using UnitsNet.Units;
 
 namespace Utility
 {
@@ -77,13 +76,13 @@ namespace Utility
         }
         
         public static SpecificEnergy Squared(this Speed speed) => speed * speed;
-
         public static Area Squared(this Length length) => length * length;
-
+        
         public static Acceleration Min(params Acceleration[] accelerations) => accelerations.Min();
+        public static Length Min(params Length[] lengths) => lengths.Min();
         
         public static Acceleration Max(params Acceleration[] accelerations) => accelerations.Max();
-
+        public static Length Max(params Length[] lengths) => lengths.Max();
         public static Speed Max(params Speed[] speeds) => speeds.Max();
         
         // https://de.wikipedia.org/wiki/Bremsweg

@@ -7,6 +7,7 @@ using UnitsNet;
 using UnityEngine;
 using Utility;
 using static Utility.CONSTANTS;
+using static Utility.Formulas;
 using Random = UnityEngine.Random;
 
 namespace DataTypes
@@ -29,10 +30,17 @@ namespace DataTypes
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
-        public float laneChangingRate { get; } = 0.02f;
-        public Length bufferDistance => length / 2;
+        public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length length { get; } = Length.FromMeters(5);
+        // this distance should be kept to the cars in front
+        public Length bufferDistance => length / 4;
+        // any braking distance below this is theoretically impossible
+        public Length finalDistance => BrakingDistance(speed, -minBrakingDeceleration);
+        // minimum value of criticalDistance
+        public Length criticalBufferDistance => length / 2 + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
+        // cars should start slowing down at this distance
+        public Length criticalDistance => Max(BrakingDistance(speed, 0.5 * -minBrakingDeceleration), criticalBufferDistance);
+        public float laneChangingRate { get; } = 0.02f;
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
         public float lane { get; private set; }
@@ -98,7 +106,7 @@ namespace DataTypes
         public Car GetFrontCar()
             => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other) && other.positionOnRoad > positionOnRoad);
 
-        public bool IsOnSameLane(Car otherCar) => lane - otherCar.lane < 1;
+        public bool IsOnSameLane(Car otherCar) => lane - otherCar.lane < 0.99;
         
         public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Math.Abs((positionOnRoad - otherCar.positionOnRoad).Meters));
         
@@ -109,7 +117,7 @@ namespace DataTypes
             {
                 // enforce the speed limit
                 speed = track.speedLimit;
-                // acceleration = Acceleration.Zero;
+                acceleration = Acceleration.Zero;
             }
             else if (newSpeed.MetersPerSecond <= 0)
             {

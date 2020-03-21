@@ -17,34 +17,18 @@ namespace DataTypes.Drivers
             {
                 var midpointFrontDistance = frontCar.positionOnRoad - myCar.positionOnRoad;
                 var averageLength = (myCar.length + frontCar.length) / 2;
-                var frontDistance = midpointFrontDistance - averageLength;
-                var criticalDistance = Formulas.BrakingDistance(myCar.speed, 0.5 * myCar.maxBrakingDeceleration);
+                var frontDistance = midpointFrontDistance - averageLength - myCar.bufferDistance;
 
                 Acceleration computedAcceleration;
-                if (frontDistance <= criticalDistance)
-                {
-                    if (frontCar.acceleration.MetersPerSecondSquared <= 0)
-                    {
-                        computedAcceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
-                    }
-                    else if (myCar.speed > frontCar.speed)
-                    {
-                        computedAcceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
-                    }
-                    else
-                    {
-                        computedAcceleration = frontCar.acceleration;
-                    }
-                }
-                else if (myCar.acceleration < frontCar.acceleration)
-                {
-                    computedAcceleration = frontCar.acceleration;
-                }
-                else
-                {
-                    computedAcceleration = myCar.acceleration;
-                }
                 
+                if (frontDistance <= myCar.criticalDistance)
+                    if (frontCar.acceleration.MetersPerSecondSquared <= 0 || myCar.speed > frontCar.speed)
+                        computedAcceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
+                    else
+                        computedAcceleration = frontCar.acceleration;
+                else
+                    computedAcceleration = Formulas.Max(myCar.acceleration, frontCar.acceleration);
+
                 acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
             }
 

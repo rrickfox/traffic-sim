@@ -14,6 +14,8 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
+        // have multiple publishers for each action
+        // the order of execution for each update is: change lanes -> accelerate -> execute the movements
         public static TypePublisher LANE_CHANGE_PUBLISHER { get; } = new TypePublisher();
         public static TypePublisher ACCELERATE_PUBLISHER { get; } = new TypePublisher(LANE_CHANGE_PUBLISHER);
         public static TypePublisher MOVE_PUBLISHER { get; } = new TypePublisher(ACCELERATE_PUBLISHER);
@@ -28,8 +30,11 @@ namespace DataTypes
         public RouteSegment segment { get; private set; }
 
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
+        // the maximum acceleration this car could theoretically have
         public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        // the maximum acceleration allowed to still be able to change lanes (specified by LaneChangingDriver)
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
+        // the minimum deceleration a car could theoretically have
         public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length length { get; } = Length.FromMeters(5);
         // this distance should be kept to the cars in front
@@ -40,6 +45,7 @@ namespace DataTypes
         public Length criticalBufferDistance => length / 2 + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
         // cars should start slowing down at this distance
         public Length criticalDistance => Max(BrakingDistance(speed, 0.5 * -minBrakingDeceleration), criticalBufferDistance);
+        // the speed with which to change lanes
         public float laneChangingRate { get; } = 0.02f;
 
         public Length positionOnRoad { get; private set; } = Length.Zero;
@@ -63,7 +69,7 @@ namespace DataTypes
 
             UpdatePosition();
 
-            // subscribe to updates
+            // subscribe to updates (see above for the execution order)
             var laneChangePublisher = new ObjectPublisher(LANE_CHANGE_PUBLISHER);
             laneChangePublisher.Subscribe(ChangeLane);
             var acceleratePublisher = new ObjectPublisher(ACCELERATE_PUBLISHER);
@@ -79,12 +85,15 @@ namespace DataTypes
         {
             switch (track)
             {
+                // only change lanes if the car is on a road
                 case Edge _:
                     var direction = LaneChangingDriver.LaneChangeDirection(laneTypes, segment.laneType);
                     
                     if (direction == LaneChangingDriver.Direction.None)
+                        // don't change lanes but try to stay in the middle of the road
                         lane = LaneChangingDriver.ConvergeToMiddleOfLane(this);
                     else
+                        // change lanes and calculate an acceleration limit 
                         (lane, maxAcceleration) = LaneChangingDriver.ChangeLane(this, direction);
                     
                     break;
@@ -153,7 +162,7 @@ namespace DataTypes
                         var laneToTrack = segment.edge.other.vertex.routes[segment];
                         try
                         {
-                            track = laneToTrack[Mathf.RoundToInt(lane)];
+                            track = laneToTrack[(int) lane];
                         }
                         catch (KeyNotFoundException)
                         {

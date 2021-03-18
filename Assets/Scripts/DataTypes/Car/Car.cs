@@ -151,7 +151,7 @@ namespace DataTypes
         private void UpdatePosition()
         {
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
-            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
+            transform.position = roadPoint.position.toWorld(transform.localScale.y / 2 + ROAD_HEIGHT);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
     }

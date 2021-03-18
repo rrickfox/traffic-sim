@@ -122,7 +122,7 @@ namespace DataTypes
         {
             transform.parent = _edge.transform;
             
-            var position = new Vector3(_edge.other.originPoint.position.x, 0, _edge.other.originPoint.position.y);
+            var position = _edge.other.originPoint.position.toWorld();
             var right = new Vector3(-_edge.other.originPoint.forward.y, 0, _edge.other.originPoint.forward.x);
             position += right * (LANE_WIDTH * _edge.outgoingLanes.Count
                 + LINE_WIDTH * Mathf.Clamp(_edge.outgoingLanes.Count - 1, 0, Mathf.Infinity)
@@ -131,7 +131,7 @@ namespace DataTypes
                 - ((_edge.outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)
                 + TRAFFICLIGHT_OFFSET);
             var rotation = Quaternion.LookRotation(
-                new Vector3(_edge.originPoint.position.x, 0, _edge.originPoint.position.y) - new Vector3(_edge.other.originPoint.position.x, 0, _edge.other.originPoint.position.y),
+                _edge.originPoint.position.toWorld() - _edge.other.originPoint.position.toWorld(),
                 Vector3.up);
 
             var stand = Object.Instantiate(Resources.Load("TrafficLights/TrafficLightStand", typeof(GameObject)) as GameObject, position, rotation);

@@ -27,7 +27,10 @@ namespace DataTypes.Drivers
                     else
                         computedAcceleration = frontCar.acceleration;
                 else
-                    computedAcceleration = Formulas.Max(myCar.acceleration, frontCar.acceleration);
+                    if(frontCar.acceleration.MetersPerSecondSquared <= 0.1) // edge case where a car can stand still, because front car is at a red light
+                        computedAcceleration = myCar.maxAcceleration;
+                    else
+                        computedAcceleration = Formulas.Max(myCar.acceleration, frontCar.acceleration);
 
                 acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
             }

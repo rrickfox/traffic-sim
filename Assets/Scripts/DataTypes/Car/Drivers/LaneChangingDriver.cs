@@ -38,7 +38,7 @@ namespace DataTypes.Drivers
             // change lanes regularly as no cars are in the way
             return (
                 lane: myCar.lane + plannedChange,
-                maxAcceleration: myCar.maxMaxAcceleration
+                maxAcceleration: myCar.theoreticalMaxAcceleration
             );
         }
 

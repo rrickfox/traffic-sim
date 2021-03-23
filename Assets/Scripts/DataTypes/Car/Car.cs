@@ -31,7 +31,7 @@ namespace DataTypes
 
         // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
         // the maximum acceleration this car could theoretically have
-        public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
+        public Acceleration theoreticalMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         // the maximum acceleration allowed to still be able to change lanes (specified by LaneChangingDriver)
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
         // the minimum deceleration a car should theoretically have

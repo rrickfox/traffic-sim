@@ -34,13 +34,16 @@ namespace DataTypes
         public Acceleration maxMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         // the maximum acceleration allowed to still be able to change lanes (specified by LaneChangingDriver)
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
-        // the minimum deceleration a car could theoretically have
-        public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
+        // the minimum deceleration a car should theoretically have
+        // https://de.wikipedia.org/wiki/Bremsweg
+        public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
+        // the maximum deceleration a car can have
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length length { get; } = Length.FromMeters(5);
         // this distance should be kept to the cars in front
         public Length bufferDistance => length / 4;
         // any braking distance below this is theoretically impossible
-        public Length finalDistance => BrakingDistance(speed, -minBrakingDeceleration);
+        public Length finalDistance => BrakingDistance(speed, -maxBrakingDeceleration);
         // minimum value of criticalDistance
         public Length criticalBufferDistance => length / 2 + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
         // cars should start slowing down at this distance

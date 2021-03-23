@@ -21,7 +21,8 @@ namespace DataTypes.Drivers
                 case TrafficLight.LightState.Yellow:
                     // if (distanceLeft < myCar.finalDistance)
                     //     acceleration += myCar.maxAcceleration;
-                    /*else*/ if (distanceLeft <= myCar.criticalDistance)
+                    /*else*/
+                    if (distanceLeft <= myCar.criticalDistance)
                         acceleration += brakingDeceleration;
                     else
                         acceleration += myCar.maxAcceleration;

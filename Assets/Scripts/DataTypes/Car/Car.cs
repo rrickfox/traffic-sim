@@ -118,7 +118,7 @@ namespace DataTypes
         public Car GetFrontCar()
             => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other) && other.positionOnRoad > positionOnRoad);
 
-        public bool IsOnSameLane(Car otherCar) => lane - otherCar.lane < 0.99;
+        public bool IsOnSameLane(Car otherCar) => Mathf.Abs(lane - otherCar.lane) < 0.99;
         
         public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Math.Abs((positionOnRoad - otherCar.positionOnRoad).Meters));
         

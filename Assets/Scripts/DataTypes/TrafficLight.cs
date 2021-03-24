@@ -130,9 +130,7 @@ namespace DataTypes
                 + BORDER_LINE_WIDTH
                 - ((_edge.outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)
                 + TRAFFICLIGHT_OFFSET);
-            var rotation = Quaternion.LookRotation(
-                _edge.originPoint.position.toWorld() - _edge.other.originPoint.position.toWorld(),
-                Vector3.up);
+            var rotation = Quaternion.LookRotation(_edge.other.originPoint.forward.toWorld(), Vector3.up);
 
             var stand = Object.Instantiate(Resources.Load("TrafficLights/TrafficLightStand", typeof(GameObject)) as GameObject, position, rotation);
             stand.name = $"TrafficLightStand ({gameObject.GetInstanceID()})";

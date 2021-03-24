@@ -41,11 +41,11 @@ namespace DataTypes
         public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
         public Length length { get; } = Length.FromMeters(5);
         // this distance should be kept to the cars in front
-        public Length bufferDistance => length / 4;
+        public Length bufferDistance => Length.FromMeters(Mathf.Max((float) length.Meters / 4f, Mathf.Round((float) speed.KilometersPerHour / 4f * 10f) / 10f));
         // any braking distance below this is theoretically impossible
         public Length finalDistance => BrakingDistance(speed, -maxBrakingDeceleration);
         // minimum value of criticalDistance
-        public Length criticalBufferDistance => length / 2 + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
+        public Length criticalBufferDistance => bufferDistance * 2f + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
         // cars should start slowing down at this distance
         public Length criticalDistance => Max(BrakingDistance(speed, 0.5 * -minBrakingDeceleration), criticalBufferDistance);
         // the speed with which to change lanes

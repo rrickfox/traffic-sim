@@ -68,6 +68,7 @@ edges:
 # a list of vertices
 vertices:
   - !endpoint
+    # which edge the vertex should attach to, a for starting point, b for endpoint
     edge: 1a
     frequencies: [75, 50, 75]
     weights:

@@ -1,0 +1,253 @@
+edges:
+  1:
+    speedLimit: 50
+    shape:
+      - start: {x: -110, y: -20}
+        control: {x: -100, y: -20}
+        end: {x: -90, y: -20}
+    outgoingLanes: [[through], [through], [through], [rightTurn], [rightTurn]]
+    incomingLanes: []
+  2:
+    speedLimit: 50
+    shape:
+      - start: {x: -90, y: 20}
+        control: {x: -100, y: 20}
+        end: {x: -110, y: 20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  3:
+    speedLimit: 50
+    shape:
+      - start: {x: -70, y: -20}
+        control: {x: -60, y: -20}
+        end: {x: -50, y: -20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  4:
+    speedLimit: 50
+    shape:
+      - start: {x: -50, y: 20}
+        control: {x: -60, y: 20}
+        end: {x: -70, y: 20}
+    outgoingLanes: [[leftTurn], [through], [through]]
+    incomingLanes: []
+  5:
+    speedLimit: 50
+    shape:
+      - start: {x: -30, y: -20}
+        control: {x: -20, y: -20}
+        end: {x: -10, y: -20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  6:
+    speedLimit: 50
+    shape:
+      - start: {x: -10, y: 20}
+        control: {x: -20, y: 20}
+        end: {x: -30, y: 20}
+    outgoingLanes: [[leftTurn], [through], [through]]
+    incomingLanes: []
+  7:
+    speedLimit: 50
+    shape:
+      - start: {x: 10, y: -20}
+        control: {x: 20, y: -20}
+        end: {x: 30, y: -20}
+    outgoingLanes: [[leftTurn, through], [through], [through]]
+    incomingLanes: []
+  8:
+    speedLimit: 50
+    shape:
+      - start: {x: 30, y: 20}
+        control: {x: 20, y: 20}
+        end: {x: 10, y: 20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  9:
+    speedLimit: 50
+    shape:
+      - start: {x: 50, y: -20}
+        control: {x: 80, y: -20}
+        end: {x: 110, y: -20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  10:
+    speedLimit: 50
+    shape:
+      - start: {x: 70, y: 20}
+        control: {x: 60, y: 20}
+        end: {x: 50, y: 20}
+    outgoingLanes: [[through], [through], [through]]
+    incomingLanes: []
+  11:
+    speedLimit: 50
+    shape:
+      - start: {x: 110, y: 20}
+        control: {x: 100, y: 20}
+        end: {x: 90, y: 20}
+    outgoingLanes: [[through], [through], [through], [rightTurn], [rightTurn]]
+    incomingLanes: []
+  12:
+    speedLimit: 50
+    shape:
+      - start: {x: -40, y: -70}
+        control: {x: -40, y: -80}
+        end: {x: -40, y: -90}
+    outgoingLanes: [[through], [through], [through], [through]]
+    incomingLanes: []
+  13:
+    speedLimit: 50
+    shape:
+      - start: {x: -40, y: -30}
+        control: {x: -40, y: -40}
+        end: {x: -40, y: -50}
+    outgoingLanes: [[through], [through]]
+    incomingLanes: []
+  14:
+    speedLimit: 50
+    shape:
+      - start: {x: -80, y: -30}
+        control: {x: -80, y: -60}
+        end: {x: -50, y: -60}
+    outgoingLanes: [[rightTurn], [rightTurn]]
+    incomingLanes: []
+  15:
+    speedLimit: 50
+    shape:
+      - start: {x: -40, y: 10}
+        control: {x: -40, y: 0}
+        end: {x: -40, y: -10}
+    outgoingLanes: [[leftTurn], [leftTurn], [through], [through]]
+    incomingLanes: []
+  16:
+    speedLimit: 50
+    shape:
+      - start: {x: -40, y: 50}
+        control: {x: -40, y: 40}
+        end: {x: -40, y: 30}
+    outgoingLanes: [[through], [through], [through], [through]]
+    incomingLanes: []
+  17:
+    speedLimit: 50
+    shape:
+      - start: {x: -50, y: 60}
+        control: {x: -80, y: 60}
+        end: {x: -80, y: 30}
+    outgoingLanes: [[through]]
+    incomingLanes: []
+  18:
+    speedLimit: 50
+    shape:
+      - start: {x: -40, y: 90}
+        control: {x: -40, y: 80}
+        end: {x: -40, y: 70}
+    outgoingLanes: [[through], [through], [through], [through, rightTurn]]
+    incomingLanes: []
+  19:
+    speedLimit: 50
+    shape:
+      - start: {x: 40, y: -90}
+        control: {x: 40, y: -80}
+        end: {x: 40, y: -70}
+    outgoingLanes: [[leftTurn], [leftTurn], [through], [through]]
+    incomingLanes: []
+  20:
+    speedLimit: 50
+    shape:
+      - start: {x: 40, y: -50}
+        control: {x: 40, y: -40}
+        end: {x: 40, y: -30}
+    outgoingLanes: [[through], [through, rightTurn]]
+    incomingLanes: []
+  21:
+    speedLimit: 50
+    shape:
+      - start: {x: 30, y: -60}
+        control: {x: 0, y: -60}
+        end: {x: 0, y: -30}
+    outgoingLanes: [[through], [through]]
+    incomingLanes: []
+  22:
+    speedLimit: 50
+    shape:
+      - start: {x: 40, y: -10}
+        control: {x: 40, y: 0}
+        end: {x: 40, y: 10}
+    outgoingLanes: [[through], [through]]
+    incomingLanes: []
+  23:
+    speedLimit: 50
+    shape:
+      - start: {x: 40, y: 30}
+        control: {x: 40, y: 40}
+        end: {x: 40, y: 50}
+    outgoingLanes: [[through], [through]]
+    incomingLanes: []
+  24:
+    speedLimit: 50
+    shape:
+      - start: {x: 40, y: 70}
+        control: {x: 40, y: 80}
+        end: {x: 40, y: 90}
+    outgoingLanes: [[through], [through], [through], [through]]
+    incomingLanes: []
+  25:
+    speedLimit: 50
+    shape:
+      - start: {x: 80, y: 30}
+        control: {x: 80, y: 60}
+        end: {x: 50, y: 60}
+    outgoingLanes: [[rightTurn], [rightTurn]]
+    incomingLanes: []
+  26:
+    speedLimit: 50
+    shape:
+      - start: {x: 0, y: -10}
+        control: {x: 0, y: 0}
+        end: {x: 0, y: 10}
+    outgoingLanes:
+      - [leftTurn]
+      - [leftTurn]
+    incomingLanes: []
+
+vertices:
+  # starting points
+  - !endpoint
+    edge: 1a
+    frequencies: [0, 0, 0, 0, 0]
+    weights: {2b: 0, 9b: 1, 12b: 1, 24b: 1}
+  - !endpoint
+    edge: 11a
+    frequencies: [0, 0, 0, 0, 0]
+    weights: {2b: 1, 9b: 0, 12b: 1, 24b: 1}
+  - !endpoint
+    edge: 18a
+    frequencies: [0, 0, 0, 0]
+    weights: {2b: 1, 9b: 1, 12b: 1, 24b: 0}
+  - !endpoint
+    edge: 19a
+    frequencies: [0, 0, 0, 0]
+    weights: {2b: 1, 9b: 1, 12b: 0, 24b: 1}
+  # ending points
+  - !endpoint
+    edge: 2b
+    frequencies: []
+    weights: {}
+  - !endpoint
+    edge: 9b
+    frequencies: []
+    weights: {}
+  - !endpoint
+    edge: 12b
+    frequencies: []
+    weights: {}
+  - !endpoint
+    edge: 24b
+    frequencies: []
+    weights: {}
+  # crosssections
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 15b, right: 5a, down: 13a, left: 3b}
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 26a, right: 7a, down: 21b, left: 5a}
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 22a, right: 9a, down: 20b, left: 7b}
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 16b, right: 6b, down: 15a, left: 4a}
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 23a, right: 10b, down: 22b, left: 8a}

@@ -43,7 +43,7 @@ namespace DataTypes
             GenerateRoute(_down, _left, _up, _right);
             GenerateRoute(_left, _up, _right, _down);
             // TODO: toggle visibility of tracks via UI
-            // ShowTracks();
+            ShowTracks();
 
             _publisher = new ObjectPublisher(typePublisher);
         }

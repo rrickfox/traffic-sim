@@ -16,7 +16,6 @@ namespace Cameras
         Vector3 _newPosition;
         Camera _cam;
         float _camDistance = 50f;
-        float _scroll;
 
         // Setting camera right, focus the center
         void Start()
@@ -30,14 +29,6 @@ namespace Cameras
             if (SimulationManager.menu)
                 return;
 
-            SelectCar();
-            _scroll = Input.GetAxis("Mouse ScrollWheel");
-        }
-
-        void FixedUpdate()
-        {
-            if (SimulationManager.menu)
-                return;
 
             if (!_cam.enabled)
             {
@@ -49,6 +40,8 @@ namespace Cameras
                 }
                 return;
             }
+
+            SelectCar();
             Follow();
             Rotate();
             Move();
@@ -60,8 +53,8 @@ namespace Cameras
         {
             if (Input.GetMouseButton(1))
             {
-                transform.Rotate(0f, Input.GetAxis("Mouse X") * UserSettings.turnSpeed, 0f);
-                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * UserSettings.turnSpeed;
+                transform.Rotate(0f, Input.GetAxis("Mouse X") * UserSettings.turnSpeed * Time.deltaTime, 0f);
+                var targetRotation = _cam.transform.rotation.eulerAngles.x + -1 * Input.GetAxis("Mouse Y") * UserSettings.turnSpeed * Time.deltaTime;
                 targetRotation = Mathf.Clamp(targetRotation, UserSettings.minTurnAngle, UserSettings.maxTurnAngle);
                 _cam.transform.RotateAround(transform.position, _cam.transform.right, targetRotation - _cam.transform.rotation.eulerAngles.x);
             }
@@ -72,11 +65,8 @@ namespace Cameras
             _newPosition = transform.position;
 
             // Moving with W,A,S,D or arrow keys
-            _newPosition += transform.forward * Input.GetAxis("Vertical") * UserSettings.flySpeed;
-            _newPosition += transform.right * Input.GetAxis("Horizontal") * UserSettings.flySpeed;
-
-            if (_newPosition != transform.position)
-                _following = false;
+            _newPosition += transform.forward * Input.GetAxis("Vertical") * UserSettings.flySpeed * Time.deltaTime;
+            _newPosition += transform.right * Input.GetAxis("Horizontal") * UserSettings.flySpeed * Time.deltaTime;
 
             // Moving if mouse is near to the edge of the game window
             if (!Input.GetMouseButton(1) && UserSettings.moveOnEdges)
@@ -95,13 +85,18 @@ namespace Cameras
             _newPosition.x = Mathf.Clamp(_newPosition.x, Mathf.Min(border1.x, border2.x), Mathf.Max(border1.x, border2.x));
             _newPosition.y = Mathf.Clamp(_newPosition.y, Mathf.Min(border1.y, border2.y), Mathf.Max(border1.y, border2.y));
             _newPosition.z = Mathf.Clamp(_newPosition.z, Mathf.Min(border1.z, border2.z), Mathf.Max(border1.z, border2.z));
+
+            if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
+            {
+                _following = false;
+            }
             transform.position = _newPosition;
         }
 
         // Zooming with the mousewheel between UserSettings.maxZoom and UserSettings.minZoom
         void Zoom()
         {
-            _camDistance -= _scroll * UserSettings.zoomSpeed;
+            _camDistance -= Input.GetAxis("Mouse ScrollWheel") * UserSettings.zoomSpeed;
             _camDistance = Mathf.Clamp(_camDistance, UserSettings.minZoom, UserSettings.maxZoom);
             _cam.transform.localPosition = transform.InverseTransformPoint(_cam.transform.position).normalized * _camDistance;
         }
@@ -111,7 +106,7 @@ namespace Cameras
         {
             if (_targetCar != null && _following)
             {
-                transform.position = Vector3.MoveTowards(transform.position, _targetCar.position, 1000f);
+                transform.position = _targetCar.position;
             }
             else if (_following)
                 _following = false;
@@ -128,7 +123,7 @@ namespace Cameras
 
                 _following = false;
                 // shoots a ray to get a car located at the mousePosition
-                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 200f, LayerMask.GetMask("Cars")))
+                if (Physics.Raycast(_cam.ScreenPointToRay(Input.mousePosition), out var hit, 500f, LayerMask.GetMask("Cars")))
                 {
                     _following = true;
                     _targetCar = hit.transform;

@@ -509,6 +509,8 @@ namespace DataTypes
             // construct texture from bottom up
             // stop line in _down edge
             var downStopLineRow = GetDownRow(meshVertices, true);
+            Debug.Log(downStopLineRow.Length);
+            Debug.Log(width);
             for(var y = 0; y < Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y++)
             {
                 for(var x = 0; x < width; x++)
@@ -777,14 +779,14 @@ namespace DataTypes
         {
             return leftEdge.originPoint.forward // offset to the left Edge
                 * (rightEdge.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                    - LINE_WIDTH
+                    - ((rightEdge.incomingLanes.Count >= 1) ? LINE_WIDTH : 0)
                     + BORDER_LINE_WIDTH
-                    + MIDDLE_LINE_WIDTH / 2)
+                    + MIDDLE_LINE_WIDTH / 2f * ((rightEdge.incomingLanes.Count > 0) ?  1: -1))
             + rightEdge.originPoint.forward // offset to the right Edge
                 * (leftEdge.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                    - LINE_WIDTH
+                    - ((leftEdge.outgoingLanes.Count >= 1) ? LINE_WIDTH : 0)
                     + BORDER_LINE_WIDTH
-                    + MIDDLE_LINE_WIDTH / 2);
+                    + MIDDLE_LINE_WIDTH / 2f * ((leftEdge.outgoingLanes.Count > 0) ?  1: -1));
         }
 
         // return position of corner including offset
@@ -795,9 +797,8 @@ namespace DataTypes
                 +  (left ? leftVector : -leftVector)
                     * (LANE_WIDTH * (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) // lanes
                     + LINE_WIDTH * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 1) ? (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) - 1 : 0) // lines
-                    + MIDDLE_LINE_WIDTH / 2f // half the middle line
-                    + BORDER_LINE_WIDTH // border line
-                    - (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)); // subtract half the middle line if no lanes incoming
+                    + MIDDLE_LINE_WIDTH / 2f * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ?  1: -1) // half the middle line
+                    + BORDER_LINE_WIDTH); // border line
         }
     }
 }

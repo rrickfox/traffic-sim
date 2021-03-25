@@ -247,7 +247,7 @@ vertices:
     weights: {}
   # crosssections
   - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 15b, right: 5a, down: 13a, left: 3b}
-  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 26a, right: 7a, down: 21b, left: 5a}
+  - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 26a, right: 7a, down: 21b, left: 5b}
   - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 22a, right: 9a, down: 20b, left: 7b}
   - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 16b, right: 6b, down: 15a, left: 4a}
   - !crosssection {upDownFrequency: {red: 0, yellow: 0, green: 0}, up: 23a, right: 10b, down: 22b, left: 8a}

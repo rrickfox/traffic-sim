@@ -81,15 +81,13 @@ namespace DataTypes
 
             var leftOffset = LANE_WIDTH * incomingLanes.Count
                 + LINE_WIDTH * lineCountIncoming
-                + MIDDLE_LINE_WIDTH / 2f
-                + BORDER_LINE_WIDTH
-                - ((incomingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
+                + MIDDLE_LINE_WIDTH / 2f * ((incomingLanes.Count > 0) ?  1: -1)
+                + BORDER_LINE_WIDTH;
 
             var rightOffset = LANE_WIDTH * outgoingLanes.Count
                 + LINE_WIDTH * lineCountOutgoing
-                + MIDDLE_LINE_WIDTH / 2f
-                + BORDER_LINE_WIDTH
-                - ((outgoingLanes.Count > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f);
+                + MIDDLE_LINE_WIDTH / 2f * ((outgoingLanes.Count > 0) ?  1: -1)
+                + BORDER_LINE_WIDTH;
 
             for (var i = 0; i < shape.points.Length; i++)
             {
@@ -210,7 +208,7 @@ namespace DataTypes
                 RepeatWidth(ROAD_HEIGHT, COLORS.ROAD) // left side
                 .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // left border
                 .Concat(GetLanesColorRow(incomingLanes.Count)) // incoming lanes
-                .Concat(RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE)) // middle line
+                .Concat((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE) : RepeatWidth(0, COLORS.MIDDLE_LINE)) // middle line
                 .Concat(GetLanesColorRow(outgoingLanes.Count)) // outgoing lanes
                 .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // right border
                 .Concat(RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) // right side

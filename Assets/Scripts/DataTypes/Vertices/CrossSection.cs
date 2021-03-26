@@ -30,10 +30,10 @@ namespace DataTypes
             _right = right;
             // calculates cycles based on perpendicular street
             if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
-                _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
-            else
                 _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
                 , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
+            else
+                _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _down = down;
             _down.other.light = _up.other.light;
             _left = left;

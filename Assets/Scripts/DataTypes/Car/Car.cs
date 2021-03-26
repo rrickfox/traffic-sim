@@ -134,6 +134,7 @@ namespace DataTypes
                     case SectionTrack _:
                         track.cars.Remove(this);
                         segment = route.PopAt(0);
+                        lane = track.newLane;
                         track = segment.edge;
                         track.cars.AddFirst(this);
                         break;

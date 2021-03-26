@@ -151,7 +151,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track), i));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.Through))
@@ -174,7 +174,7 @@ namespace DataTypes
                     track.Add(new BezierCurve(curve1Start, postCurveStart, curve1Controll, curve2Controll));
                     track.Add(new BezierCurve(postCurveStart, postCurveEnd));
 
-                    routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track), i - throughOffset));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.RightTurn))
@@ -209,7 +209,7 @@ namespace DataTypes
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track), i + rDifference));
                 }
             }
         }

@@ -22,6 +22,7 @@ namespace DataTypes
         public RoadShape shape { get; protected set; }
         public Length length => shape.length;
         public Speed speedLimit { get; private set; } // maximum speed of cars
+        public int newLane { get; } = 0; // unused, only for sectionTrack
         protected bool display { get; }
 
         public TypePublisher typePublisher = new TypePublisher(Car.typePublisher, EndPoint.typePublisher);

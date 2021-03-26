@@ -9,6 +9,7 @@ namespace DataTypes
         [CanBeNull] TrafficLight light { get; set; }
         Length length { get; }
         Speed speedLimit { get; }
+        int newLane { get; }
         SortableLinkedList<Car> cars { get; }
         RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane);
     }

@@ -12,13 +12,15 @@ namespace DataTypes
         public Length length => shape.length;
         // TODO: calculate accordingly
         public Speed speedLimit { get; } = Speed.FromKilometersPerHour(50);
+        public int newLane { get; }
 
         public TrafficLight light { get; set; }
 
-        public SectionTrack(Vertex vertex, RoadShape shape)
+        public SectionTrack(Vertex vertex, RoadShape shape, int newLane)
         {
             this.vertex = vertex;
             this.shape = shape;
+            this.newLane = newLane;
         }
 
         public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane = 0)

@@ -373,8 +373,8 @@ namespace DataTypes
                     var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeLeft.GetAbsolutePosition(Length.Zero, i).position - relativeLeft.originPoint.position;
+                        + preCurveStart - edge.originPoint.position
+                        + postCurveEnd - relativeLeft.originPoint.position;
                     var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);
@@ -431,8 +431,8 @@ namespace DataTypes
                     var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeRight.GetAbsolutePosition(Length.Zero, i).position - relativeRight.originPoint.position;
+                        + preCurveStart - edge.originPoint.position
+                        + postCurveEnd - relativeRight.originPoint.position;
                     var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);

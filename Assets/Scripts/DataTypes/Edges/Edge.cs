@@ -208,7 +208,7 @@ namespace DataTypes
                 RepeatWidth(ROAD_HEIGHT, COLORS.ROAD) // left side
                 .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // left border
                 .Concat(GetLanesColorRow(incomingLanes.Count)) // incoming lanes
-                .Concat((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE) : RepeatWidth(0, COLORS.MIDDLE_LINE)) // middle line
+                .Concat((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? RepeatWidth(MIDDLE_LINE_WIDTH, COLORS.MIDDLE_LINE) : Enumerable.Empty<Color>()) // middle line
                 .Concat(GetLanesColorRow(outgoingLanes.Count)) // outgoing lanes
                 .Concat(RepeatWidth(BORDER_LINE_WIDTH, COLORS.BORDER_LINE)) // right border
                 .Concat(RepeatWidth(ROAD_HEIGHT, COLORS.ROAD)) // right side

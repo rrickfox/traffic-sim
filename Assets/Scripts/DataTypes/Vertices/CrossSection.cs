@@ -34,12 +34,15 @@ namespace DataTypes
                 , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
             else
                 _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            
             _down = down;
             _down.other.light = _up.other.light;
             _left = left;
             _left.other.light = _right.other.light;
+
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();
+
             routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
             GenerateRoute(_up, _right, _down, _left);
             GenerateRoute(_right, _down, _left, _up);
@@ -111,7 +114,7 @@ namespace DataTypes
                     return LaneType.RightTurn;
         }
 
-        private void GenerateRoute(Edge edge, Edge relativeLeft,Edge oppositeEdge,Edge relativeRight)
+        private void GenerateRoute(Edge edge, Edge relativeLeft, Edge oppositeEdge, Edge relativeRight)
         {
             routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());
             routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, SectionTrack>());

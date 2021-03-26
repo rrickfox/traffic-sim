@@ -118,7 +118,7 @@ edges:
       - start: {x: -50, y: 60}
         control1: {x: -80, y: 60}
         end: {x: -80, y: 30}
-    outgoingLanes: [[through]]
+    outgoingLanes: [[rightTurn]]
     incomingLanes: []
   18:
     speedLimit: 50
@@ -196,15 +196,15 @@ vertices:
     weights: {2b: 0, 9b: 1, 12b: 1, 24b: 1}
   - !endpoint
     edge: 11a
-    frequencies: [0, 500, 0, 0, 0]
+    frequencies: [0, 0, 0, 0, 0]
     weights: {2b: 1, 9b: 0, 12b: 1, 24b: 1}
   - !endpoint
     edge: 18a
-    frequencies: [0, 0, 500, 0]
+    frequencies: [0, 0, 0, 0]
     weights: {2b: 1, 9b: 1, 12b: 1, 24b: 0}
   - !endpoint
     edge: 19a
-    frequencies: [0, 0, 0, 500]
+    frequencies: [0, 0, 0, 0]
     weights: {2b: 1, 9b: 1, 12b: 0, 24b: 1}
   # ending points
   - !endpoint

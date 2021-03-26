@@ -12,6 +12,8 @@ namespace DataTypes
         public override GameObject prefab { get; } = EMPTY_PREFAB;
 
         private Edge _edge { get; }
+        public bool starting { get; private set; }
+        public bool ending { get; private set; }
         // ticks before a car spawns on a lane (index)
         private Frequencies _frequencies { get; }
         // cumulative Probabilities of choosing a vertex to route to
@@ -23,6 +25,8 @@ namespace DataTypes
             _edge = edge;
             _frequencies = frequencies;
             _weights = weights;
+            starting = _edge.outgoingLanes.Count > 0;
+            ending = _edge.incomingLanes.Count > 0;
 
             if (edge.incomingLanes.Any(lane => lane.types.Count > 1 || !lane.types.Contains(LaneType.Through)))
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");

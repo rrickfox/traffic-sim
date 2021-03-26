@@ -25,7 +25,7 @@ edges:
     shape:
       - start: {x: -50, y: 20}
         end: {x: -70, y: 20}
-    outgoingLanes: [[leftTurn], [through], [through]]
+    outgoingLanes: [[through], [through]]
     incomingLanes: []
   5:
     speedLimit: 50

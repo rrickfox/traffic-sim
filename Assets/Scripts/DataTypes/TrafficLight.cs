@@ -46,6 +46,9 @@ namespace DataTypes
         // changes state accordingly and resets counter
         public void ChangeState()
         {
+            if(_redToGreen == 0 && _greenToYellow == 0 && _yellowToRed == 0) // if all states are 0, don't change anything
+                return;
+            
             _ticks++;
             switch (state)
             {

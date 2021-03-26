@@ -8,7 +8,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 0, y: 70}
-              control: {x: 0, y: 40}
               end: {x: 0, y: 10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[leftTurn], [through], [rightTurn]]
@@ -21,7 +20,6 @@ edges:
         speedLimit: 80
         shape:
             - start: {x: 440, y: 0}
-              control: {x: 200, y: 0}
               end: {x: 10, y: 0}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[leftTurn], [through], [rightTurn]]
@@ -34,7 +32,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 0, y: -70}
-              control: {x: 0, y: -40}
               end: {x: 0, y: -10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -47,7 +44,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: -140, y: 0}
-              control: {x: -75, y: 0}
               end: {x: -10, y: 0}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -60,7 +56,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 450, y: 70}
-              control: {x: 450, y: 40}
               end: {x: 450, y: 10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[leftTurn], [through], [rightTurn]]
@@ -73,7 +68,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 640, y: 0}
-              control: {x: 550, y: 0}
               end: {x: 460, y: 0}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -86,7 +80,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 450, y: -70}
-              control: {x: 450, y: -40}
               end: {x: 450, y: -10}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -99,7 +92,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 450, y: 150}
-              control: {x: 450, y: 120}
               end: {x: 450, y: 90}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -112,7 +104,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 640, y: 80}
-              control: {x: 550, y: 80}
               end: {x: 460, y: 80}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -125,7 +116,6 @@ edges:
         speedLimit: 80
         shape:
             - start: {x: 440, y: 80}
-              control: {x: 200, y: 80}
               end: {x: 10, y: 80}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[leftTurn], [through], [rightTurn]]
@@ -138,7 +128,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: 0, y: 150}
-              control: {x: 0, y: 120}
               end: {x: 0, y: 90}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]
@@ -151,7 +140,6 @@ edges:
         speedLimit: 60
         shape:
             - start: {x: -140, y: 80}
-              control: {x: -75, y: 80}
               end: {x: -10, y: 80}
         outgoingLanes: [[leftTurn], [through], [rightTurn]]
         incomingLanes: [[through], [through], [through]]

@@ -234,7 +234,7 @@ vertices:
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 13b, throughOrLeft: 12a, leftOrRight: 14b}
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 20a, throughOrLeft: 19b, leftOrRight: 21a}
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 4b, throughOrLeft: 2a, leftOrRight: 17b}
-  - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 19b, throughOrLeft: 16a, leftOrRight: 17a}
+  - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 18b, throughOrLeft: 16a, leftOrRight: 17a}
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 6a, throughOrLeft: 8b, leftOrRight: 26b}
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 23b, throughOrLeft: 24a, leftOrRight: 25b}
   - !teesection {throughFrequency: {red: 0, yellow: 0, green: 0}, throughOrRight: 11b, throughOrLeft: 10a, leftOrRight: 25a}

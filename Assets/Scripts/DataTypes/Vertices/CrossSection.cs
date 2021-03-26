@@ -362,7 +362,7 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
-                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    var preCurve = new BezierCurve(preCurveStart, preCurveEnd);
 
                     var postCurveEnd = relativeLeft.GetAbsolutePosition(Length.Zero, i).position;
                     var udDifference = Mathf.Clamp(oppositeEdge.incomingLanes.Count - edge.outgoingLanes.Count, 0f, Mathf.Infinity);
@@ -370,12 +370,12 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
                         + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
                         + relativeLeft.GetAbsolutePosition(Length.Zero, i).position - relativeLeft.originPoint.position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                    var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);
                     track.Add(postCurve);
@@ -400,9 +400,8 @@ namespace DataTypes
                     var curve2Start = curve1Start + (postCurveStart - curve1Start) / 2f;
                     var curve1Controll = curve1Start - edge.originPoint.forward * (curve1Start - curve2Start).magnitude / 2f;
                     var curve2Controll = postCurveStart - oppositeEdge.originPoint.forward * (curve2Start - postCurveStart).magnitude / 2f;
-                    track.Add(new BezierCurve(curve1Start, curve1Controll, curve2Start));
-                    track.Add(new BezierCurve(curve2Start, curve2Controll, postCurveStart));
-                    track.Add(new BezierCurve(postCurveStart, postCurveStart, postCurveEnd));
+                    track.Add(new BezierCurve(curve1Start, postCurveStart, curve1Controll, curve2Controll));
+                    track.Add(new BezierCurve(postCurveStart, postCurveEnd));
 
                     routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
                 }
@@ -416,7 +415,7 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
-                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    var preCurve = new BezierCurve(preCurveStart, preCurveEnd);
 
                     var postCurveEnd = new Vector2();
                     var rDifference = relativeRight.outgoingLanes.Count - edge.incomingLanes.Count;
@@ -429,12 +428,12 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
                         + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
                         + relativeRight.GetAbsolutePosition(Length.Zero, i).position - relativeRight.originPoint.position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                    var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);
                     track.Add(postCurve);
@@ -512,8 +511,6 @@ namespace DataTypes
             // construct texture from bottom up
             // stop line in _down edge
             var downStopLineRow = GetDownRow(meshVertices, true);
-            Debug.Log(downStopLineRow.Length);
-            Debug.Log(width);
             for(var y = 0; y < Mathf.RoundToInt(STOP_LINE_WIDTH * MULTIPLIER_SECTION); y++)
             {
                 for(var x = 0; x < width; x++)

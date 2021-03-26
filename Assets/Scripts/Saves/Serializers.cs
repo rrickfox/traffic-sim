@@ -56,11 +56,24 @@ namespace Saves
         public class BezierCurve
         {
             public Point2D start { get; set; }
-            public Point2D control { get; set; }
+            public Point2D control1 { get; set; } = null;
+            public Point2D control2 {get; set;} = null;
             public Point2D end { get; set; }
 
             public DataTypes.BezierCurve Deserialize()
-                => new DataTypes.BezierCurve(start.Deserialize(), control.Deserialize(), end.Deserialize());
+            {
+                if(control1 == null)
+                    if(control2 == null)
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize());
+                    else
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control2.Deserialize());
+                if(control1 != null)
+                    if(control2 == null)
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control1.Deserialize());
+                    else
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control1.Deserialize(), control2.Deserialize());
+                return null; // dunno why I have to write dis
+            }
         }
         
         public class Point2D

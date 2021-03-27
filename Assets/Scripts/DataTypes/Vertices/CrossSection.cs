@@ -114,6 +114,14 @@ namespace DataTypes
                     return LaneType.RightTurn;
         }
 
+        public override bool IsRoutePossible(Edge from, Edge to)
+        {
+            if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
+            if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
+            if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
+            return from.incomingLanes.Any(lane => lane.types.Contains(SubRoute(from.other, to)));
+        }
+
         private void GenerateRoute(Edge edge, Edge relativeLeft, Edge oppositeEdge, Edge relativeRight)
         {
             routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());

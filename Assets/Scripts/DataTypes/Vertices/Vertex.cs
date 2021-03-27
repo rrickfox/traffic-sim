@@ -26,5 +26,7 @@ namespace DataTypes
         }
 
         public abstract LaneType SubRoute(Edge comingFrom, Edge to);
+
+        public abstract bool IsRoutePossible(Edge from, Edge to);
     }
 }

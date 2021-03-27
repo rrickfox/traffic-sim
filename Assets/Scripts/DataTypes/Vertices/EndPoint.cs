@@ -59,5 +59,6 @@ namespace DataTypes
         }
 
         public override LaneType SubRoute(Edge comingFrom, Edge to) => LaneType.Through;
+        public override bool IsRoutePossible(Edge comingFrom, Edge to) => true;
     }
 }

@@ -47,7 +47,7 @@ namespace Pathfinding
         private static void CheckNeighbourhood(this Vertex self)
         {
             var pathDistance = self.GetPathDistance();
-            foreach (var edge in self.edges.Where(edge => edge.outgoingLanes.Count > 0))
+            foreach (var edge in self.edges.Where(edge => edge.outgoingLanes.Count > 0 && self.IsRoutePossible(self.GetEdge(self.GetPreviousVertex()), edge)))
             {
                 var otherPathDistance = edge.other.vertex.GetPathDistance();
                 var newPathDistance = pathDistance + edge.length;

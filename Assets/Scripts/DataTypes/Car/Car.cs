@@ -74,9 +74,9 @@ namespace DataTypes
                         break;
 
                     case LaneType.Through:
-                        if (lane < 1)
+                        if (segment.edge.outgoingLanes.ElementAt(lane).types.Contains(LaneType.LeftTurn))
                             lane++;
-                        else
+                        else if(segment.edge.outgoingLanes.ElementAt(lane).types.Contains(LaneType.RightTurn))
                             lane--;
                         break;
 

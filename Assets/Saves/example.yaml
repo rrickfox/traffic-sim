@@ -192,19 +192,19 @@ vertices:
   # starting points
   - !endpoint
     edge: 1a
-    frequencies: [500, 0, 0, 0, 0]
+    frequencies: [364, 486, 385, 568, 647]
     weights: {2b: 0, 9b: 1, 12b: 1, 24b: 1}
   - !endpoint
     edge: 11a
-    frequencies: [0, 0, 0, 0, 0]
+    frequencies: [457, 486, 385, 568, 647]
     weights: {2b: 1, 9b: 0, 12b: 1, 24b: 1}
   - !endpoint
     edge: 18a
-    frequencies: [0, 0, 0, 0]
+    frequencies: [236, 346, 278, 326]
     weights: {2b: 1, 9b: 1, 12b: 1, 24b: 0}
   - !endpoint
     edge: 19a
-    frequencies: [0, 0, 0, 0]
+    frequencies: [678, 568, 247, 234]
     weights: {2b: 1, 9b: 1, 12b: 0, 24b: 1}
   # ending points
   - !endpoint

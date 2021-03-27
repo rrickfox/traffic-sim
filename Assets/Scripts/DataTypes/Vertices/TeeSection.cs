@@ -21,14 +21,17 @@ namespace DataTypes
             : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _throughOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _throughOrLeft.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
             _leftOrRight = leftOrRight;
             // calculates cycles based on perpendicular street
-            _leftOrRight.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
+            if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
+                _leftOrRight.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
                 , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
-        
+            else
+                _leftOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+
             center = (_throughOrRight.originPoint.position + _throughOrLeft.originPoint.position + _leftOrRight.originPoint.position) / 3f;
 
             routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();

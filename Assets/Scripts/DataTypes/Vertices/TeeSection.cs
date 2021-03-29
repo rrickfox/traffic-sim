@@ -73,7 +73,7 @@ namespace DataTypes
         {
             if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
             if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
-            if(from == to) throw new NetworkConfigurationError("From and to are the same Edge");
+            if(from == to) return false;
             return from.incomingLanes.Any(lane => lane.types.Contains(SubRoute(from.other, to)));
         }
 

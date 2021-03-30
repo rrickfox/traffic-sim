@@ -233,5 +233,45 @@ namespace DataTypes
                 }
             }
         }
+
+        public void Display()
+        {
+            #region setOriginPoints
+            // move originPoints to be in line with the borders of neighbouring edges
+            _throughOrRight.UpdateOriginPoint(center // center of section
+                + _throughOrRight.originPoint.forward // move-direction
+                * ((_leftOrRight.outgoingLanes.Count > 0 ? // check if edge has lanes on this side
+                    (_leftOrRight.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                    - LINE_WIDTH
+                    + MIDDLE_LINE_WIDTH / 2f
+                    + BORDER_LINE_WIDTH) // offset to the border of edge
+                : BORDER_LINE_WIDTH - MIDDLE_LINE_WIDTH / 2f) // offset if no lanes are on this side
+                + STOP_LINE_WIDTH
+                + SECTION_BUFFER_LENGTH));
+
+            _throughOrLeft.UpdateOriginPoint(center // center of section
+                + _throughOrLeft.originPoint.forward // move-direction
+                * ((_leftOrRight.incomingLanes.Count > 0 ? // check if edge has lanes on this side
+                    (_leftOrRight.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                    - LINE_WIDTH
+                    + MIDDLE_LINE_WIDTH / 2f
+                    + BORDER_LINE_WIDTH) // offset to the border of edge
+                : BORDER_LINE_WIDTH - MIDDLE_LINE_WIDTH / 2f) // offset if no lanes are on this side
+                + STOP_LINE_WIDTH
+                + SECTION_BUFFER_LENGTH));
+
+            _leftOrRight.UpdateOriginPoint(center // center of section
+                + _leftOrRight.originPoint.forward // move-direction
+                * ((_throughOrRight.incomingLanes.Count > 0 && _throughOrLeft.outgoingLanes.Count > 0 ? // check if both edges have lanes on same side
+                    (Mathf.Max(_throughOrRight.incomingLanes.Count, _throughOrLeft.outgoingLanes.Count) * (LANE_WIDTH + LINE_WIDTH)
+                    - LINE_WIDTH 
+                    + MIDDLE_LINE_WIDTH / 2f 
+                    + BORDER_LINE_WIDTH) // offset to the border of bigger edge
+                : BORDER_LINE_WIDTH - MIDDLE_LINE_WIDTH / 2f) // offset if no lanes are on this side
+                + STOP_LINE_WIDTH
+                + SECTION_BUFFER_LENGTH));
+
+            #endregion setOriginPoints
+        }
     }
 }

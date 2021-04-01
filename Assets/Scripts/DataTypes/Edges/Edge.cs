@@ -52,8 +52,9 @@ namespace DataTypes
 
         private void InitializeSubscriptions()
         {
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(cars.Sort);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(cars.Sort);
+            _allPublishers.Add(publisher);
         }
 
         // change origin point and update other edge

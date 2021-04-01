@@ -1,6 +1,5 @@
 using UnitsNet;
-using Utility;
-using Random = UnityEngine.Random;
+using static Utility.Formulas;
 
 namespace DataTypes.Drivers
 {
@@ -8,42 +7,36 @@ namespace DataTypes.Drivers
     {
         public static Acceleration LightAcceleration(Car myCar)
         {
-            var acceleration = Acceleration.Zero;
-
-            if (myCar.track.light != null)
+            var acceleration = Randomness.SimulateHumanness(myCar);
+            
+            var distanceLeft = myCar.track.length - myCar.positionOnRoad - myCar.criticalBufferDistance;
+            var brakingDeceleration = BrakingDeceleration(myCar.speed, distanceLeft);
+            
+            switch (myCar.track.light.state)
             {
-                var brakingDeceleration = Formulas.BrakingDeceleration(myCar.speed,
-                    myCar.track.length - CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength() 
-                                       - myCar.positionOnRoad - myCar.length / 2);
-                
-                switch (myCar.track.light.state)
-                {
-                    case TrafficLight.LightState.Green:
-                    {
+                case TrafficLight.LightState.Green:
+                    acceleration += myCar.maxAcceleration;
+                    break;
+                    
+                case TrafficLight.LightState.Yellow:
+                    // if (distanceLeft < myCar.finalDistance)
+                    //     acceleration += myCar.maxAcceleration;
+                    /*else*/
+                    if (distanceLeft <= myCar.criticalDistance)
+                        acceleration += brakingDeceleration;
+                    else
                         acceleration += myCar.maxAcceleration;
-                        break;
-                    }
-                    case TrafficLight.LightState.Yellow:
-                    {
-                        if (brakingDeceleration > myCar.maxBrakingDeceleration)
-                        {
-                            acceleration += myCar.maxAcceleration;
-                            break;
-                        }
-                        acceleration = brakingDeceleration;
-                        break;
-                    }
-                    case TrafficLight.LightState.Red:
-                    {
-                        if (brakingDeceleration * 2 > myCar.maxBrakingDeceleration)
-                        {
-                            acceleration = brakingDeceleration;
-                        }
-                        break;
-                    }
-                }
+                    break;
+                    
+                case TrafficLight.LightState.Red:
+                    if (distanceLeft <= myCar.criticalDistance)
+                        acceleration += brakingDeceleration;
+                    else
+                        acceleration += myCar.maxAcceleration;
+                    break;
             }
-            return acceleration;
+            
+            return Max(myCar.minBrakingDeceleration, Min(myCar.maxAcceleration, acceleration));
         }
     }
 }

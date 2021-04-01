@@ -30,8 +30,9 @@ namespace DataTypes
             _section = intersection;
             _edge = edge;
             
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(ChangeState);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(ChangeState);
+            _allPublishers.Add(publisher);
         }
         
         public TrafficLight(int red, int yellow, int green, Vertex intersection, LightState start, Edge edge)
@@ -43,8 +44,9 @@ namespace DataTypes
             _section = intersection;
             _edge = edge;
             
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(ChangeState);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(ChangeState);
+            _allPublishers.Add(publisher);
         }
 
         public TrafficLight WithChangedEdge(Edge edge)

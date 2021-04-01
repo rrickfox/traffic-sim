@@ -59,8 +59,6 @@ namespace DataTypes
 
             // TODO: toggle visibility of tracks via UI
             // ShowTracks();
-
-            _publisher = new ObjectPublisher(typePublisher);
         }
 
         public void ShowTracks()

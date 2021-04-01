@@ -436,8 +436,10 @@ namespace DataTypes
             for(var i = 0; i < 4; i++)
             {
                 uvs[12 + 3 * i] = GetCorner(i);
-                uvs[12 + 3 * i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
-                uvs[12 + 3 * i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
+                //uvs[12 + 3 * i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
+                //uvs[12 + 3 * i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
+                uvs[12 + 3 * i + 1] = GetCorner(i);
+                uvs[12 + 3 * i + 2] = GetCorner(i);
             }
             #endregion
 
@@ -786,6 +788,8 @@ namespace DataTypes
         }
         
         // return position of corner when given to adjacent edges
+        // notice, that the edges are not actually the relative left or right edges
+        // rather, the 'left' edge is the one, where the other is to the left of it
         private Vector2 GetSectionCorner(Edge leftEdge, Edge rightEdge)
         {
             return leftEdge.originPoint.forward // offset to the left Edge

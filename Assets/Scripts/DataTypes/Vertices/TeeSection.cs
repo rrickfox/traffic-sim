@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using Utility;
 using UnityEngine;
 using static Utility.CONSTANTS;
+using static Utility.COLORS;
 using UnitsNet;
+using System;
 
 namespace DataTypes
 {
     public class TeeSection : Vertex
     {
-        public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
+        public override GameObject prefab { get; } = ROAD_PREFAB;
 
         private Edge _throughOrRight { get; }
         private Edge _throughOrLeft { get; }
@@ -32,7 +34,29 @@ namespace DataTypes
             else
                 _leftOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
 
-            center = (_throughOrRight.originPoint.position + _throughOrLeft.originPoint.position + _leftOrRight.originPoint.position) / 3f;
+            center = _leftOrRight.originPoint.position.closestPointOnLinesegment(_throughOrLeft.originPoint.position, _throughOrRight.originPoint.position);
+            
+            /*var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(center.x, 0, center.y);
+            sphere.transform.localScale = Vector3.one * 2;
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_leftOrRight.originPoint.position.x, 0, _leftOrRight.originPoint.position.y);
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_throughOrLeft.originPoint.position.x, 0, _throughOrLeft.originPoint.position.y);
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_throughOrRight.originPoint.position.x, 0, _throughOrRight.originPoint.position.y);*/
+            
+            Display();
+            
+            /*sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_leftOrRight.originPoint.position.x, 0, _leftOrRight.originPoint.position.y);
+            sphere.transform.localScale = Vector3.one * 1.5f;
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_throughOrLeft.originPoint.position.x, 0, _throughOrLeft.originPoint.position.y);
+            sphere.transform.localScale = Vector3.one * 1.5f;
+            sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            sphere.transform.localPosition = new Vector3(_throughOrRight.originPoint.position.x, 0, _throughOrRight.originPoint.position.y);
+            sphere.transform.localScale = Vector3.one * 1.5f;*/
 
             routes = new Dictionary<RouteSegment, Dictionary<int, SectionTrack>>();
             GenerateRoute(_throughOrRight, null, _throughOrLeft, _leftOrRight);
@@ -104,11 +128,6 @@ namespace DataTypes
             } else {
                 throw new NetworkConfigurationError("TeeSection has to few specified edges for route generation!");
             }
-
-
-
-
-
 
             var throughOffset = 0;
 
@@ -271,7 +290,259 @@ namespace DataTypes
                 + STOP_LINE_WIDTH
                 + SECTION_BUFFER_LENGTH));
 
-            #endregion setOriginPoints
+            #endregion
+
+            var meshVertices = new Vector3[20];
+            var triangles = new int[84];
+            var uvs = new Vector2[20];
+
+            #region setUpMeshVertices
+            // TeeSection is viewed with throughOrLeft Edge facing up, leftOrRight Edge facing left, throughOrRight Edge facing down
+            var upLeftCorner = center + GetSectionCorner(null, _throughOrLeft);
+            meshVertices[0] = new Vector3(upLeftCorner.x, ROAD_HEIGHT, upLeftCorner.y);
+
+            var upBufferLeft = GetBufferCorner(_throughOrLeft, true);
+            meshVertices[1] = new Vector3(upBufferLeft.x, ROAD_HEIGHT, upBufferLeft.y);
+            var upBufferRight = GetBufferCorner(_throughOrLeft, false);
+            meshVertices[2] = new Vector3(upBufferRight.x, ROAD_HEIGHT, upBufferRight.y);
+
+            var upRightCorner = center + GetSectionCorner(_throughOrLeft, _leftOrRight);
+            meshVertices[3] = new Vector3(upRightCorner.x, ROAD_HEIGHT, upRightCorner.y);
+
+            var rightBufferLeft = GetBufferCorner(_leftOrRight, true);
+            meshVertices[4] = new Vector3(rightBufferLeft.x, ROAD_HEIGHT, rightBufferLeft.y);
+            var rightBufferRight = GetBufferCorner(_leftOrRight, false);
+            meshVertices[5] = new Vector3(rightBufferRight.x, ROAD_HEIGHT, rightBufferRight.y);
+
+
+            var rightDownCorner = center + GetSectionCorner(_leftOrRight, _throughOrRight);
+            meshVertices[6] = new Vector3(rightDownCorner.x,  ROAD_HEIGHT, rightDownCorner.y);
+
+            var downBufferLeft = GetBufferCorner(_throughOrRight, true);
+            meshVertices[7] = new Vector3(downBufferLeft.x, ROAD_HEIGHT, downBufferLeft.y);
+            var downBufferRight = GetBufferCorner(_throughOrRight, false);
+            meshVertices[8] = new Vector3(downBufferRight.x, ROAD_HEIGHT, downBufferRight.y);
+
+            var downLeftCorner = center + GetSectionCorner(_throughOrRight, null);
+            meshVertices[9] = new Vector3(downLeftCorner.x, ROAD_HEIGHT, downLeftCorner.y);
+
+            // set lower mesh vertices
+            for (var i = 0; i < 10; i++)
+                meshVertices[i + 10] = new Vector3(meshVertices[i].x, 0, meshVertices[i].z);
+            #endregion
+
+            for(int i = 0; i < 10; i++)
+            {
+                var sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.position = meshVertices[i];
+                sphere.transform.localScale = Vector3.one * 0.5f;
+            }
+            
+            #region setTriangles
+            // first triangle is middle of crosssection
+            triangles[0] = 0;
+            triangles[1] = 3;
+            triangles[2] = 6;
+
+            triangles[3] = 0;
+            triangles[4] = 6;
+            triangles[5] = 9;
+
+            // other triangles make up the buffer zone
+            var triIndex = 6;
+            for(var i = 0; i < 9; i += 3)
+            {
+                triangles[triIndex] = i;
+                triangles[triIndex + 1] = i + 1;
+                triangles[triIndex + 2] = i + 2;
+
+                triangles[triIndex + 3] = i;
+                triangles[triIndex + 4] = i + 2;
+                triangles[triIndex + 5] = i + 3;
+
+                triIndex += 6;
+            }
+
+            // border around section
+            for(var i = 0; i < 10; i++)
+            {
+                triangles[triIndex] = i;
+                triangles[triIndex + 1] = 10 + i;
+                triangles[triIndex + 2] = (i + 1) % 10;
+
+                triangles[triIndex + 3] = 10 + i;
+                triangles[triIndex + 4] = 10 + ((i + 1) % 10);
+                triangles[triIndex + 5] = (i + 1) % 10;
+
+                triIndex += 6;
+            }
+            /*
+            // outsides towards edges
+            for(var i = 0; i < 3; i++)
+            {
+                triangles[triIndex] = 3 * i + 1;
+                triangles[triIndex + 1] = 12 + 3 * i + 1;
+                triangles[triIndex + 2] = 12 + 3 * i + 2;
+
+                triangles[triIndex + 3] = 3 * i + 1;
+                triangles[triIndex + 4] = 12 + 3 * i + 2;
+                triangles[triIndex + 5] = 3 * i + 2;
+
+                triIndex += 6;
+            }
+            
+            // left side of edge
+            for(var i = 0; i < 3; i++)
+            {
+                triangles[triIndex] = 3 * i;
+                triangles[triIndex + 1] = 12 + 3 * i;
+                triangles[triIndex + 2] = 12 + 3 * i + 1;
+
+                triangles[triIndex + 3] = 3 * i;
+                triangles[triIndex + 4] = 12 + 3 * i + 1;
+                triangles[triIndex + 5] = 3 * i + 1;
+
+                triIndex += 6;
+            }
+
+            // right side of edge
+            for(var i = 0; i < 3; i++)
+            {
+                triangles[triIndex] = 3 * i;
+                triangles[triIndex + 1] = 3 * ((i + 3) % 4) + 2;
+                triangles[triIndex + 2] = 12 + 3 * i;
+
+                triangles[triIndex + 3] = 12 + 3 * i;
+                triangles[triIndex + 4] = 3 * ((i + 3) % 4) + 2;
+                triangles[triIndex + 5] = 12 + 3 * ((i + 3) % 4) + 2;
+
+                triIndex += 6;
+            }
+            */
+            #endregion
+
+            #region setUvs
+            // set uvs based on relative position of mesh vertices
+            var bottomLeftCorner = center
+                + _throughOrRight.originPoint.forward * Vector2.Distance(center, _throughOrRight.originPoint.position)
+                + new Vector2(-_throughOrRight.originPoint.forward.y, _throughOrRight.originPoint.forward.x) * Mathf.Max(_throughOrRight.outgoingOffset, _throughOrLeft.incomingOffset);
+            var bottomRightCorner = center
+                + _throughOrRight.originPoint.forward * Vector2.Distance(center, _throughOrRight.originPoint.position)
+                + _leftOrRight.originPoint.forward * Vector2.Distance(center, _leftOrRight.originPoint.position);
+            var topLeftCorner = center
+                + _throughOrLeft.originPoint.forward * Vector2.Distance(center, _throughOrLeft.originPoint.position)
+                + new Vector2(-_throughOrRight.originPoint.forward.y, _throughOrRight.originPoint.forward.x) * Mathf.Max(_throughOrRight.outgoingOffset, _throughOrLeft.incomingOffset);
+            var topRightCorner = center
+                + _throughOrLeft.originPoint.forward * Vector2.Distance(center, _throughOrLeft.originPoint.position)
+                + _leftOrRight.originPoint.forward * Vector2.Distance(center, _leftOrRight.originPoint.position);
+            
+            // upper uv coordinates
+            uvs[1] = new Vector2(0, 1);
+            uvs[2] = new Vector2(Vector2.Distance(new Vector2(meshVertices[2].x, meshVertices[2].z), upLeftCorner) / Vector2.Distance(upLeftCorner, upRightCorner), 1);
+            // right uv coordinates
+            uvs[4] = new Vector2(1, Vector2.Distance(new Vector2(meshVertices[4].x, meshVertices[4].z), bottomRightCorner) / Vector2.Distance(bottomRightCorner, upRightCorner));
+            uvs[5] = new Vector2(1, Vector2.Distance(new Vector2(meshVertices[5].x, meshVertices[5].z), bottomRightCorner) / Vector2.Distance(bottomRightCorner, upRightCorner));
+            // bottom uv coordinates
+            uvs[7] = new Vector2(Vector2.Distance(new Vector2(meshVertices[7].x, meshVertices[7].z), bottomLeftCorner) / Vector2.Distance(bottomLeftCorner, bottomRightCorner), 0);
+            uvs[8] = new Vector2(0, 0);
+            
+            // center uv coordinates
+            uvs[0] = new Vector2(uvs[1].x, uvs[11].y);
+            uvs[3] = new Vector2(uvs[2].x, uvs[4].y);
+            uvs[6] = new Vector2(uvs[7].x, uvs[5].y);
+            uvs[9] = new Vector2(uvs[8].x, uvs[10].y);
+            
+            Func<int, Vector2> GetCorner = i =>
+            {
+                var corner = Vector2.zero;
+                switch(i)
+                {
+                    case 2:
+                        corner = new Vector2(1, 1); break;
+                    case 5:
+                        corner = new Vector2(1, 0); break;
+                }
+                return corner;
+            };
+            for(var i = 2; i < 6; i += 3)
+            {
+                uvs[10 + i] = GetCorner(i);
+                //uvs[10 + i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
+                //uvs[10 + i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
+                uvs[10 + i + 1] = GetCorner(i);
+                uvs[10 + i + 2] = GetCorner(i);
+            }
+            #endregion
+
+            gameObject.GetComponent<MeshFilter>().mesh = new Mesh
+            {
+                vertices = meshVertices,
+                triangles = triangles,
+                uv = uvs
+            };
+
+            Texture texture = GetTexture();
+            texture.wrapMode = TextureWrapMode.Clamp;
+            gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
+            gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", Vector2.one);
+        }
+
+        private Texture GetTexture()
+        {
+            var texture = new Texture2D(100, 100, TextureFormat.RGBA32, true);
+            for(var y = 0; y < 100; y++)
+                for(var x = 0; x < 100; x++)
+                    texture.SetPixel(x: x, y: y, color: ROAD);
+            texture.Apply();
+            return texture;
+        }
+
+        #nullable enable
+        // return position of corner when given to adjacent edges
+        // notice, that the edges are not actually the relative left or right edges
+        // rather, the 'left' edge is the one, where the other is to the left of it
+        private Vector2 GetSectionCorner(Edge? leftEdge, Edge? rightEdge)
+        {
+            if(leftEdge != null && rightEdge != null)
+                return leftEdge.originPoint.forward // offset to the left Edge
+                    * (rightEdge.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - ((rightEdge.incomingLanes.Count >= 1) ? LINE_WIDTH : 0)
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2f * ((rightEdge.incomingLanes.Count > 0) ?  1: -1))
+                + rightEdge.originPoint.forward // offset to the right Edge
+                    * (leftEdge.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - ((leftEdge.outgoingLanes.Count >= 1) ? LINE_WIDTH : 0)
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2f * ((leftEdge.outgoingLanes.Count > 0) ?  1: -1));
+            else if(leftEdge != null || rightEdge == null)
+            {
+                return new Vector2(leftEdge!.originPoint.forward.y, -leftEdge.originPoint.forward.x)
+                    * (leftEdge.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - ((leftEdge.outgoingLanes.Count >= 1) ? LINE_WIDTH : 0)
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2f * ((leftEdge.outgoingLanes.Count > 0) ?  1: -1));
+            } else
+            {
+                return new Vector2(-rightEdge!.originPoint.forward.y, rightEdge.originPoint.forward.x)
+                    * (rightEdge.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
+                        - ((rightEdge.incomingLanes.Count >= 1) ? LINE_WIDTH : 0)
+                        + BORDER_LINE_WIDTH
+                        + MIDDLE_LINE_WIDTH / 2f * ((rightEdge.incomingLanes.Count > 0) ?  1: -1));
+            }
+            
+        }
+        #nullable disable
+
+        // return position of corner including offset
+        private Vector2 GetBufferCorner(Edge edge, bool left)
+        {
+            var leftVector =  new Vector2(-edge.originPoint.forward.y, edge.originPoint.forward.x);
+            return edge.originPoint.position 
+                +  (left ? leftVector : -leftVector)
+                    * (LANE_WIDTH * (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) // lanes
+                    + LINE_WIDTH * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 1) ? (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) - 1 : 0) // lines
+                    + MIDDLE_LINE_WIDTH / 2f * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ?  1: -1) // half the middle line
+                    + BORDER_LINE_WIDTH); // border line
         }
     }
 }

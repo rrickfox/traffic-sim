@@ -20,6 +20,8 @@ namespace DataTypes
         public List<Lane> incomingLanes => other.outgoingLanes;
         public TrafficLight light { get; set; }
         public RoadShape shape { get; protected set; }
+        public float incomingOffset  => other.outgoingOffset;
+        public float outgoingOffset { get; protected set; }
         public Length length => shape.length;
         public Speed speedLimit { get; private set; } // maximum speed of cars
         public int newLane { get; } = 0; // unused, only for sectionTrack
@@ -80,12 +82,12 @@ namespace DataTypes
             var lineCountIncoming = (incomingLanes.Count > 1) ? incomingLanes.Count - 1 : 0;
             var lineCountOutgoing = (outgoingLanes.Count > 1) ? outgoingLanes.Count - 1 : 0;
 
-            var leftOffset = LANE_WIDTH * incomingLanes.Count
+            other.outgoingOffset = LANE_WIDTH * incomingLanes.Count
                 + LINE_WIDTH * lineCountIncoming
                 + MIDDLE_LINE_WIDTH / 2f * ((incomingLanes.Count > 0) ?  1: -1)
                 + BORDER_LINE_WIDTH;
 
-            var rightOffset = LANE_WIDTH * outgoingLanes.Count
+            outgoingOffset = LANE_WIDTH * outgoingLanes.Count
                 + LINE_WIDTH * lineCountOutgoing
                 + MIDDLE_LINE_WIDTH / 2f * ((outgoingLanes.Count > 0) ?  1: -1)
                 + BORDER_LINE_WIDTH;
@@ -95,8 +97,8 @@ namespace DataTypes
                 var p = shape.points[i];
                 // offset and direction for the mesh-vertices
                 var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * leftOffset;
-                var newPosRight = p.position - left * rightOffset;
+                var newPosLeft = p.position + left * incomingOffset;
+                var newPosRight = p.position - left * outgoingOffset;
                 meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
                 meshVertices.Add(new Vector3(newPosLeft.x, 0, newPosLeft.y));

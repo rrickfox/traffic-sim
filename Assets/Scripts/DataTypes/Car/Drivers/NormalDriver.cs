@@ -1,7 +1,5 @@
 using UnitsNet;
-using UnityEngine;
 using Utility;
-using Random = UnityEngine.Random;
 
 namespace DataTypes.Drivers
 {
@@ -9,7 +7,7 @@ namespace DataTypes.Drivers
     {
         public static Acceleration NormalAcceleration(Car myCar, Car frontCar)
         {
-            var acceleration = SimulateHumanness(myCar);
+            var acceleration = Randomness.SimulateHumanness(myCar);
 
             if (frontCar == null)
             {
@@ -19,43 +17,25 @@ namespace DataTypes.Drivers
             {
                 var midpointFrontDistance = frontCar.positionOnRoad - myCar.positionOnRoad;
                 var averageLength = (myCar.length + frontCar.length) / 2;
-                var frontDistance = midpointFrontDistance - averageLength;
+                var frontDistance = midpointFrontDistance - averageLength - myCar.bufferDistance;
 
-                if (frontCar.acceleration.MetersPerSecondSquared <= 0)
-                {
-                    acceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
-                }
-                else if (myCar.speed > frontCar.speed)
-                {
-                    // the minimal distance that is to be kept between this car and the next one
-                    var minimumDistance =
-                        1.5 * (myCar.speed.Squared() - frontCar.speed.Squared())
-                              .DividedBy(myCar.maxBrakingDeceleration)
-                        + myCar.bufferDistance;
-
-                    var computedAcceleration = frontCar.acceleration -
-                                               2 * (myCar.speed + frontCar.speed).Squared().DividedBy(frontDistance)
-                                                 * (minimumDistance / frontDistance);
-
-                    acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
-                }
-                else if (myCar.acceleration < frontCar.acceleration)
-                {
-                    acceleration = frontCar.acceleration;
-                }
+                Acceleration computedAcceleration;
+                
+                if (frontDistance <= myCar.criticalDistance)
+                    if (frontCar.acceleration.MetersPerSecondSquared <= 0 || myCar.speed > frontCar.speed)
+                        computedAcceleration = Formulas.BrakingDeceleration(myCar.speed, frontDistance);
+                    else
+                        computedAcceleration = frontCar.acceleration;
                 else
-                {
-                    acceleration = myCar.acceleration;
-                }
+                    if(frontCar.acceleration.MetersPerSecondSquared <= 0.1) // edge case where a car can stand still, because front car is at a red light
+                        computedAcceleration = myCar.maxAcceleration;
+                    else
+                        computedAcceleration = Formulas.Max(myCar.acceleration, frontCar.acceleration);
+
+                acceleration += Formulas.Min(computedAcceleration, myCar.maxAcceleration);
             }
 
             return acceleration;
         }
-
-        // Add an aspect of randomness to the car's behaviour
-        private static Acceleration SimulateHumanness(Car myCar)
-            => Random.value * 1000000 < 1
-                ? -Acceleration.FromMetersPerSecondSquared(myCar.speed.MetersPerSecond / 3)
-                : Acceleration.Zero;
     }
 }

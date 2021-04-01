@@ -26,8 +26,9 @@ namespace DataTypes
             _greenToYellow = frequencies[LightState.Green];
             _section = interSection;
             
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(ChangeState);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(ChangeState);
+            _allPublishers.Add(publisher);
         }
         
         public TrafficLight(int red, int yellow, int green, Vertex interSection, LightState start)
@@ -38,8 +39,9 @@ namespace DataTypes
             _greenToYellow = green;
             _section = interSection;
             
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(ChangeState);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(ChangeState);
+            _allPublishers.Add(publisher);
         }
 
         // counts ticks and compares to given length of each traffic light cycle

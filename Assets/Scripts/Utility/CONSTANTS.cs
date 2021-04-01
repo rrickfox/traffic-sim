@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace Utility
 {
@@ -6,8 +7,8 @@ namespace Utility
     {
         // in seconds
         public static readonly float TIME_UNIT = Time.fixedDeltaTime;
-        // Distance a car travels at 5kmph in TIME_STEP seconds
-        // in unity distance units
+        // Distance a car travels at 1m/s in TIME_STEP seconds
+        // in unity distance units (equivalent to real world meters)
         public static readonly float DISTANCE_UNIT = Time.fixedDeltaTime;
         // width of a lane
         public static readonly float LANE_WIDTH = 3f;
@@ -32,9 +33,20 @@ namespace Utility
             MathUtils.DecimalPlaces(BORDER_LINE_WIDTH),
             MathUtils.DecimalPlaces(ROAD_HEIGHT), 
             MathUtils.DecimalPlaces(LANE_WIDTH)));
-        public static readonly GameObject EMPTY_PREFAB = Resources.Load("Empty", typeof(GameObject)) as GameObject;
-        public static readonly GameObject CAR_PREFAB = Resources.Load("Car-Prefab", typeof(GameObject)) as GameObject;
-        public static readonly GameObject ROAD_PREFAB = Resources.Load("Road", typeof(GameObject)) as GameObject;
+        public static readonly GameObject EMPTY_PREFAB = Resources.Load<GameObject>("Empty");
+        public static readonly Dictionary<GameObject, float> CAR_PREFABS = new Dictionary<GameObject, float>(){
+            {Resources.Load<GameObject>("Car1"), 4},
+            {Resources.Load<GameObject>("Car2"), 8},
+            {Resources.Load<GameObject>("Car3"), 8},
+            {Resources.Load<GameObject>("Car4"), 4.5f},
+            {Resources.Load<GameObject>("Car5"), 4.5f},
+            {Resources.Load<GameObject>("Car6"), 4.5f},
+            {Resources.Load<GameObject>("Car7"), 4.5f},
+            {Resources.Load<GameObject>("Car8"), 4.5f},
+            {Resources.Load<GameObject>("Car9"), 3.75f},
+            {Resources.Load<GameObject>("Car10"), 4.5f}
+        };
+        public static readonly GameObject ROAD_PREFAB = Resources.Load<GameObject>("Road");
         // length of buffer between stopping line and intersection
         public static readonly float SECTION_BUFFER_LENGTH = 2f;
         // width of stop line at intersection
@@ -48,5 +60,7 @@ namespace Utility
             MathUtils.DecimalPlaces(LANE_WIDTH),
             MathUtils.DecimalPlaces(SECTION_BUFFER_LENGTH),
             MathUtils.DecimalPlaces(STOP_LINE_WIDTH)));
+        // offset of trafficlight to right side of the road
+        public static readonly float TRAFFICLIGHT_OFFSET = 0.5f;
     }
 }

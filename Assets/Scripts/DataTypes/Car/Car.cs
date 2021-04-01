@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataTypes.Drivers;
@@ -14,13 +13,13 @@ namespace DataTypes
 {
     public class Car : GameObjectData, ISortableListNode
     {
+        public override GameObject prefab { get; } = CAR_PREFABS.Keys.ElementAt(Utility.Random.RANDOM.Next(CAR_PREFABS.Keys.Count));
         // have multiple publishers for each action
         // the order of execution for each update is: change lanes -> accelerate -> execute the movements
         public static TypePublisher LANE_CHANGE_PUBLISHER { get; } = new TypePublisher();
         public static TypePublisher ACCELERATE_PUBLISHER { get; } = new TypePublisher(LANE_CHANGE_PUBLISHER);
         public static TypePublisher MOVE_PUBLISHER { get; } = new TypePublisher(ACCELERATE_PUBLISHER);
         public static TypePublisher typePublisher { get; } = new TypePublisher(TrafficLight.typePublisher, MOVE_PUBLISHER);
-        public override GameObject prefab { get; } = CAR_PREFAB;
 
         public ISortableListNode previous { get; set; }
         public ISortableListNode next { get; set; }
@@ -39,7 +38,7 @@ namespace DataTypes
         public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
         // the maximum deceleration a car can have
         public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
-        public Length length { get; } = Length.FromMeters(5);
+        public Length length { get; }
         // this distance should be kept to the cars in front
         public Length bufferDistance => Length.FromMeters(Mathf.Max((float) length.Meters / 4f, Mathf.Round((float) speed.KilometersPerHour / 4f * 10f) / 10f));
         // any braking distance below this is theoretically impossible
@@ -59,6 +58,8 @@ namespace DataTypes
 
         public Car(int lane, List<RouteSegment> route)
         {
+            length = Length.FromMeters(CAR_PREFABS[prefab]);
+
             this.route = route;
             segment = route.PopAt(0);
             track = segment.edge;
@@ -68,7 +69,7 @@ namespace DataTypes
             speed = 0.5 * track.speedLimit;
 
             // give car a random color
-            gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
+            gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().materials[0].color = Random.ColorHSV();
 
             UpdatePosition();
 
@@ -120,7 +121,7 @@ namespace DataTypes
 
         public bool IsOnSameLane(Car otherCar) => Mathf.Abs(lane - otherCar.lane) < 0.99;
         
-        public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Math.Abs((positionOnRoad - otherCar.positionOnRoad).Meters));
+        public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Mathf.Abs((float) (positionOnRoad - otherCar.positionOnRoad).Meters));
         
         private void ExecuteMove()
         {
@@ -181,7 +182,7 @@ namespace DataTypes
         private void UpdatePosition()
         {
             var roadPoint = track.GetAbsolutePosition(positionOnRoad, lane);
-            transform.position = new Vector3(roadPoint.position.x, transform.localScale.y / 2 + ROAD_HEIGHT, roadPoint.position.y);
+            transform.position = roadPoint.position.toWorld(transform.localScale.y / 2 + ROAD_HEIGHT);
             transform.rotation = Quaternion.Euler(0, Vector2.SignedAngle(roadPoint.forward, Vector2.right), 0);
         }
     }

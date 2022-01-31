@@ -12,33 +12,31 @@ namespace DataTypes.Drivers
 
             if (myCar.track.light != null)
             {
-                var brakingDeceleration = Formulas.BrakingDeceleration(myCar.speed,
-                    myCar.track.length - CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength() 
-                                       - myCar.positionOnRoad - myCar.length / 2);
+                var distanceToLight = myCar.track.length
+                    - CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength()
+                    - myCar.positionOnRoad
+                    - myCar.length / 2;
                 
                 switch (myCar.track.light.state)
                 {
                     case TrafficLight.LightState.Green:
                     {
-                        acceleration += myCar.maxAcceleration;
+                        acceleration = NormalDriver.freeRoadBehaviour(myCar);
                         break;
                     }
                     case TrafficLight.LightState.Yellow:
                     {
-                        if (brakingDeceleration > myCar.maxBrakingDeceleration)
+                        if (Formulas.BrakingDistance(myCar.speed, myCar.brakingDeceleration * -1) > distanceToLight)
                         {
-                            acceleration += myCar.maxAcceleration;
+                            acceleration = NormalDriver.freeRoadBehaviour(myCar);
                             break;
                         }
-                        acceleration = brakingDeceleration;
+                        acceleration = NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceToLight, Speed.Zero);
                         break;
                     }
                     case TrafficLight.LightState.Red:
                     {
-                        if (brakingDeceleration * 2 > myCar.maxBrakingDeceleration)
-                        {
-                            acceleration = brakingDeceleration;
-                        }
+                        acceleration = NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceToLight, Speed.Zero);
                         break;
                     }
                 }

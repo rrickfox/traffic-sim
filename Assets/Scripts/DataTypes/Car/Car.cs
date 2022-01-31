@@ -23,9 +23,10 @@ namespace DataTypes
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
 
-        // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
-        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-50);
+        // https://de.wikipedia.org/wiki/Liste_von_Gr%C3%B6%C3%9Fenordnungen_der_Beschleunigung
+        public Acceleration maxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(4);
+        public Acceleration brakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-4);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-8);
         public Length bufferDistance => length / 2;
         public Length length { get; } = Length.FromMeters(5);
 

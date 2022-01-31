@@ -43,8 +43,17 @@ namespace DataTypes
             {
                 // only spawn car if no other car is in range of beginning
                 var firstCarOnLane = _edge.cars.FirstOrDefault(c => c.lane == lane);
-                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length)
-                    new Car(lane, routingTable[Utility.Random.Choose(_weights)].ToList());
+                if(firstCarOnLane == null || firstCarOnLane.positionOnRoad > firstCarOnLane.length * 3)
+                {
+                    // TODO: Temporarily only spawn car if route starts with current lane
+                    // will be removed when cars actually switch lanes
+                    List<RouteSegment> route;
+                    do
+                    {
+                        route = routingTable[Utility.Random.Choose(_weights)].ToList();
+                    } while (!_edge.outgoingLanes.ElementAt(lane).types.Contains(route.First().laneType));
+                    new Car(lane, route);
+                }
             }
         }
 

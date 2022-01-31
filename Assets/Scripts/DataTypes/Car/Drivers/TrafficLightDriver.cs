@@ -1,6 +1,5 @@
 using UnitsNet;
-using Utility;
-using Random = UnityEngine.Random;
+using static Utility.Formulas;
 
 namespace DataTypes.Drivers
 {
@@ -8,40 +7,36 @@ namespace DataTypes.Drivers
     {
         public static Acceleration LightAcceleration(Car myCar)
         {
-            var acceleration = Acceleration.Zero;
-
-            if (myCar.track.light != null)
+            var acceleration = Randomness.SimulateHumanness(myCar);
+            
+            var distanceLeft = myCar.track.length - myCar.positionOnRoad - myCar.criticalBufferDistance;
+            var brakingDeceleration = BrakingDeceleration(myCar.speed, distanceLeft);
+            
+            switch (myCar.track.light.state)
             {
-                var distanceToLight = myCar.track.length
-                    - CONSTANTS.SECTION_BUFFER_LENGTH.DistanceUnitsToLength()
-                    - myCar.positionOnRoad
-                    - myCar.length / 2;
-                
-                switch (myCar.track.light.state)
-                {
-                    case TrafficLight.LightState.Green:
-                    {
-                        acceleration = NormalDriver.freeRoadBehaviour(myCar);
-                        break;
-                    }
-                    case TrafficLight.LightState.Yellow:
-                    {
-                        if (Formulas.BrakingDistance(myCar.speed, myCar.brakingDeceleration * -1) > distanceToLight)
-                        {
-                            acceleration = NormalDriver.freeRoadBehaviour(myCar);
-                            break;
-                        }
-                        acceleration = NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceToLight, Speed.Zero);
-                        break;
-                    }
-                    case TrafficLight.LightState.Red:
-                    {
-                        acceleration = NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceToLight, Speed.Zero);
-                        break;
-                    }
-                }
+                case TrafficLight.LightState.Green:
+                    acceleration += NormalDriver.freeRoadBehaviour(myCar);
+                    break;
+                    
+                case TrafficLight.LightState.Yellow:
+                    // if (distanceLeft < myCar.finalDistance)
+                    //     acceleration += myCar.maxAcceleration;
+                    /*else*/
+                    if (distanceLeft <= myCar.criticalDistance)
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero);
+                    else
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar);
+                    break;
+                    
+                case TrafficLight.LightState.Red:
+                    if (distanceLeft <= myCar.criticalDistance)
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero);
+                    else
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar);
+                    break;
             }
-            return acceleration;
+            
+            return Max(myCar.brakingDeceleration, Min(myCar.maxAcceleration, acceleration));
         }
     }
 }

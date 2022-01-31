@@ -1,6 +1,6 @@
 using UnitsNet;
-using UnityEngine;
 using Utility;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace DataTypes.Drivers

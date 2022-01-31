@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using UnitsNet;
-using UnitsNet.Units;
 
 namespace Utility
 {
@@ -38,37 +37,68 @@ namespace Utility
             => TimeSpan.FromSeconds(length.Meters / speed.MetersPerSecond);
 
         public static Speed Times(this Acceleration acceleration, TimeSpan timeSpan)
-            => Speed.FromMetersPerSecond(acceleration.MetersPerSecondSquared * timeSpan.TotalSeconds);
+        {
+            var value = acceleration.MetersPerSecondSquared * timeSpan.TotalSeconds;
+            
+            if (double.IsNegativeInfinity(value))
+                return Speed.MinValue;
+            if (double.IsPositiveInfinity(value))
+                return Speed.MaxValue;
+            
+            return Speed.FromMetersPerSecond(value);
+        }
+        
+        public static Length Times(this Speed speed, TimeSpan timeSpan)
+        {
+            var value = speed.MetersPerSecond * timeSpan.TotalSeconds;
+            
+            if (double.IsNegativeInfinity(value))
+                return Length.MinValue;
+            if (double.IsPositiveInfinity(value))
+                return Length.MaxValue;
+            
+            return Length.FromMeters(value);
+        }
 
         public static SpecificEnergy Times(this Acceleration acceleration, Length length)
             => SpecificEnergy.FromJoulesPerKilogram(acceleration.MetersPerSecondSquared * length.Meters);
 
-        public static SpecificEnergy Squared(this Speed speed) => speed * speed;
+        public static Speed Plus(this Speed speed1, Speed speed2)
+        {
+            var value = speed1.MetersPerSecond + speed2.MetersPerSecond;
+            
+            if (double.IsNegativeInfinity(value))
+                return Speed.MinValue;
+            if (double.IsPositiveInfinity(value))
+                return Speed.MaxValue;
 
-        public static Area Squared(this Length length) => length * length;
-
-        public static Acceleration Min(params Acceleration[] accelerations)
-            => accelerations.Min();
+            return Speed.FromMetersPerSecond(value);
+        }
         
-        public static Acceleration Max(params Acceleration[] accelerations)
-            => accelerations.Max();
-
-        public static Speed Max(params Speed[] speeds)
-            => speeds.Max();
+        public static SpecificEnergy Squared(this Speed speed) => speed * speed;
+        public static Area Squared(this Length length) => length * length;
+        
+        public static Acceleration Min(params Acceleration[] accelerations) => accelerations.Min();
+        public static Length Min(params Length[] lengths) => lengths.Min();
+        
+        public static Acceleration Max(params Acceleration[] accelerations) => accelerations.Max();
+        public static Length Max(params Length[] lengths) => lengths.Max();
+        public static Speed Max(params Speed[] speeds) => speeds.Max();
         
         // https://de.wikipedia.org/wiki/Bremsweg
         public static Length BrakingDistance(Speed speed, Acceleration brakingDeceleration)
-            => speed.Squared().DividedBy(2 * brakingDeceleration);
+        {
+            return brakingDeceleration == Acceleration.Zero
+                ? Length.MaxValue
+                : speed.Squared().DividedBy(2 * brakingDeceleration);
+        }
 
         // https://de.wikipedia.org/wiki/Bremsverz%C3%B6gerung
         public static Acceleration BrakingDeceleration(Speed speed, Length brakingDistance)
         {
-            if (brakingDistance == Length.Zero)
-            {
-                return Acceleration.Zero;
-            }
-
-            return -speed.Squared().DividedBy(2 * brakingDistance);
+            return brakingDistance == Length.Zero
+                ? Acceleration.MinValue
+                : - speed.Squared().DividedBy(2 * brakingDistance);
         }
     }
 }

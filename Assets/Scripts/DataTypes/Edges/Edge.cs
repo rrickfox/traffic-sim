@@ -55,8 +55,9 @@ namespace DataTypes
 
         private void InitializeSubscriptions()
         {
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(cars.Sort);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(cars.Sort);
+            _allPublishers.Add(publisher);
         }
 
         // change origin point and update other edge
@@ -101,8 +102,8 @@ namespace DataTypes
                 var newPosRight = p.position - left * outgoingOffset;
                 meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
                 meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
-                meshVertices.Add(new Vector3(newPosLeft.x, 0, newPosLeft.y));
-                meshVertices.Add(new Vector3(newPosRight.x, 0, newPosRight.y));
+                meshVertices.Add(newPosLeft.toWorld());
+                meshVertices.Add(newPosRight.toWorld());
 
                 // uv-coordinates
                 var relativePos = i / (float)(shape.points.Length - 1);

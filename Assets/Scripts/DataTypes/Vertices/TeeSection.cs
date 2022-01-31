@@ -23,16 +23,21 @@ namespace DataTypes
             : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _throughOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _throughOrRight.other);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _throughOrLeft.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _throughOrLeft.other);
             _leftOrRight = leftOrRight;
             // calculates cycles based on perpendicular street
             if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
-                _leftOrRight.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
+                _leftOrRight.other.light = new TrafficLight(
+                    lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green],
+                    lightFrequencies[TrafficLight.LightState.Yellow],
+                    lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow],
+                    this,
+                    TrafficLight.LightState.Red,
+                    _leftOrRight.other);
             else
-                _leftOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+                _leftOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _leftOrRight.other);
 
             center = _leftOrRight.originPoint.position.closestPointOnLinesegment(_throughOrLeft.originPoint.position, _throughOrRight.originPoint.position);
             

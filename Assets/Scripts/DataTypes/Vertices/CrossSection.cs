@@ -8,6 +8,18 @@ using System;
 using Events;
 using UnitsNet;
 
+/*
+
+    possible combinations of trafficlight states
+    
+    up-down: redYellow, left-right: red
+    up-down: green, left-right: red
+    up-down: yellow, left-right: red
+    up-down: red, left-right: redYellow
+    up-down: red, left-right: green
+    up-down: red, left-right: yellow
+
+*/
 namespace DataTypes
 {
     public class CrossSection : Vertex
@@ -26,19 +38,24 @@ namespace DataTypes
             : base(up, right, down, left)
         {
             _up = up;
-            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _up.other);
             _right = right;
             // calculates cycles based on perpendicular street
             if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
-                _right.other.light = new TrafficLight(lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red);
+                _right.other.light = new TrafficLight(
+                    lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green],
+                    lightFrequencies[TrafficLight.LightState.Yellow],
+                    lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow],
+                    this,
+                    TrafficLight.LightState.Red,
+                    _right.other);
             else
-                _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green);
+                _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _right.other);
             
             _down = down;
-            _down.other.light = _up.other.light;
+            _down.other.light = _up.other.light.WithChangedEdge(_down.other);
             _left = left;
-            _left.other.light = _right.other.light;
+            _left.other.light = _right.other.light.WithChangedEdge(_left.other);
 
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();
@@ -48,10 +65,9 @@ namespace DataTypes
             GenerateRoute(_right, _down, _left, _up);
             GenerateRoute(_down, _left, _up, _right);
             GenerateRoute(_left, _up, _right, _down);
-            // TODO: toggle visibility of tracks via UI
-            ShowTracks();
 
-            _publisher = new ObjectPublisher(typePublisher);
+            // TODO: toggle visibility of tracks via UI
+            // ShowTracks();
         }
 
         public void ShowTracks()
@@ -454,6 +470,9 @@ namespace DataTypes
             texture.wrapMode = TextureWrapMode.Clamp;
             gameObject.GetComponent<MeshRenderer>().material.mainTexture = texture;
             gameObject.GetComponent<MeshRenderer>().material.SetTextureScale("_MainTex", Vector2.one);
+
+            foreach(var edge in edges)
+                edge.other.light.Display();
         }
 
         private Texture GetTexture(Vector3[] meshVertices)

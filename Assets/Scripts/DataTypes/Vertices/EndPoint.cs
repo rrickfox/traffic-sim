@@ -32,9 +32,10 @@ namespace DataTypes
                 throw new NetworkConfigurationError("All lanes going into an EndPoint have to be of type Through");
             
             // subscribe to updates
-            _publisher = new ObjectPublisher(typePublisher);
-            _publisher.Subscribe(SpawnCars);
-            _publisher.Subscribe(DespawnCars);
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(SpawnCars);
+            publisher.Subscribe(DespawnCars);
+            _allPublishers.Add(publisher);
         }
 
         public void SpawnCars()

@@ -1,0 +1,19 @@
+@startuml EndPoint
+!startsub endpoint
+
+DataTypes.Vertex <|-- DataTypes.EndPoint
+class DataTypes.EndPoint {
+    + prefab { get; } : UnityEngine.GameObject
+    - _weights { get; } : Dictionary<Edge, int>
+    + routingTable { get; } : Dictionary<Vertex, List<RouteSegment>>
+
+    + EndPoint(edge: Edge, frequencies: Frequencies, weights: Dictionary<Edge, int>)
+    + SpawnCars() : void
+    + DespawnCars() : void
+    + SubRoute(comingFrom: Edge, to: Edge) : LaneType
+}
+DataTypes.EndPoint *--> "-edge { get; }" DataTypes.Edge
+DataTypes.EndPoint *--> "-frequencies { get; }" Frequencies
+
+!endsub
+@enduml

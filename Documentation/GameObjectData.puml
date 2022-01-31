@@ -1,0 +1,25 @@
+@startuml gameobjectdata
+!startsub gameobjectdata
+
+abstract class DataTypes.GameObjectData {
+    + {abstract} prefab { get; } : UnityEngine.GameObject
+    + gameObject { get; } : UnityEngine.GameObject
+    + transform { get; } : UnityEngine.Transform
+    + behavior { get; } : DataTypes.LinkedBehavior
+    ~ _allPublishers { get; } : Set<ObjectPublisher>
+    
+    ~ GameObjectData()
+    + Dispose() : void
+}
+DataTypes.GameObjectData *--> "+ behaviour { get; }" DataTypes.LinkedBehaviour
+
+'DataTypes.GameObjectData ..> ObjectPublisher : <<use>>
+
+class UnityEngine.MonoBehaviour
+
+UnityEngine.MonoBehaviour <|-- DataTypes.LinkedBehaviour
+class DataTypes.LinkedBehaviour
+DataTypes.LinkedBehaviour *--> "+ data { get; set; }" DataTypes.GameObjectData
+
+!endsub
+@enduml

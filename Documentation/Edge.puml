@@ -1,0 +1,50 @@
+@startuml Edge
+!startsub edge
+
+DataTypes.GameObjectData <|-- DataTypes.Edge
+DataTypes.ITrack <|.. DataTypes.Edge
+class DataTypes.Edge {
+    + prefab = Utility.CONSTANTS.ROAD_PREFAB : UnityEngine.GameObject
+    + cars { get; } : SortableLinkedList<Car>
+    + outgoingLanes { get; } : List<Lane>
+    + incomingLanes { get; } : List<Lane>
+    + length { get; } => shape.length : UnitsNet.Length
+    ~ display { get; } : bool
+    .. Relations ..
+    + originPoint { get; } => shape.points[0] : RoadPoint
+    + vertex : Vertex
+    + other { get; } : Edge
+    + light { get; } : TrafficLight
+    + shape { get; ~set; } : RoadShape
+    + typePublisher : Events.TypePublisher
+    --
+    + Edge(velocity : UnitsNet.Speed, shape: RoadShape, outgoingLanes: List<Lane>, incomingLanes: List<Lane>)
+    - Edge(other: Edge, velocity: UnitsNet.Speed, outgoingLanes: List<Lane>)
+    - InitializeSubscriptions() : void
+    + UpdateOriginPoint(newOriginPoint : UnityEngine.Vector2) : void
+    ~ Display() : void
+    - GetTexture(tiling: int) : UnityEngine.Texture2D
+    - GetColorRow(lines: bool) : IEnumerable<UnityEngine.Color>
+    + GetAbsolutePosition(positionOnRoad: UnitsNet.Length, lane: float) : DataTypes.RoadPoint
+}
+
+/'
+DataTypes.Edge *--> "+ originPoint { get; }" DataTypes.RoadPoint
+DataTypes.Edge *--> "+ vertex " DataTypes.Vertex
+DataTypes.Edge *--> "+ other { get; }" DataTypes.Edge
+DataTypes.Edge *--> "+ light { get; }" DataTypes.TrafficLight
+DataTypes.Edge *--> "+ shape { get; ~set; }" DataTypes.RoadShape
+DataTypes.Edge *--> "+ speedLimit { get; -set; }" UnitsNet.Speed
+DataTypes.Edge *--> "+ typePublisher" TypePublisher
+'/
+
+DataTypes.Edge *--> DataTypes.RoadPoint
+DataTypes.Edge *--> DataTypes.Vertex
+DataTypes.Edge *--> DataTypes.Edge
+DataTypes.Edge *--> DataTypes.TrafficLight
+DataTypes.Edge *--> DataTypes.RoadShape
+DataTypes.Edge *--> UnitsNet.Speed
+DataTypes.Edge *--> Events.TypePublisher
+
+!endsub
+@enduml

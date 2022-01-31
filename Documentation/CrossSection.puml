@@ -1,0 +1,27 @@
+@startuml CrossSection
+!startsub crosssection
+
+DataTypes.Vertex <|-- DataTypes.CrossSection
+class DataTypes.CrossSection {
+    + prefab : UnityEngine.GameObject
+    - center : UnityEngine.Vector2
+    + CrossSection(up: Edge, right: Edge, down: Edge, left: Edge, lightFrequencies: Dictionary<TrafficLight.LightState, int>)
+    + ShowTracks() : void
+    + SubRoute(comingFrom: Edge, to: Edge) : LaneType
+    - generateRoute(edge: Edge, relativeLeft: Edge, oppositeEdge: Edge, relativeRight: Edge) : void
+    - Display() : void
+    - GetTexture(meshVertices: UnityEngine.Vector3[]) : UnityEngine.Texture
+    - GetDownRow(meshVertices: UnityEngine.Vector3[], stopLine: bool) : UnityEngine.Color[]
+    - GetUpRow(meshVertices: UnityEngine.Vector3[], stopLine: bool) : UnityEngine.Color[]
+    - GetRightColumn(meshVertices: UnityEngine.Vector3[], stopLine: bool) : UnityEngine.Color[]
+    - GetLeftColumn(meshVertices: UnityEngine.Vector3[], stopLine: bool) : UnityEngine.Color[]
+    - GetSectionCorner(leftEdge: Edge, rightEdge: Edge) : UnityEngine.Vector2
+    - GetBufferCorner(edge: Edge, left: bool) : UnityEngine.Vector2
+}
+DataTypes.CrossSection *--> "-up { get; }" DataTypes.Edge
+DataTypes.CrossSection *--> "-right { get; }" DataTypes.Edge
+DataTypes.CrossSection *--> "-down { get; }" DataTypes.Edge
+DataTypes.CrossSection *--> "-left { get; }" DataTypes.Edge
+
+!endsub
+@enduml

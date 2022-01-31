@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Saves
+﻿namespace Saves
 {
     public static class UserSettings
     {
@@ -11,8 +7,8 @@ namespace Saves
         public static float turnSpeed = 200f;
         public static float maxTurnAngle = 90f;
         public static float minTurnAngle = 20f;
-        public static float minZoom = 10f;
-        public static float maxZoom = 150f;
-        public static float zoomSpeed = 20f;
+        public static float minZoom = 5f;
+        public static float maxZoom = 500f;
+        public static float zoomSpeed = 50f;
     }
 }

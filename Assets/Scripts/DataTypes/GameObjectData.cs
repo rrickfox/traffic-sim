@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Events;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace DataTypes
         public GameObject gameObject { get; }
         public Transform transform { get; }
         public LinkedBehaviour behaviour { get; }
-        protected ObjectPublisher _publisher { get; set; }
+        protected HashSet<ObjectPublisher> _allPublishers { get; } = new HashSet<ObjectPublisher>();
 
         protected GameObjectData()
         {
@@ -25,7 +26,8 @@ namespace DataTypes
         {
             Object.Destroy(gameObject);
             // unsubscribe from all events to make sure there are no more references to this object
-            _publisher?.Dispose();
+            foreach (var publisher in _allPublishers)
+                publisher?.Dispose();
         }
     }
     

@@ -31,7 +31,7 @@ namespace Saves
             simulationManager.SwitchToSimulation();
         }
 
-        // unloads the current scene by delating the simulation gameobject with all his temporary childs
+        // unloads the current scene by deleting the simulation gameobject with all his temporary children
         private void Unload()
         {
             UpdatePublisher.ResetPublisher();

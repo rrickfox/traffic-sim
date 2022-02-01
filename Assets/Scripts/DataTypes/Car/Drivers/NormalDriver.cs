@@ -27,8 +27,8 @@ namespace DataTypes.Drivers
         public static Acceleration freeRoadBehaviour(Car myCar)
             => myCar.maxAcceleration * (1 - Mathf.Pow((float) (myCar.speed / myCar.track.speedLimit), delta));
 
-        public static Acceleration interactionBehaviour(Car myCar, Length frontDistance, Speed frontSpeed) {
-
+        public static Acceleration interactionBehaviour(Car myCar, Length frontDistance, Speed frontSpeed)
+        {
             // TODO: change speedlimit for each driver
             var s = Length.FromMeters(
                 myCar.bufferDistance.Meters //TODO: variate depending on speed

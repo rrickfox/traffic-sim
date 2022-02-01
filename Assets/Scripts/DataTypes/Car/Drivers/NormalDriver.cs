@@ -8,7 +8,7 @@ namespace DataTypes.Drivers
     public static class NormalDriver
     {
         private static int delta = 4; // magic number, see https://en.wikipedia.org/wiki/Intelligent_driver_model
-        public static Acceleration NormalAcceleration(Car myCar, Car frontCar)
+        public static Acceleration NormalAcceleration(Car myCar, Car frontCar, Length position)
         {
             var acceleration = SimulateHumanness(myCar);
             acceleration += freeRoadBehaviour(myCar);
@@ -16,7 +16,7 @@ namespace DataTypes.Drivers
             if (frontCar != null)
             {
                 // position is at middle of car, get distance between midpoints and remove half of each car length
-                var frontDistance = (frontCar.positionOnRoad - myCar.positionOnRoad) - ((myCar.length + frontCar.length) / 2);
+                var frontDistance = (position - myCar.positionOnRoad) - ((myCar.length + frontCar.length) / 2);
 
                 acceleration += interactionBehaviour(myCar, frontDistance, frontCar.speed);
             }

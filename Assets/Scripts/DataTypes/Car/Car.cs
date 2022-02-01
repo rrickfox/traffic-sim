@@ -103,19 +103,83 @@ namespace DataTypes
         // accelerate depending on the context
         private void SelectAccelerator()
         {
-            var frontCar = GetFrontCar();
+            // var frontCar = GetFrontCar();
             
-            if (frontCar == null && track.light != null)
-                acceleration = TrafficLightDriver.LightAcceleration(this);
+            // if (frontCar == null && track.light != null)
+            //     acceleration = TrafficLightDriver.LightAcceleration(this);
+            // else
+            //     acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+
+            var frontOnTrack = GetFrontCar();
+            var (next, position) = GetNextCar();
+            if (track.light != null)
+                if (frontOnTrack != null)
+                    acceleration = NormalDriver.NormalAcceleration(this, frontOnTrack, frontOnTrack.positionOnRoad);
+                else
+                    acceleration = TrafficLightDriver.LightAcceleration(this);
             else
-                acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+                acceleration = NormalDriver.NormalAcceleration(this, next, position);
         }
 
         // Returns the Car in front of the current Car
-        public Car GetFrontCar()
-            => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other) && other.positionOnRoad > positionOnRoad);
+        private Car GetFrontCar()
+            => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other, lane) && other.positionOnRoad > positionOnRoad);
 
-        public bool IsOnSameLane(Car otherCar) => Mathf.Abs(lane - otherCar.lane) < 0.99;
+        public (Car car, Length distance) GetNextCar()
+        {
+            Car front = GetFrontCar();
+            if (front != null)
+                return (front, front.positionOnRoad);
+
+            ITrack nextTrack = track;
+            float nextLane = Mathf.Round(lane);
+            RouteSegment nextSegment = segment;
+            int routeIndex = 0;
+            Length distance = Length.Zero;
+
+            do
+            {
+                distance += nextTrack.length;
+
+                if (nextSegment.edge.other.vertex is EndPoint)
+                    return (null, distance);
+
+                switch (nextTrack)
+                {
+                    case SectionTrack _:
+                        nextSegment = route.ElementAt(routeIndex);
+                        routeIndex++;
+                        nextTrack = nextSegment.edge;
+                        nextLane = nextTrack.newLane;
+                        break;
+                    case Edge _:
+                        var laneToTrack = nextSegment.edge.other.vertex.routes[nextSegment];
+                        try
+                        {
+                            nextTrack = laneToTrack[(int) nextLane];
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            return (null, distance);
+                        }
+                        break;
+                }
+
+                front = GetFrontCarOnTrack(nextTrack, nextLane);
+            } while (front == null);
+
+            distance += front.positionOnRoad;
+
+            return (
+                car: front,
+                distance: distance
+            );
+        }
+
+        private Car GetFrontCarOnTrack(ITrack track, float lane)
+            => track.cars.FirstOrDefault(other => IsOnSameLane(other, lane));
+
+        public bool IsOnSameLane(Car otherCar, float lane) => Mathf.Abs(lane - otherCar.lane) < 0.99;
         
         public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Mathf.Abs((float) (positionOnRoad - otherCar.positionOnRoad).Meters));
         

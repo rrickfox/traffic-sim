@@ -44,9 +44,10 @@ namespace Interface
             if (_visible)
             {
                 speedText.text = Mathf.Round((float) _car.speed.KilometersPerHour * 10) / 10f + " km/h";
-                var frontCar = _car.GetFrontCar();
-                if(frontCar != null)
-                    frontDistanceText.text = Mathf.Round((float) ((frontCar.positionOnRoad - _car.positionOnRoad) - ((_car.length + frontCar.length) / 2) - _car.bufferDistance).Meters * 10f) / 10f + " m";
+                var (frontCar, distance) = _car.GetNextCar();
+                if (frontCar != null)
+                    distance -= frontCar.length / 2;
+                frontDistanceText.text = Mathf.Round((float) (distance - _car.positionOnRoad - (_car.length / 2)).Meters * 10f) / 10f + " m";
             }
         }
     }

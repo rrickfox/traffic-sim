@@ -16,7 +16,8 @@ namespace DataTypes
             this.position = position;
             this.forward = forward;
             this._curvature = curvature;
-            this.speedLimit = Speed.FromMetersPerSecond(Mathf.Sqrt(9.81f * 0.8f * 1/_curvature));
+            // Speed is sqrt(g * coefficientOfFriction * radius), coefficient of friction is on paved, clean, dry road
+            this.speedLimit = (curvature != 0) ? Speed.FromMetersPerSecond(Mathf.Sqrt(9.81f * 0.8f * 1/_curvature)) : Speed.MaxValue;
         }
 
         // inverts the forward vector

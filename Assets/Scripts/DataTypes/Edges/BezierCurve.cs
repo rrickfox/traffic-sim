@@ -79,7 +79,7 @@ namespace DataTypes
                         + (9*t*t - 12*t + 3) * _controlPoint1
                         + (-9*t*t + 6*t) * _controlPoint2
                         + (6*t) * endPoint;
-                    Derivative1 = (t) => (-6*t + 6) * startPoint
+                    Derivative2 = (t) => (-6*t + 6) * startPoint
                         + (18*t - 12) * _controlPoint1
                         + (-18*t + 6) * _controlPoint2
                         + (6*t) * endPoint;

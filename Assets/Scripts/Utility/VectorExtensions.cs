@@ -12,8 +12,11 @@ namespace Utility
             return lineA + lambda * dir;
         }
 
-        // converts 2D vector to flat 3D vector (ingnoring/setting y-axis)
+        // converts 2D vector to flat 3D vector (ignoring/setting y-axis)
         public static Vector3 toWorld(this Vector2 source, float y = 0)
             => new Vector3(source.x, y, source.y);
+
+        public static float det(this Vector2 a, Vector2 b)
+            => a.x * b.y - a.y * b.x;
     }
 } 

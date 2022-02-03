@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 using static Utility.CONSTANTS;
 
 namespace DataTypes
@@ -7,25 +9,82 @@ namespace DataTypes
     public class BezierCurve
     {
         public Vector2 startPoint;
-        public Vector2 controlPoint1;
-        public Vector2 controlPoint2;
+        private Vector2 _controlPoint1;
+        private Vector2 _controlPoint2;
         public Vector2 endPoint;
         private enum BezierDegree {Linear, Quadratic, Cubic}
         private BezierDegree _degree;
+        // function to calculate a single point on a bezier curve using Bernstein polynomials, set at runtime based on degree
+        private Func<float, Vector2> Evaluate;
+        private Func<float, Vector2> Derivative1;
+        private Func<float, Vector2> Derivative2;
+        private Func<float, float> Curvature;
 
         public BezierCurve(Vector2 startPoint, Vector2 endPoint, Vector2? controlPoint1 = null, Vector2? controlPoint2 = null)
         {
             this.startPoint = startPoint;
             this.endPoint = endPoint;
-            _degree = BezierDegree.Linear;
             if(controlPoint1 != null)
             {
-                this.controlPoint1 = (Vector3) controlPoint1;
-                _degree = BezierDegree.Quadratic;
+                this._controlPoint1 = (Vector2) controlPoint1;
                 if(controlPoint2 != null)
                 {
-                    this.controlPoint2 = (Vector3) controlPoint2;
+                    this._controlPoint2 = (Vector2) controlPoint2;
                     _degree = BezierDegree.Cubic;
+                }
+                else
+                {
+                    _degree = BezierDegree.Quadratic;
+                }
+            }
+            else
+                _degree = BezierDegree.Linear;
+
+            setFunctions();
+        }
+
+        private void setFunctions()
+        {
+            switch(_degree)
+            {
+                case BezierDegree.Linear:
+                {
+                    Evaluate = (t) => (1 - t) * startPoint + t * endPoint;
+                    Derivative1 = (t) => endPoint - startPoint;
+                    Derivative2 = (t) => Vector2.zero;
+                    Curvature = (t) => 0;
+                    break;
+                }
+                case BezierDegree.Quadratic:
+                {
+                    Evaluate = (t) => (1 - 2*t + t*t) * startPoint
+                        + (2*t - 2*t*t) * _controlPoint1
+                        + (t*t) * endPoint;
+                    Derivative1 = (t) => (2*t - 2) * startPoint
+                        + (-4*t + 2) * _controlPoint1
+                        + (2*t) * endPoint;
+                    Derivative2 = (t) => (2) * startPoint
+                        + (-4) * _controlPoint1
+                        + (2) * endPoint;
+                    Curvature = (t) => { var a = Derivative1(t); return a.det(Derivative2(t)) / Mathf.Pow(a.magnitude, 3); };
+                    break;
+                }
+                case BezierDegree.Cubic:
+                {
+                    Evaluate = (t) => (1 - 3*t + 3*t*t - t*t*t) * startPoint
+                        + (3*t - 6*t*t + 3*t*t*t) * _controlPoint1
+                        + (3*t*t - 3*t*t*t) * _controlPoint2
+                        + (t*t*t) * endPoint;
+                    Derivative1 = (t) => (-3*t*t + 6*t - 3) * startPoint
+                        + (9*t*t - 12*t + 3) * _controlPoint1
+                        + (-9*t*t + 6*t) * _controlPoint2
+                        + (6*t) * endPoint;
+                    Derivative1 = (t) => (-6*t + 6) * startPoint
+                        + (18*t - 12) * _controlPoint1
+                        + (-18*t + 6) * _controlPoint2
+                        + (6*t) * endPoint;
+                    Curvature = (t) => { var a = Derivative1(t); return a.det(Derivative2(t)) / Mathf.Pow(a.magnitude, 3); };
+                    break;
                 }
             }
         }
@@ -34,38 +93,8 @@ namespace DataTypes
         public IEnumerable<Vector2> CalculatePoints()
         {
             for(var i = BEZIER_RESOLUTION; i <= 1; i += BEZIER_RESOLUTION)
-                yield return Evaluate(i);
-        }
-
-        // function to calculate a single point on a bezier curve
-        private Vector2 Evaluate(float t)
-        {
-            switch(_degree)
             {
-                case BezierDegree.Linear:
-                {
-                    return Vector2.Lerp(startPoint, endPoint, t);
-                }
-                case BezierDegree.Quadratic:
-                {
-                    var p0 = Vector2.Lerp(startPoint, controlPoint1, t);
-                    var p1 = Vector2.Lerp(controlPoint1, endPoint, t);
-                    
-                    return Vector2.Lerp(p0, p1, t);
-                }
-                case BezierDegree.Cubic:
-                {
-                    var p00 = Vector2.Lerp(startPoint, controlPoint1, t);
-                    var p01 = Vector2.Lerp(controlPoint1, controlPoint2, t);
-                    var p02 = Vector2.Lerp(controlPoint2, endPoint, t);
-
-                    var p10 = Vector2.Lerp(p00, p01, t);
-                    var p11 = Vector2.Lerp(p01, p02, t);
-
-                    return Vector2.Lerp(p10, p11, t);
-                }
-                default:
-                    return Vector2.zero;
+                yield return Evaluate(i);
             }
         }
 
@@ -77,9 +106,9 @@ namespace DataTypes
                 case BezierDegree.Linear:
                     return new BezierCurve(endPoint, startPoint, null, null);
                 case BezierDegree.Quadratic:
-                    return new BezierCurve(endPoint, startPoint, controlPoint1, null);
+                    return new BezierCurve(endPoint, startPoint, _controlPoint1, null);
                 case BezierDegree.Cubic:
-                    return new BezierCurve(endPoint, startPoint, controlPoint2, controlPoint1);
+                    return new BezierCurve(endPoint, startPoint, _controlPoint2, _controlPoint1);
                 default:
                     return null;
             }

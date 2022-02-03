@@ -90,11 +90,11 @@ namespace DataTypes
         }
 
         // calculates points on a bezier curve, not necessarily with same distance
-        public IEnumerable<Vector2> CalculatePoints()
+        public IEnumerable<(Vector2 pos, float curve)> CalculatePoints()
         {
             for(var i = BEZIER_RESOLUTION; i <= 1; i += BEZIER_RESOLUTION)
             {
-                yield return Evaluate(i);
+                yield return (Evaluate(i), Curvature(i));
             }
         }
 

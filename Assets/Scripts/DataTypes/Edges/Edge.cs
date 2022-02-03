@@ -237,5 +237,11 @@ namespace DataTypes
 
             return absolutePosition;
         }
+
+        public IEnumerable<RoadPoint> GetRoadPointsInRange(Length start, Length range) {
+            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits(); i++) {
+                yield return shape.points[i];
+            }
+        }
     }
 }

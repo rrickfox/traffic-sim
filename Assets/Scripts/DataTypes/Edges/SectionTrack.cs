@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnitsNet;
 using Utility;
+using System.Collections.Generic;
 
 namespace DataTypes
 {
@@ -29,6 +30,12 @@ namespace DataTypes
             var pos = Mathf.Clamp(positionOnRoad.ToDistanceUnits(), 0, length.ToDistanceUnits());
             var index = Mathf.RoundToInt(pos);
             return shape.points[index];
+        }
+
+        public IEnumerable<RoadPoint> GetRoadPointsInRange(Length start, Length range) {
+            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits(); i++) {
+                yield return shape.points[i];
+            }
         }
     }
 }

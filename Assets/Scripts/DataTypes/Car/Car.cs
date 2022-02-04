@@ -179,6 +179,28 @@ namespace DataTypes
         private Car GetFrontCarOnTrack(ITrack track, float lane)
             => track.cars.FirstOrDefault(other => IsOnSameLane(other, lane));
 
+        public ITrack GetNextTrack()
+        {
+            switch (track)
+            {
+                case SectionTrack _:
+                    return route.ElementAt(0).edge;
+                case Edge _:
+                    if (segment.edge.other.vertex.routes == null)
+                        return null;
+                    var laneToTrack = segment.edge.other.vertex.routes[segment];
+                    try
+                    {
+                        return laneToTrack[(int) lane];
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return laneToTrack[laneToTrack.Keys.First()];
+                    }
+            }
+            return null;
+        }
+
         public bool IsOnSameLane(Car otherCar, float lane) => Mathf.Abs(lane - otherCar.lane) < 0.99;
         
         public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Mathf.Abs((float) (positionOnRoad - otherCar.positionOnRoad).Meters));

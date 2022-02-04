@@ -54,6 +54,7 @@ namespace DataTypes
                         route = routingTable[Utility.Random.Choose(_weights)].ToList();
                     } while (!_edge.outgoingLanes.ElementAt(lane).types.Contains(route.First().laneType));
                     new Car(lane, route);
+                    // new Car(lane, routingTable[Utility.Random.Choose(_weights)].ToList());
                 }
             }
         }

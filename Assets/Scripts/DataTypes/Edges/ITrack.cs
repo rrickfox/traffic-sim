@@ -14,5 +14,6 @@ namespace DataTypes
         SortableLinkedList<Car> cars { get; }
         RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane);
         IEnumerable<RoadPoint> GetRoadPointsInRange(Length start, Length range);
+        Speed GetSpeedLimitAtPosition(Length position);
     }
 }

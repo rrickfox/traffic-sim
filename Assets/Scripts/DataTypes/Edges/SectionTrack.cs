@@ -24,6 +24,9 @@ namespace DataTypes
             this.newLane = newLane;
         }
 
+        public Speed GetSpeedLimitAtPosition(Length position)
+            => Formulas.Min(shape.points[Mathf.RoundToInt((float) (position / 1f.DistanceUnitsToLength()))].speedLimit, speedLimit);
+
         public RoadPoint GetAbsolutePosition(Length positionOnRoad, float lane = 0)
         {
             // get first estimation of position from saved array of points
@@ -33,7 +36,7 @@ namespace DataTypes
         }
 
         public IEnumerable<RoadPoint> GetRoadPointsInRange(Length start, Length range) {
-            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits(); i++) {
+            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits() && i < shape.points.Length; i++) {
                 yield return shape.points[i];
             }
         }

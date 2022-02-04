@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Events;
 using UnitsNet;
@@ -70,6 +72,9 @@ namespace DataTypes
             else
                 other.Display();
         }
+
+        public Speed GetSpeedLimitAtPosition(Length position)
+            => Formulas.Min(shape.points[Mathf.RoundToInt(position.ToDistanceUnits())].speedLimit, speedLimit);
 
         protected void Display()
         {
@@ -239,7 +244,7 @@ namespace DataTypes
         }
 
         public IEnumerable<RoadPoint> GetRoadPointsInRange(Length start, Length range) {
-            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits(); i++) {
+            for(var i = (int) start.ToDistanceUnits(); i < (start + range).ToDistanceUnits() && i < shape.points.Length; i++) {
                 yield return shape.points[i];
             }
         }

@@ -23,16 +23,16 @@ namespace DataTypes.Drivers
                     //     acceleration += myCar.maxAcceleration;
                     /*else*/
                     if (distanceLeft <= myCar.criticalDistance)
-                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero);
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero) + NormalDriver.slowDownBehaviour(myCar, distanceLeft);
                     else
-                        acceleration += NormalDriver.freeRoadBehaviour(myCar);
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.slowDownBehaviour(myCar, Length.MaxValue);
                     break;
                     
                 case TrafficLight.LightState.Red:
                     if (distanceLeft <= myCar.criticalDistance)
-                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero);
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero) + NormalDriver.slowDownBehaviour(myCar, distanceLeft);
                     else
-                        acceleration += NormalDriver.freeRoadBehaviour(myCar);
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.slowDownBehaviour(myCar, Length.MaxValue);
                     break;
             }
             

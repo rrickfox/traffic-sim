@@ -221,6 +221,16 @@ namespace Saves
                     , throughFrequency);
             }
         }
+
+        public class CrossSectionTrafficLight
+        {
+            public int total { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> right { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> up { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> down { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> left { get; set; }
+            public DataTypes.CrossSection.TrafficLightConfig Deserialize() => new DataTypes.CrossSection.TrafficLightConfig(total, up, right, down, left);
+        }
         
         public class CrossSection : IVertex<DataTypes.CrossSection>
         {
@@ -228,7 +238,7 @@ namespace Saves
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
-            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
+            public CrossSectionTrafficLight sequence { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -269,9 +279,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
                 
-                return new DataTypes.CrossSection(actualEdges["up"]
-                    , actualEdges["right"], actualEdges["down"], actualEdges["left"]
-                    , upDownFrequency);
+                return new DataTypes.CrossSection(actualEdges["up"], actualEdges["right"], actualEdges["down"], actualEdges["left"], sequence.Deserialize());
             }
         }
     }

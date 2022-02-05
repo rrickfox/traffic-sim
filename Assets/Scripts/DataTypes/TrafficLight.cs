@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Runtime.Versioning;
 using System.Collections.Generic;
 using Events;
 using UnityEngine;
@@ -8,17 +10,40 @@ namespace DataTypes
 {
     public class TrafficLight : GameObjectData
     {
+        public struct Config
+        {
+            public List<LaneType> types;
+            public LightState state;
+        }
         public override GameObject prefab { get; } = CONSTANTS.EMPTY_PREFAB;
         public enum LightState { Green, Yellow, Red, RedYellow }
         public LightState state { get; private set; }
+        private Dictionary<int, Config> _sequence { get; }
+        private int _totalTicks { get; }
+        public Dictionary<LaneType, LightState> states { get; private set; } = new Dictionary<LaneType, LightState>();
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
-        private int _ticks { get; set; }
+        private int _ticks { get; set; } = 0;
         private int _redToRedYellow { get; }
         private int _yellow { get; }
         private int _greenToYellow { get; }
         private Vertex _section { get; }
         private Edge _edge { get; }
+
+        public TrafficLight(Dictionary<int, Config> sequence, int totalTicks, Vertex intersection, Edge edge)
+        {
+            _sequence = sequence;
+            _totalTicks = totalTicks;
+            _section = intersection;
+            _edge = edge;
+
+            var startState = _sequence[0].state;
+            _sequence[0].types.ForEach(type => states[type] = startState);
+
+            var publisher = new ObjectPublisher(typePublisher);
+            publisher.Subscribe(ChangeState);
+            _allPublishers.Add(publisher);
+        }
 
 
         public TrafficLight(Dictionary<LightState, int> frequencies, Vertex intersection, LightState start, Edge edge)
@@ -54,85 +79,75 @@ namespace DataTypes
             return new TrafficLight(_redToRedYellow, _yellow, _greenToYellow, _section, state, edge);
         }
 
-        // counts ticks and compares to given length of each traffic light cycle
-        // changes state accordingly and resets counter
-        public void ChangeState()
-        {
-            if(_redToRedYellow == 0 && _greenToYellow == 0 && _yellow == 0) // if all states are 0, don't change anything
-                return;
-            
-            _ticks++;
-            switch (state)
+        private void UpdateVisuals() {
+            if (_sequence.Values.Any(config => config.types.Count != 3))
             {
-                case LightState.Red:
+                // at some point not all are the same
+            }
+            else
+            {
+                switch(states[LaneType.Through])
                 {
-                    if (_ticks == _redToRedYellow)
+                    case LightState.Green:
                     {
-                        _ticks = 0;
-                        state = LightState.RedYellow;
-
-                        var flatLight = transform.GetChild(1);
-                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                        var light = transform.GetChild(1);
-                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    }
-
-                    break;
-                }
-                case LightState.Yellow:
-                {
-                    if (_ticks == _yellow)
-                    {
-                        _ticks = 0;
-                        state = LightState.Red;
-
-                        var flatLight = transform.GetChild(1);
-                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
-                        flatLight.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                        var light = transform.GetChild(1);
-                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
-                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                    }
-
-                    break;
-                }
-                case LightState.Green:
-                {
-                    if (_ticks == _greenToYellow)
-                    {
-                        _ticks = 0;
-                        state = LightState.Yellow;
-                        
-                        var flatLight = transform.GetChild(1);
-                        flatLight.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
-                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                        var light = transform.GetChild(1);
-                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
-                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    }
-
-                    break;
-                }
-                case LightState.RedYellow:
-                {
-                    if(_ticks == _yellow)
-                    {
-                        _ticks = 0;
-                        state = LightState.Green;
-
-                        var flatLight = transform.GetChild(1);
-                        flatLight.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
-                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
-                        flatLight.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                        // previous is red-yellow, so turn off both and turn on green
                         var light = transform.GetChild(1);
                         light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
                         light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
                         light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                        var flatLight = transform.GetChild(1);
+                        flatLight.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/RedOff");
+                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+                        flatLight.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
+                        break;
                     }
-
-                    break;
+                    case LightState.Yellow:
+                    {
+                        // turn of green, turn on yellow
+                        var light = transform.GetChild(1);
+                        light.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                        var flatLight = transform.GetChild(1);
+                        flatLight.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
+                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                        break;
+                    }
+                    case LightState.Red:
+                    {
+                        // turn of yellow, turn on red
+                        var light = transform.GetChild(1);
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+                        light.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
+                        var flatLight = transform.GetChild(1);
+                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
+                        flatLight.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
+                        break;
+                    }
+                    case LightState.RedYellow:
+                    {
+                        // only add yellow, red is already active
+                        var light = transform.GetChild(1);
+                        light.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                        var flatLight = transform.GetChild(1);
+                        flatLight.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
+                        break;
+                    }
                 }
             }
+        }
+
+        // counts ticks and compares to given length of each traffic light cycle
+        // changes state accordingly and resets counter
+        public void ChangeState()
+        {
+            if (_sequence.ContainsKey(_ticks))
+            {
+                var newState = _sequence[_ticks].state;
+                _sequence[_ticks].types.ForEach(type => states[type] = newState);
+            }
+            _ticks++;
+            _ticks = _ticks % _totalTicks;
+            UpdateVisuals();
         }
 
         public void Display()
@@ -168,35 +183,7 @@ namespace DataTypes
             light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/YellowOff");
             light.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/GreenOff");
 
-            switch(state)
-            {
-                case LightState.Red:
-                {
-                    light.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                    flatLight.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                    break;
-                }
-                case LightState.Yellow:
-                {
-                    light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    flatLight.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    break;
-                }
-                case LightState.Green:
-                {
-                    light.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
-                    flatLight.transform.GetChild(3).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Green");
-                    break;
-                }
-                case LightState.RedYellow:
-                {
-                    light.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                    light.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    flatLight.transform.GetChild(1).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Red");
-                    flatLight.transform.GetChild(2).gameObject.GetComponent<MeshRenderer>().material = Resources.Load<Material>("TrafficLights/Yellow");
-                    break;
-                }
-            }
+            UpdateVisuals();
         }
     }
 }

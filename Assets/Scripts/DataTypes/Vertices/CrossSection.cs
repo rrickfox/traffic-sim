@@ -24,6 +24,22 @@ namespace DataTypes
 {
     public class CrossSection : Vertex
     {
+        public struct TrafficLightConfig
+        {
+            public int total;
+            public Dictionary<int, TrafficLight.Config> up;
+            public Dictionary<int, TrafficLight.Config> right;
+            public Dictionary<int, TrafficLight.Config> down;
+            public Dictionary<int, TrafficLight.Config> left;
+            public TrafficLightConfig(int total, Dictionary<int, TrafficLight.Config> up, Dictionary<int, TrafficLight.Config> right, Dictionary<int, TrafficLight.Config> down, Dictionary<int, TrafficLight.Config> left)
+            {
+                this.total = total;
+                this.up = up;
+                this.right = right;
+                this.down = down;
+                this.left = left;
+            }
+        }
         public override GameObject prefab { get; } = ROAD_PREFAB;
 
         private Edge _up { get; }
@@ -33,29 +49,17 @@ namespace DataTypes
         
         private Vector2 center;
         
-        public CrossSection(Edge up, Edge right, Edge down, Edge left
-            , Dictionary<TrafficLight.LightState, int> lightFrequencies)
-            : base(up, right, down, left)
+        public CrossSection(Edge up, Edge right, Edge down, Edge left, TrafficLightConfig sequence) : base(up, right, down, left)
         {
+            // TODO: Add check for sequence validity
             _up = up;
-            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _up.other);
+            _up.other.light = new TrafficLight(sequence.up, sequence.total, this, _up.other);
             _right = right;
-            // calculates cycles based on perpendicular street
-            if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
-                _right.other.light = new TrafficLight(
-                    lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green],
-                    lightFrequencies[TrafficLight.LightState.Yellow],
-                    lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow],
-                    this,
-                    TrafficLight.LightState.Red,
-                    _right.other);
-            else
-                _right.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _right.other);
-            
+            _right.other.light = new TrafficLight(sequence.right, sequence.total, this, _right.other);
             _down = down;
-            _down.other.light = _up.other.light.WithChangedEdge(_down.other);
+            _down.other.light = new TrafficLight(sequence.down, sequence.total, this, _down.other);
             _left = left;
-            _left.other.light = _right.other.light.WithChangedEdge(_left.other);
+            _left.other.light = new TrafficLight(sequence.left, sequence.total, this, _left.other);
 
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();

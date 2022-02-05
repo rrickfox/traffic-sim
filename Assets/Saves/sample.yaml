@@ -93,10 +93,30 @@ vertices:
       2a : 1
       3a : 1
   - !crosssection
-    upDownFrequency: 
-        red: 500
-        yellow: 50
-        green: 200
+    sequence:
+      total: 1000
+      up:
+        0: {types: [leftTurn, through, rightTurn], state: green}
+        200: {types: [leftTurn, through, rightTurn], state: yellow}
+        250: {types: [leftTurn, through, rightTurn], state: red}
+        950: {types: [leftTurn, through, rightTurn], state: redYellow}
+      down:
+        0: {types: [leftTurn, through, rightTurn], state: green}
+        200: {types: [leftTurn, through, rightTurn], state: yellow}
+        250: {types: [leftTurn, through, rightTurn], state: red}
+        950: {types: [leftTurn, through, rightTurn], state: redYellow}
+      left:
+        0: {types: [leftTurn, through, rightTurn], state: red}
+        300: {types: [leftTurn, through, rightTurn], state: redYellow}
+        350: {types: [leftTurn, through, rightTurn], state: green}
+        850: {types: [leftTurn, through, rightTurn], state: yellow}
+        900: {types: [leftTurn, through, rightTurn], state: red}
+      right:
+        0: {types: [leftTurn, through, rightTurn], state: red}
+        300: {types: [leftTurn, through, rightTurn], state: redYellow}
+        350: {types: [leftTurn, through, rightTurn], state: green}
+        850: {types: [leftTurn, through, rightTurn], state: yellow}
+        900: {types: [leftTurn, through, rightTurn], state: red}
     up: 1b
     right: 2b
     down: 3b

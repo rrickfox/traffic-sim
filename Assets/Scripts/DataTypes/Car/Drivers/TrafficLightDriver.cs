@@ -12,7 +12,7 @@ namespace DataTypes.Drivers
             var distanceLeft = myCar.track.length - myCar.positionOnRoad - myCar.criticalBufferDistance;
             var brakingDeceleration = BrakingDeceleration(myCar.speed, distanceLeft);
             
-            switch (myCar.track.light.state)
+            switch (myCar.track.light.states[myCar.segment.laneType])
             {
                 case TrafficLight.LightState.Green:
                     acceleration += NormalDriver.freeRoadBehaviour(myCar);

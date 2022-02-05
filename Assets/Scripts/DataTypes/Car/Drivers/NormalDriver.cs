@@ -54,24 +54,24 @@ namespace DataTypes.Drivers
             // sadly this is still not refined enough, so this will remain unused until further development
             return Acceleration.Zero;
 
-            var lookAheadDistance = Formulas.BrakingDistance(myCar.speed, myCar.brakingDeceleration.Inverse()) * 2;
-            var points = myCar.track.GetRoadPointsInRange(myCar.positionOnRoad, lookAheadDistance).ToList();
-            var length = points.Count() * 1f.DistanceUnitsToLength();
+            // var lookAheadDistance = Formulas.BrakingDistance(myCar.speed, myCar.brakingDeceleration.Inverse()) * 2;
+            // var points = myCar.track.GetRoadPointsInRange(myCar.positionOnRoad, lookAheadDistance).ToList();
+            // var length = points.Count() * 1f.DistanceUnitsToLength();
 
-            if (length < lookAheadDistance)
-            {
-                var nextTrack = myCar.GetNextTrack();
-                if (nextTrack != null)
-                    points.AddRange(nextTrack.GetRoadPointsInRange(Length.Zero, lookAheadDistance - length));
-            }
+            // if (length < lookAheadDistance)
+            // {
+            //     var nextTrack = myCar.GetNextTrack();
+            //     if (nextTrack != null)
+            //         points.AddRange(nextTrack.GetRoadPointsInRange(Length.Zero, lookAheadDistance - length));
+            // }
 
-            Speed limit = points.Min(point => point.speedLimit);
-            Length distanceToSpeedDecrease = points.FindIndex(point => point.speedLimit == limit) * 1f.DistanceUnitsToLength();
+            // Speed limit = points.Min(point => point.speedLimit);
+            // Length distanceToSpeedDecrease = points.FindIndex(point => point.speedLimit == limit) * 1f.DistanceUnitsToLength();
 
-            if (myCar.speed > limit && distanceToSpeedDecrease < frontDistance) // only possible if speedLimit is reduced
-                return interactionBehaviour(myCar, distanceToSpeedDecrease, limit);
+            // if (myCar.speed > limit && distanceToSpeedDecrease < frontDistance) // only possible if speedLimit is reduced
+            //     return interactionBehaviour(myCar, distanceToSpeedDecrease, limit);
 
-            return Acceleration.Zero;
+            // return Acceleration.Zero;
         }
 
         private static TimeSpan GetMinimumTimeToReachPosition(Car myCar, Length distance)

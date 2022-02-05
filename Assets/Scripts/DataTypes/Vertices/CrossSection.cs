@@ -67,7 +67,7 @@ namespace DataTypes
             GenerateRoute(_left, _up, _right, _down);
 
             // TODO: toggle visibility of tracks via UI
-            // ShowTracks();
+            ShowTracks();
         }
 
         public void ShowTracks()

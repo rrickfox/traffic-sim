@@ -94,29 +94,51 @@ vertices:
       3a : 1
   - !crosssection
     sequence:
-      total: 1000
+      total: 1700
       up:
-        0: {types: [leftTurn, through, rightTurn], state: green}
-        200: {types: [leftTurn, through, rightTurn], state: yellow}
-        250: {types: [leftTurn, through, rightTurn], state: red}
-        950: {types: [leftTurn, through, rightTurn], state: redYellow}
+        0: {types: [through, rightTurn], state: green}
+        200: {types: [through, rightTurn], state: yellow}
+        250: {types: [through, rightTurn], state: red}
+        251: {types: [leftTurn], state: redYellow}
+        300: {types: [leftTurn], state: green}
+        600: {types: [leftTurn], state: yellow}
+        650: {types: [leftTurn], state: red}
+        1400: {types: [rightTurn], state: redYellow}
+        1450: {types: [rightTurn], state: green}
+        1700: {types: [through], state: redYellow}
       down:
-        0: {types: [leftTurn, through, rightTurn], state: green}
-        200: {types: [leftTurn, through, rightTurn], state: yellow}
-        250: {types: [leftTurn, through, rightTurn], state: red}
-        950: {types: [leftTurn, through, rightTurn], state: redYellow}
+        0: {types: [through, rightTurn], state: green}
+        200: {types: [through, rightTurn], state: yellow}
+        250: {types: [through, rightTurn], state: red}
+        251: {types: [leftTurn], state: redYellow}
+        300: {types: [leftTurn], state: green}
+        600: {types: [leftTurn], state: yellow}
+        650: {types: [leftTurn], state: red}
+        1400: {types: [rightTurn], state: redYellow}
+        1450: {types: [rightTurn], state: green}
+        1700: {types: [through], state: redYellow}
       left:
-        0: {types: [leftTurn, through, rightTurn], state: red}
-        300: {types: [leftTurn, through, rightTurn], state: redYellow}
-        350: {types: [leftTurn, through, rightTurn], state: green}
-        850: {types: [leftTurn, through, rightTurn], state: yellow}
-        900: {types: [leftTurn, through, rightTurn], state: red}
+        450: {types: [rightTurn], state: redYellow}
+        500: {types: [rightTurn], state: green}
+        700: {types: [through], state: redYellow}
+        750: {types: [through], state: green}
+        1150: {types: [through, rightTurn], state: yellow}
+        1200: {types: [through, rightTurn], state: red}
+        1201: {types: [leftTurn], state: redYellow}
+        1250: {types: [leftTurn], state: green}
+        1550: {types: [leftTurn], state: yellow}
+        1600: {types: [leftTurn], state: red}
       right:
-        0: {types: [leftTurn, through, rightTurn], state: red}
-        300: {types: [leftTurn, through, rightTurn], state: redYellow}
-        350: {types: [leftTurn, through, rightTurn], state: green}
-        850: {types: [leftTurn, through, rightTurn], state: yellow}
-        900: {types: [leftTurn, through, rightTurn], state: red}
+        450: {types: [rightTurn], state: redYellow}
+        500: {types: [rightTurn], state: green}
+        700: {types: [through], state: redYellow}
+        750: {types: [through], state: green}
+        1150: {types: [through, rightTurn], state: yellow}
+        1200: {types: [through, rightTurn], state: red}
+        1201: {types: [leftTurn], state: redYellow}
+        1250: {types: [leftTurn], state: green}
+        1550: {types: [leftTurn], state: yellow}
+        1600: {types: [leftTurn], state: red}
     up: 1b
     right: 2b
     down: 3b

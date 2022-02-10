@@ -20,7 +20,8 @@ namespace DataTypes
         public LightState state { get; private set; }
         private Dictionary<int, Config> _sequence { get; }
         private int _totalTicks { get; }
-        public Dictionary<LaneType, LightState> states { get; private set; } = new Dictionary<LaneType, LightState>();
+        public Dictionary<LaneType, LightState> states { get; private set; }
+            = new Dictionary<LaneType, LightState>{{LaneType.LeftTurn, LightState.Red}, {LaneType.Through, LightState.Red}, {LaneType.RightTurn, LightState.Red}};
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         private int _ticks { get; set; } = 0;
@@ -37,8 +38,11 @@ namespace DataTypes
             _section = intersection;
             _edge = edge;
 
-            var startState = _sequence[0].state;
-            _sequence[0].types.ForEach(type => states[type] = startState);
+            if (_sequence.ContainsKey(0))
+            {
+                var startState = _sequence[0].state;
+                _sequence[0].types.ForEach(type => states[type] = startState);
+            }
 
             var publisher = new ObjectPublisher(typePublisher);
             publisher.Subscribe(ChangeState);

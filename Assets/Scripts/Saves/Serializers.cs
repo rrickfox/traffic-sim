@@ -169,13 +169,22 @@ namespace Saves
                 }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             }
         }
-        
+
+        public class TeeSectionTrafficLight
+        {
+            public int total { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> throughOrRight { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> throughOrLeft { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> leftOrRight { get; set; }
+            public DataTypes.TeeSection.TrafficLightConfig Deserialize() => new DataTypes.TeeSection.TrafficLightConfig(total, throughOrRight, throughOrLeft, leftOrRight);
+        }
+
         public class TeeSection : IVertex<DataTypes.TeeSection>
         {
             public string throughOrRight { get; set; }
             public string throughOrLeft { get; set; }
             public string leftOrRight { get; set; }
-            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
+            public TeeSectionTrafficLight sequence { get; set; }
 
             public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -216,9 +225,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
                 
-                return new DataTypes.TeeSection(actualEdges["throughOrRight"]
-                    , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]
-                    , throughFrequency);
+                return new DataTypes.TeeSection(actualEdges["throughOrRight"], actualEdges["throughOrLeft"], actualEdges["leftOrRight"], sequence.Deserialize());
             }
         }
 
@@ -231,7 +238,7 @@ namespace Saves
             public Dictionary<int, DataTypes.TrafficLight.Config> left { get; set; }
             public DataTypes.CrossSection.TrafficLightConfig Deserialize() => new DataTypes.CrossSection.TrafficLightConfig(total, up, right, down, left);
         }
-        
+
         public class CrossSection : IVertex<DataTypes.CrossSection>
         {
             public string up { get; set; }

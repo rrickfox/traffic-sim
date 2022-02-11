@@ -11,6 +11,20 @@ namespace DataTypes
 {
     public class TeeSection : Vertex
     {
+        public struct TrafficLightConfig
+        {
+            public int total;
+            public Dictionary<int, TrafficLight.Config> throughOrRight;
+            public Dictionary<int, TrafficLight.Config> throughOrLeft;
+            public Dictionary<int, TrafficLight.Config> leftOrRight;
+            public TrafficLightConfig(int total, Dictionary<int, TrafficLight.Config> throughOrRight, Dictionary<int, TrafficLight.Config> throughOrLeft, Dictionary<int, TrafficLight.Config> leftOrRight)
+            {
+                this.total = total;
+                this.throughOrRight = throughOrRight;
+                this.throughOrLeft = throughOrLeft;
+                this.leftOrRight = leftOrRight;
+            }
+        }
         public override GameObject prefab { get; } = ROAD_PREFAB;
 
         private Edge _throughOrRight { get; }
@@ -19,25 +33,14 @@ namespace DataTypes
 
         private Vector2 center;
         
-        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, Dictionary<TrafficLight.LightState, int> lightFrequencies)
-            : base(throughOrRight, throughOrLeft, leftOrRight)
+        public TeeSection(Edge throughOrRight, Edge throughOrLeft, Edge leftOrRight, TrafficLightConfig sequence) : base(throughOrRight, throughOrLeft, leftOrRight)
         {
             _throughOrRight = throughOrRight;
-            _throughOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _throughOrRight.other);
+            _throughOrRight.other.light = new TrafficLight(sequence.throughOrRight, sequence.total, this, _throughOrRight.other);
             _throughOrLeft = throughOrLeft;
-            _throughOrLeft.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _throughOrLeft.other);
+            _throughOrLeft.other.light = new TrafficLight(sequence.throughOrLeft, sequence.total, this, _throughOrLeft.other);
             _leftOrRight = leftOrRight;
-            // calculates cycles based on perpendicular street
-            if(lightFrequencies.Values.Any(freq => freq != 0)) // check if all the frequencies are 0
-                _leftOrRight.other.light = new TrafficLight(
-                    lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green],
-                    lightFrequencies[TrafficLight.LightState.Yellow],
-                    lightFrequencies[TrafficLight.LightState.Red] - lightFrequencies[TrafficLight.LightState.Yellow],
-                    this,
-                    TrafficLight.LightState.Red,
-                    _leftOrRight.other);
-            else
-                _leftOrRight.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _leftOrRight.other);
+            _leftOrRight.other.light = new TrafficLight(sequence.leftOrRight, sequence.total, this, _leftOrRight.other);
 
             center = _leftOrRight.originPoint.position.closestPointOnLinesegment(_throughOrLeft.originPoint.position, _throughOrRight.originPoint.position);
             

@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Collections.Generic;
 using Events;
 using UnityEngine;
@@ -25,9 +24,6 @@ namespace DataTypes
         public static TypePublisher typePublisher { get; } = new TypePublisher();
 
         private int _ticks { get; set; } = 0;
-        private int _redToRedYellow { get; }
-        private int _yellow { get; }
-        private int _greenToYellow { get; }
         private Vertex _section { get; }
         private Edge _edge { get; }
 
@@ -47,40 +43,6 @@ namespace DataTypes
             var publisher = new ObjectPublisher(typePublisher);
             publisher.Subscribe(ChangeState);
             _allPublishers.Add(publisher);
-        }
-
-
-        public TrafficLight(Dictionary<LightState, int> frequencies, Vertex intersection, LightState start, Edge edge)
-        {
-            state = start;
-            _redToRedYellow = frequencies[LightState.Red];
-            _yellow = frequencies[LightState.Yellow];
-            _greenToYellow = frequencies[LightState.Green];
-            _section = intersection;
-            _edge = edge;
-            
-            var publisher = new ObjectPublisher(typePublisher);
-            publisher.Subscribe(ChangeState);
-            _allPublishers.Add(publisher);
-        }
-        
-        public TrafficLight(int red, int yellow, int green, Vertex intersection, LightState start, Edge edge)
-        {
-            state = start;
-            _redToRedYellow = red;
-            _yellow = yellow;
-            _greenToYellow = green;
-            _section = intersection;
-            _edge = edge;
-            
-            var publisher = new ObjectPublisher(typePublisher);
-            publisher.Subscribe(ChangeState);
-            _allPublishers.Add(publisher);
-        }
-
-        public TrafficLight WithChangedEdge(Edge edge)
-        {
-            return new TrafficLight(_redToRedYellow, _yellow, _greenToYellow, _section, state, edge);
         }
 
         private void UpdateVisuals() {
@@ -144,14 +106,16 @@ namespace DataTypes
         // changes state accordingly and resets counter
         public void ChangeState()
         {
-            if (_sequence.ContainsKey(_ticks))
-            {
-                var newState = _sequence[_ticks].state;
-                _sequence[_ticks].types.ForEach(type => states[type] = newState);
+            if (_totalTicks > 0) {
+                if (_sequence.ContainsKey(_ticks))
+                {
+                    var newState = _sequence[_ticks].state;
+                    _sequence[_ticks].types.ForEach(type => states[type] = newState);
+                }
+                _ticks++;
+                _ticks = _ticks % _totalTicks;
+                UpdateVisuals();
             }
-            _ticks++;
-            _ticks = _ticks % _totalTicks;
-            UpdateVisuals();
         }
 
         public void Display()

@@ -1,0 +1,21 @@
+@startuml Vertex
+!startsub vertex
+
+DataTypes.GameObjectData <|-- DataTypes.Vertex
+abstract class DataTypes.Vertex  {
+    + edges { get; -set; } : ImmutableArray<Edge> 
+    + routes { get; set; } : Dictionary<RouteSegment, Dictionary<int, SectionTrack>>
+
+    ~ Vertex(edges : IEnumerable<Edge>)
+    ~ Vertex(edges : params Edge[])
+    - SetEdges(edges : IEnumerable<Edge>) : void
+    + {abstract} SubRoute(comingFrom: Edge, to: Edge) : LaneType
+}
+DataTypes.Vertex *--> "<u>-publisher { get; }</u>" TypePublisher
+
+'DataTypes.Vertex ..> Edge : <<use>>
+'DataTypes.Vertex ..> RouteSegment : <<use>>
+'DataTypes.Vertex ..> LaneType : <<use>>
+
+!endsub
+@enduml

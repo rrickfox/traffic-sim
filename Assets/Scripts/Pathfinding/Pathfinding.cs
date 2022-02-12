@@ -15,8 +15,8 @@ namespace Pathfinding
             var verticesSet = vertices.ToHashSet();
             var endPoints = vertices.OfType<EndPoint>().ToList();
 
-            foreach (var start in endPoints)
-                foreach (var end in endPoints.Where(end => end != start))
+            foreach (var start in endPoints.Where(startPoint => startPoint.starting))
+                foreach (var end in endPoints.Where(end => end.ending && end != start))
                     start.FindPath(end, verticesSet);
         }
     }
@@ -47,7 +47,7 @@ namespace Pathfinding
         private static void CheckNeighbourhood(this Vertex self)
         {
             var pathDistance = self.GetPathDistance();
-            foreach (var edge in self.edges.Where(edge => edge.outgoingLanes.Count > 0))
+            foreach (var edge in self.edges.Where(edge => edge.outgoingLanes.Count > 0 && self.IsRoutePossible(self.GetEdge(self.GetPreviousVertex()), edge)))
             {
                 var otherPathDistance = edge.other.vertex.GetPathDistance();
                 var newPathDistance = pathDistance + edge.length;

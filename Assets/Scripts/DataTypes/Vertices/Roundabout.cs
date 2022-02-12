@@ -16,5 +16,10 @@ namespace DataTypes
         {
             throw new System.NotImplementedException();
         }
+
+        public override bool IsRoutePossible(Edge from, Edge to)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -28,25 +28,21 @@ namespace DataTypes
         public List<RouteSegment> route { get; }
         public RouteSegment segment { get; private set; }
 
-        // https://de.wikipedia.org/wiki/Gr%C3%B6%C3%9Fenordnung_(Beschleunigung)
+        // https://de.wikipedia.org/wiki/Liste_von_Gr%C3%B6%C3%9Fenordnungen_der_Beschleunigung
         // the maximum acceleration this car could theoretically have
         public Acceleration theoreticalMaxAcceleration { get; } = Acceleration.FromMetersPerSecondSquared(3);
         // the maximum acceleration allowed to still be able to change lanes (specified by LaneChangingDriver)
         public Acceleration maxAcceleration { get; private set; } = Acceleration.FromMetersPerSecondSquared(3);
-        // the minimum deceleration a car should theoretically have
-        // https://de.wikipedia.org/wiki/Bremsweg
-        public Acceleration minBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-5);
-        // the maximum deceleration a car can have
-        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-10);
-        public Length length { get; }
-        // this distance should be kept to the cars in front
+        public Acceleration brakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-4);
+        public Acceleration maxBrakingDeceleration { get; } = Acceleration.FromMetersPerSecondSquared(-8);
         public Length bufferDistance => Length.FromMeters(Mathf.Max((float) length.Meters / 4f, Mathf.Round((float) speed.KilometersPerHour / 4f * 10f) / 10f));
+        public Length length { get; }
         // any braking distance below this is theoretically impossible
         public Length finalDistance => BrakingDistance(speed, -maxBrakingDeceleration);
         // minimum value of criticalDistance
         public Length criticalBufferDistance => bufferDistance * 2f + SECTION_BUFFER_LENGTH.DistanceUnitsToLength();
         // cars should start slowing down at this distance
-        public Length criticalDistance => Max(BrakingDistance(speed, 0.5 * -minBrakingDeceleration), criticalBufferDistance);
+        public Length criticalDistance => Max(BrakingDistance(speed, 0.5 * -brakingDeceleration), criticalBufferDistance);
         // the speed with which to change lanes
         public float laneChangingRate { get; } = 0.02f;
 
@@ -107,19 +103,105 @@ namespace DataTypes
         // accelerate depending on the context
         private void SelectAccelerator()
         {
-            var frontCar = GetFrontCar();
+            // var frontCar = GetFrontCar();
             
-            if (frontCar == null && track.light != null)
-                acceleration = TrafficLightDriver.LightAcceleration(this);
+            // if (frontCar == null && track.light != null)
+            //     acceleration = TrafficLightDriver.LightAcceleration(this);
+            // else
+            //     acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+
+            var frontOnTrack = GetFrontCar();
+            var (next, position) = GetNextCar();
+            if (track.light != null)
+                if (frontOnTrack != null)
+                    acceleration = NormalDriver.NormalAcceleration(this, frontOnTrack, frontOnTrack.positionOnRoad);
+                else
+                    acceleration = TrafficLightDriver.LightAcceleration(this);
             else
-                acceleration = NormalDriver.NormalAcceleration(this, frontCar);
+                acceleration = NormalDriver.NormalAcceleration(this, next, position);
         }
 
         // Returns the Car in front of the current Car
-        public Car GetFrontCar()
-            => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other) && other.positionOnRoad > positionOnRoad);
+        private Car GetFrontCar()
+            => track.cars.LookAhead(this).FirstOrDefault(other => IsOnSameLane(other, lane) && other.positionOnRoad > positionOnRoad);
 
-        public bool IsOnSameLane(Car otherCar) => Mathf.Abs(lane - otherCar.lane) < 0.99;
+        public (Car car, Length distance) GetNextCar()
+        {
+            Car front = GetFrontCar();
+            if (front != null)
+                return (front, front.positionOnRoad);
+
+            ITrack nextTrack = track;
+            float nextLane = Mathf.Round(lane);
+            RouteSegment nextSegment = segment;
+            int routeIndex = 0;
+            Length distance = Length.Zero;
+
+            do
+            {
+                distance += nextTrack.length;
+
+                if (nextSegment.edge.other.vertex is EndPoint)
+                    return (null, distance);
+
+                switch (nextTrack)
+                {
+                    case SectionTrack _:
+                        nextSegment = route.ElementAt(routeIndex);
+                        routeIndex++;
+                        nextTrack = nextSegment.edge;
+                        nextLane = nextTrack.newLane;
+                        break;
+                    case Edge _:
+                        var laneToTrack = nextSegment.edge.other.vertex.routes[nextSegment];
+                        try
+                        {
+                            nextTrack = laneToTrack[(int) nextLane];
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            return (null, distance);
+                        }
+                        break;
+                }
+
+                front = GetFrontCarOnTrack(nextTrack, nextLane);
+            } while (front == null);
+
+            distance += front.positionOnRoad;
+
+            return (
+                car: front,
+                distance: distance
+            );
+        }
+
+        private Car GetFrontCarOnTrack(ITrack track, float lane)
+            => track.cars.FirstOrDefault(other => IsOnSameLane(other, lane));
+
+        public ITrack GetNextTrack()
+        {
+            switch (track)
+            {
+                case SectionTrack _:
+                    return route.ElementAt(0).edge;
+                case Edge _:
+                    if (segment.edge.other.vertex.routes == null)
+                        return null;
+                    var laneToTrack = segment.edge.other.vertex.routes[segment];
+                    try
+                    {
+                        return laneToTrack[(int) lane];
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return laneToTrack[laneToTrack.Keys.First()];
+                    }
+            }
+            return null;
+        }
+
+        public bool IsOnSameLane(Car otherCar, float lane) => Mathf.Abs(lane - otherCar.lane) < 0.99;
         
         public Length AbsDistanceTo(Car otherCar) => Length.FromMeters(Mathf.Abs((float) (positionOnRoad - otherCar.positionOnRoad).Meters));
         
@@ -157,6 +239,7 @@ namespace DataTypes
                     case SectionTrack _:
                         track.cars.Remove(this);
                         segment = route.PopAt(0);
+                        lane = track.newLane;
                         track = segment.edge;
                         track.cars.AddFirst(this);
                         break;

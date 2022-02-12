@@ -8,22 +8,26 @@ using System;
 using Events;
 using UnitsNet;
 
-/*
-
-    possible combinations of trafficlight states
-    
-    up-down: redYellow, left-right: red
-    up-down: green, left-right: red
-    up-down: yellow, left-right: red
-    up-down: red, left-right: redYellow
-    up-down: red, left-right: green
-    up-down: red, left-right: yellow
-
-*/
 namespace DataTypes
 {
     public class CrossSection : Vertex
     {
+        public struct TrafficLightConfig
+        {
+            public int total;
+            public Dictionary<int, TrafficLight.Config> up;
+            public Dictionary<int, TrafficLight.Config> right;
+            public Dictionary<int, TrafficLight.Config> down;
+            public Dictionary<int, TrafficLight.Config> left;
+            public TrafficLightConfig(int total, Dictionary<int, TrafficLight.Config> up, Dictionary<int, TrafficLight.Config> right, Dictionary<int, TrafficLight.Config> down, Dictionary<int, TrafficLight.Config> left)
+            {
+                this.total = total;
+                this.up = up;
+                this.right = right;
+                this.down = down;
+                this.left = left;
+            }
+        }
         public override GameObject prefab { get; } = ROAD_PREFAB;
 
         private Edge _up { get; }
@@ -33,20 +37,17 @@ namespace DataTypes
         
         private Vector2 center;
         
-        public CrossSection(Edge up, Edge right, Edge down, Edge left
-            , Dictionary<TrafficLight.LightState, int> lightFrequencies)
-            : base(up, right, down, left)
+        public CrossSection(Edge up, Edge right, Edge down, Edge left, TrafficLightConfig sequence) : base(up, right, down, left)
         {
+            // TODO: Add check for sequence validity
             _up = up;
-            _up.other.light = new TrafficLight(lightFrequencies, this, TrafficLight.LightState.Green, _up.other);
+            _up.other.light = new TrafficLight(sequence.up, sequence.total, this, _up.other);
             _right = right;
-            // calculates cycles based on perpendicular street
-            _right.other.light = new TrafficLight(2 * lightFrequencies[TrafficLight.LightState.Yellow] + lightFrequencies[TrafficLight.LightState.Green]
-                , lightFrequencies[TrafficLight.LightState.Yellow], lightFrequencies[TrafficLight.LightState.Red] - 2 * lightFrequencies[TrafficLight.LightState.Yellow], this, TrafficLight.LightState.Red, _right.other);
+            _right.other.light = new TrafficLight(sequence.right, sequence.total, this, _right.other);
             _down = down;
-            _down.other.light = _up.other.light.WithChangedEdge(_down.other);
+            _down.other.light = new TrafficLight(sequence.down, sequence.total, this, _down.other);
             _left = left;
-            _left.other.light = _right.other.light.WithChangedEdge(_left.other);
+            _left.other.light = new TrafficLight(sequence.left, sequence.total, this, _left.other);
 
             center = (_up.originPoint.position + _down.originPoint.position + _left.originPoint.position + _right.originPoint.position) / 4f;
             Display();
@@ -58,7 +59,7 @@ namespace DataTypes
             GenerateRoute(_left, _up, _right, _down);
 
             // TODO: toggle visibility of tracks via UI
-            // ShowTracks();
+            ShowTracks();
         }
 
         public void ShowTracks()
@@ -121,7 +122,15 @@ namespace DataTypes
                     return LaneType.RightTurn;
         }
 
-        private void GenerateRoute(Edge edge, Edge relativeLeft,Edge oppositeEdge,Edge relativeRight)
+        public override bool IsRoutePossible(Edge from, Edge to)
+        {
+            if (!edges.Contains(from)) throw new NetworkConfigurationError("From Edge not found");
+            if(!edges.Contains(to)) throw new NetworkConfigurationError("To Edge not found");
+            if(from == to) return false;
+            return from.incomingLanes.Any(lane => lane.types.Contains(SubRoute(from.other, to)));
+        }
+
+        private void GenerateRoute(Edge edge, Edge relativeLeft, Edge oppositeEdge, Edge relativeRight)
         {
             routes.Add(new RouteSegment(edge.other, LaneType.LeftTurn), new Dictionary<int, SectionTrack>());
             routes.Add(new RouteSegment(edge.other, LaneType.Through), new Dictionary<int, SectionTrack>());
@@ -140,7 +149,7 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
-                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    var preCurve = new BezierCurve(preCurveStart, preCurveEnd);
 
                     var postCurveEnd = relativeLeft.GetAbsolutePosition(Length.Zero, i).position;
                     var udDifference = Mathf.Clamp(oppositeEdge.incomingLanes.Count - edge.outgoingLanes.Count, 0f, Mathf.Infinity);
@@ -148,17 +157,17 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeLeft.GetAbsolutePosition(Length.Zero, i).position - relativeLeft.originPoint.position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                        + preCurveStart - edge.originPoint.position
+                        + postCurveEnd - relativeLeft.originPoint.position;
+                    var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.LeftTurn)].Add(i, new SectionTrack(this, new RoadShape(track), i));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.Through))
@@ -178,11 +187,10 @@ namespace DataTypes
                     var curve2Start = curve1Start + (postCurveStart - curve1Start) / 2f;
                     var curve1Controll = curve1Start - edge.originPoint.forward * (curve1Start - curve2Start).magnitude / 2f;
                     var curve2Controll = postCurveStart - oppositeEdge.originPoint.forward * (curve2Start - postCurveStart).magnitude / 2f;
-                    track.Add(new BezierCurve(curve1Start, curve1Controll, curve2Start));
-                    track.Add(new BezierCurve(curve2Start, curve2Controll, postCurveStart));
-                    track.Add(new BezierCurve(postCurveStart, postCurveStart, postCurveEnd));
+                    track.Add(new BezierCurve(curve1Start, postCurveStart, curve1Controll, curve2Controll));
+                    track.Add(new BezierCurve(postCurveStart, postCurveEnd));
 
-                    routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.Through)].Add(i, new SectionTrack(this, new RoadShape(track), i - throughOffset));
                 }
 
                 if (edge.incomingLanes[i].types.Contains(LaneType.RightTurn))
@@ -194,7 +202,7 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + lrDifference * LANE_WIDTH
                             + (lrDifference - 1) * (lrDifference == 0 ? 0f : LINE_WIDTH));
-                    var preCurve = new BezierCurve(preCurveStart, preCurveStart, preCurveEnd);
+                    var preCurve = new BezierCurve(preCurveStart, preCurveEnd);
 
                     var postCurveEnd = new Vector2();
                     var rDifference = relativeRight.outgoingLanes.Count - edge.incomingLanes.Count;
@@ -207,22 +215,22 @@ namespace DataTypes
                             + SECTION_BUFFER_LENGTH
                             + udDifference * LANE_WIDTH
                             + (udDifference - 1) * (udDifference == 0 ? 0f : LINE_WIDTH));
-                    var postCurve = new BezierCurve(postCurveStart, postCurveStart, postCurveEnd);
+                    var postCurve = new BezierCurve(postCurveStart, postCurveEnd);
 
                     var curveControll = center
-                        + edge.other.GetAbsolutePosition(edge.length, i).position - edge.originPoint.position
-                        + relativeRight.GetAbsolutePosition(Length.Zero, i).position - relativeRight.originPoint.position;
-                    var curve = new BezierCurve(preCurveEnd, curveControll, postCurveStart);
+                        + preCurveStart - edge.originPoint.position
+                        + postCurveEnd - relativeRight.originPoint.position;
+                    var curve = new BezierCurve(preCurveEnd, postCurveStart, curveControll);
                     track.Add(preCurve);
                     track.Add(curve);
                     track.Add(postCurve);
 
-                    routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track)));
+                    routes[new RouteSegment(edge.other, LaneType.RightTurn)].Add(i, new SectionTrack(this, new RoadShape(track), i + rDifference));
                 }
             }
         }
 
-        private void Display()
+        public void Display()
         {
             #region setOriginPoints
             // move originPoints to be in line with the borders of neighbouring edges
@@ -436,8 +444,10 @@ namespace DataTypes
             for(var i = 0; i < 4; i++)
             {
                 uvs[12 + 3 * i] = GetCorner(i);
-                uvs[12 + 3 * i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
-                uvs[12 + 3 * i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
+                //uvs[12 + 3 * i + 1] = uvs[3 * i + 1] + (GetCorner(i) - uvs[3 * i + 1]) / 2;
+                //uvs[12 + 3 * i + 2] = uvs[3 * i + 2] + (GetCorner((i + 1) % 4) - uvs[3 * i + 2]) / 2;
+                uvs[12 + 3 * i + 1] = GetCorner(i);
+                uvs[12 + 3 * i + 2] = GetCorner(i);
             }
             #endregion
 
@@ -789,18 +799,20 @@ namespace DataTypes
         }
         
         // return position of corner when given to adjacent edges
+        // notice, that the edges are not actually the relative left or right edges
+        // rather, the 'left' edge is the one, where the other is to the left of it
         private Vector2 GetSectionCorner(Edge leftEdge, Edge rightEdge)
         {
             return leftEdge.originPoint.forward // offset to the left Edge
                 * (rightEdge.incomingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                    - LINE_WIDTH
+                    - ((rightEdge.incomingLanes.Count >= 1) ? LINE_WIDTH : 0)
                     + BORDER_LINE_WIDTH
-                    + MIDDLE_LINE_WIDTH / 2)
+                    + MIDDLE_LINE_WIDTH / 2f * ((rightEdge.incomingLanes.Count > 0) ?  1: -1))
             + rightEdge.originPoint.forward // offset to the right Edge
                 * (leftEdge.outgoingLanes.Count * (LANE_WIDTH + LINE_WIDTH)
-                    - LINE_WIDTH
+                    - ((leftEdge.outgoingLanes.Count >= 1) ? LINE_WIDTH : 0)
                     + BORDER_LINE_WIDTH
-                    + MIDDLE_LINE_WIDTH / 2);
+                    + MIDDLE_LINE_WIDTH / 2f * ((leftEdge.outgoingLanes.Count > 0) ?  1: -1));
         }
 
         // return position of corner including offset
@@ -811,9 +823,8 @@ namespace DataTypes
                 +  (left ? leftVector : -leftVector)
                     * (LANE_WIDTH * (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) // lanes
                     + LINE_WIDTH * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 1) ? (left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) - 1 : 0) // lines
-                    + MIDDLE_LINE_WIDTH / 2f // half the middle line
-                    + BORDER_LINE_WIDTH // border line
-                    - (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ? 0 : MIDDLE_LINE_WIDTH / 2f)); // subtract half the middle line if no lanes incoming
+                    + MIDDLE_LINE_WIDTH / 2f * (((left ? edge.incomingLanes.Count : edge.outgoingLanes.Count) > 0) ?  1: -1) // half the middle line
+                    + BORDER_LINE_WIDTH); // border line
         }
     }
 }

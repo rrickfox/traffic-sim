@@ -14,6 +14,7 @@ namespace Interface
         private FreeCamera _freeCam;
         private Car _car;
         private bool _visible = false;
+        private float _timeSinceCarCheck = 0;
 
         // Start is called before the first frame update
         private void Start()
@@ -33,6 +34,11 @@ namespace Interface
                     panel.SetActive(true);
                     _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
                 }
+                if (_timeSinceCarCheck > .25)
+                {
+                    _car = (Car) _freeCam._targetCar.GetComponent<LinkedBehaviour>().data;
+                    _timeSinceCarCheck = 0;
+                }
             }
             else
             {
@@ -44,10 +50,12 @@ namespace Interface
             if (_visible)
             {
                 speedText.text = Mathf.Round((float) _car.speed.KilometersPerHour * 10) / 10f + " km/h";
-                var frontCar = _car.GetFrontCar();
-                if(frontCar != null)
-                    frontDistanceText.text = Mathf.Round((float) ((frontCar.positionOnRoad - _car.positionOnRoad) - ((_car.length + frontCar.length) / 2) - _car.bufferDistance).Meters * 10f) / 10f + " m";
+                var (frontCar, distance) = _car.GetNextCar();
+                if (frontCar != null)
+                    distance -= frontCar.length / 2;
+                frontDistanceText.text = Mathf.Round((float) (distance - _car.positionOnRoad - (_car.length / 2)).Meters * 10f) / 10f + " m";
             }
+            _timeSinceCarCheck += Time.deltaTime;
         }
     }
 }

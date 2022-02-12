@@ -1,0 +1,23 @@
+@startuml ITrack
+!startsub itrack
+
+interface DataTypes.ITrack #A5C4AB|FEFFFE ##5C9967 {
+    + light { get; set; } [CanBeNull] : TrafficLight
+    + length { get; } : UnitsNet.Length
+    + speedLimit { get; } : UnitsNet.Speed
+    + cars { get; } : SortableLinkedList<Car>
+    + GetAbsolutePosition(positionOnRoad: UnitsNet.Length, lane: float) : RoadPoint
+}
+
+/'
+DataTypes.ITrack *--> "+ light { get; set; }" DataTypes.TrafficLight
+DataTypes.ITrack *--> "+ length { get; }" UnitsNet.Length
+DataTypes.ITrack *--> "+ speedLimit { get; }" UnitsNet.Speed
+'/
+
+DataTypes.ITrack *--> DataTypes.TrafficLight
+DataTypes.ITrack *--> UnitsNet.Length
+DataTypes.ITrack *--> UnitsNet.Speed
+
+!endsub
+@enduml

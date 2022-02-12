@@ -12,10 +12,10 @@ namespace DataTypes.Drivers
             var distanceLeft = myCar.track.length - myCar.positionOnRoad - myCar.criticalBufferDistance;
             var brakingDeceleration = BrakingDeceleration(myCar.speed, distanceLeft);
             
-            switch (myCar.track.light.state)
+            switch (myCar.track.light.states[myCar.segment.laneType])
             {
                 case TrafficLight.LightState.Green:
-                    acceleration += myCar.maxAcceleration;
+                    acceleration += NormalDriver.freeRoadBehaviour(myCar);
                     break;
                     
                 case TrafficLight.LightState.Yellow:
@@ -23,20 +23,20 @@ namespace DataTypes.Drivers
                     //     acceleration += myCar.maxAcceleration;
                     /*else*/
                     if (distanceLeft <= myCar.criticalDistance)
-                        acceleration += brakingDeceleration;
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero) + NormalDriver.slowDownBehaviour(myCar, distanceLeft);
                     else
-                        acceleration += myCar.maxAcceleration;
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.slowDownBehaviour(myCar, Length.MaxValue);
                     break;
                     
                 case TrafficLight.LightState.Red:
                     if (distanceLeft <= myCar.criticalDistance)
-                        acceleration += brakingDeceleration;
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.interactionBehaviour(myCar, distanceLeft, Speed.Zero) + NormalDriver.slowDownBehaviour(myCar, distanceLeft);
                     else
-                        acceleration += myCar.maxAcceleration;
+                        acceleration += NormalDriver.freeRoadBehaviour(myCar) + NormalDriver.slowDownBehaviour(myCar, Length.MaxValue);
                     break;
             }
             
-            return Max(myCar.minBrakingDeceleration, Min(myCar.maxAcceleration, acceleration));
+            return Max(myCar.brakingDeceleration, Min(myCar.maxAcceleration, acceleration));
         }
     }
 }

@@ -1,0 +1,18 @@
+@startuml TeeSection
+!startsub teesection
+
+DataTypes.Vertex <|-- DataTypes.TeeSection
+class DataTypes.TeeSection {
+    + prefab : UnityEngine.GameObject
+    .. Relations ..
+    - throughOrRight
+    --
+    + TeeSection(throughOrRight: Edge, throughOrLeft: Edge, leftOrRight: Edge, lightFrequencies: Dictionary<TrafficLight.LightState, int>)
+    + SubRoute(comingFrom: Edge, to: Edge) : LaneType
+}
+DataTypes.TeeSection *--> "-throughOrRight { get; }" DataTypes.Edge
+DataTypes.TeeSection *--> "-throughOrLeft { get; }" DataTypes.Edge
+DataTypes.TeeSection *--> "-leftOrRight { get; }" DataTypes.Edge
+
+!endsub
+@enduml

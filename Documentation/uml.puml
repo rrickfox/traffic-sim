@@ -1,0 +1,20 @@
+@startuml all
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam class {
+    BackgroundColor #FFCC99|FFFFDA
+    BorderColor #99795C
+    ArrowColor Black
+}
+
+hide circle
+
+!includesub GameObjectData.puml!gameobjectdata
+!includesub Vertex.puml!vertex
+!includesub EndPoint.puml!endpoint
+!includesub CrossSection.puml!crosssection
+!includesub TeeSection.puml!teesection
+!includesub Edge.puml!edge
+!includesub ITrack.puml!itrack
+
+@enduml

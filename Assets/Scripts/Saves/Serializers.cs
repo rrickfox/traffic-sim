@@ -56,11 +56,24 @@ namespace Saves
         public class BezierCurve
         {
             public Point2D start { get; set; }
-            public Point2D control { get; set; }
+            public Point2D control1 { get; set; } = null;
+            public Point2D control2 {get; set;} = null;
             public Point2D end { get; set; }
 
             public DataTypes.BezierCurve Deserialize()
-                => new DataTypes.BezierCurve(start.Deserialize(), control.Deserialize(), end.Deserialize());
+            {
+                if(control1 == null)
+                    if(control2 == null)
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize());
+                    else
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control2.Deserialize());
+                if(control1 != null)
+                    if(control2 == null)
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control1.Deserialize());
+                    else
+                        return new DataTypes.BezierCurve(start.Deserialize(), end.Deserialize(), control1.Deserialize(), control2.Deserialize());
+                return null; // dunno why I have to write dis
+            }
         }
         
         public class Point2D
@@ -156,13 +169,22 @@ namespace Saves
                 }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             }
         }
-        
+
+        public class TeeSectionTrafficLight
+        {
+            public int total { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> throughOrRight { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> throughOrLeft { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> leftOrRight { get; set; }
+            public DataTypes.TeeSection.TrafficLightConfig Deserialize() => new DataTypes.TeeSection.TrafficLightConfig(total, throughOrRight, throughOrLeft, leftOrRight);
+        }
+
         public class TeeSection : IVertex<DataTypes.TeeSection>
         {
             public string throughOrRight { get; set; }
             public string throughOrLeft { get; set; }
             public string leftOrRight { get; set; }
-            public Dictionary<TrafficLight.LightState, int> throughFrequency { get; set; }
+            public TeeSectionTrafficLight sequence { get; set; }
 
             public DataTypes.TeeSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -203,19 +225,27 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
                 
-                return new DataTypes.TeeSection(actualEdges["throughOrRight"]
-                    , actualEdges["throughOrLeft"], actualEdges["leftOrRight"]
-                    , throughFrequency);
+                return new DataTypes.TeeSection(actualEdges["throughOrRight"], actualEdges["throughOrLeft"], actualEdges["leftOrRight"], sequence.Deserialize());
             }
         }
-        
+
+        public class CrossSectionTrafficLight
+        {
+            public int total { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> right { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> up { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> down { get; set; }
+            public Dictionary<int, DataTypes.TrafficLight.Config> left { get; set; }
+            public DataTypes.CrossSection.TrafficLightConfig Deserialize() => new DataTypes.CrossSection.TrafficLightConfig(total, up, right, down, left);
+        }
+
         public class CrossSection : IVertex<DataTypes.CrossSection>
         {
             public string up { get; set; }
             public string right { get; set; }
             public string down { get; set; }
             public string left { get; set; }
-            public Dictionary<TrafficLight.LightState, int> upDownFrequency { get; set; }
+            public CrossSectionTrafficLight sequence { get; set; }
 
             public DataTypes.CrossSection Deserialize(Dictionary<int, DataTypes.Edge> verticesLookup)
             {
@@ -256,9 +286,7 @@ namespace Saves
                     actualEdges.Add(edge.Key, actualEdge);
                 }
                 
-                return new DataTypes.CrossSection(actualEdges["up"]
-                    , actualEdges["right"], actualEdges["down"], actualEdges["left"]
-                    , upDownFrequency);
+                return new DataTypes.CrossSection(actualEdges["up"], actualEdges["right"], actualEdges["down"], actualEdges["left"], sequence.Deserialize());
             }
         }
     }

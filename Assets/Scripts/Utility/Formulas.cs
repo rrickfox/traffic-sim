@@ -63,6 +63,9 @@ namespace Utility
         public static SpecificEnergy Times(this Acceleration acceleration, Length length)
             => SpecificEnergy.FromJoulesPerKilogram(acceleration.MetersPerSecondSquared * length.Meters);
 
+        public static Acceleration Inverse(this Acceleration acceleration)
+            => Acceleration.FromMetersPerSecondSquared(-1 * acceleration.MetersPerSecondSquared);
+
         public static Speed Plus(this Speed speed1, Speed speed2)
         {
             var value = speed1.MetersPerSecond + speed2.MetersPerSecond;
@@ -79,6 +82,7 @@ namespace Utility
         public static Area Squared(this Length length) => length * length;
         
         public static Acceleration Min(params Acceleration[] accelerations) => accelerations.Min();
+        public static Speed Min(params Speed[] speeds) => speeds.Min();
         public static Length Min(params Length[] lengths) => lengths.Min();
         
         public static Acceleration Max(params Acceleration[] accelerations) => accelerations.Max();
@@ -94,11 +98,12 @@ namespace Utility
         }
 
         // https://de.wikipedia.org/wiki/Bremsverz%C3%B6gerung
-        public static Acceleration BrakingDeceleration(Speed speed, Length brakingDistance)
+        public static Acceleration BrakingDeceleration(Speed speed0, Length brakingDistance, Speed? speed1 = null)
         {
+            Speed speedGoal = (speed1 == null) ? Speed.Zero : (Speed) speed1;
             return brakingDistance == Length.Zero
                 ? Acceleration.MinValue
-                : - speed.Squared().DividedBy(2 * brakingDistance);
+                : - (speed0.Squared() - speedGoal.Squared()).DividedBy(2 * brakingDistance);
         }
     }
 }

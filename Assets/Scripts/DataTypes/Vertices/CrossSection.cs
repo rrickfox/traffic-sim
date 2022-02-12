@@ -8,18 +8,6 @@ using System;
 using Events;
 using UnitsNet;
 
-/*
-
-    possible combinations of trafficlight states
-    
-    up-down: redYellow, left-right: red
-    up-down: green, left-right: red
-    up-down: yellow, left-right: red
-    up-down: red, left-right: redYellow
-    up-down: red, left-right: green
-    up-down: red, left-right: yellow
-
-*/
 namespace DataTypes
 {
     public class CrossSection : Vertex

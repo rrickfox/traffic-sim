@@ -18,5 +18,12 @@ namespace Utility
 
         public static float det(this Vector2 a, Vector2 b)
             => a.x * b.y - a.y * b.x;
+
+        // calculates intersection of two rays, starting at a and b, in the directions u and v respectively
+        public static Vector2 intersection(Vector2 a, Vector2 u, Vector2 b, Vector2 v)
+        {
+            var t = (b - a).det(-1 * v) / u.det(-1 * v);
+            return a + t * u;
+        }
     }
 } 

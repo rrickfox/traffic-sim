@@ -98,35 +98,45 @@ namespace DataTypes
                 + MIDDLE_LINE_WIDTH / 2f * ((outgoingLanes.Count > 0) ?  1: -1)
                 + BORDER_LINE_WIDTH;
 
+            float curvatureOverflow = 0;
+            int setPoints = 0;
+
             for (var i = 0; i < shape.points.Length; i++)
             {
-                var p = shape.points[i];
-                // offset and direction for the mesh-vertices
-                var left = new Vector2(-p.forward.y, p.forward.x);
-                var newPosLeft = p.position + left * incomingOffset;
-                var newPosRight = p.position - left * outgoingOffset;
-                meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
-                meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
-                meshVertices.Add(newPosLeft.toWorld());
-                meshVertices.Add(newPosRight.toWorld());
+                if (curvatureOverflow >= 1 || i == 0 || i == shape.points.Length - 1)
+                {
+                    var p = shape.points[i];
+                    // offset and direction for the mesh-vertices
+                    var left = new Vector2(-p.forward.y, p.forward.x);
+                    var newPosLeft = p.position + left * incomingOffset;
+                    var newPosRight = p.position - left * outgoingOffset;
+                    meshVertices.Add(new Vector3(newPosLeft.x, ROAD_HEIGHT, newPosLeft.y));
+                    meshVertices.Add(new Vector3(newPosRight.x, ROAD_HEIGHT, newPosRight.y));
+                    meshVertices.Add(newPosLeft.toWorld());
+                    meshVertices.Add(newPosRight.toWorld());
 
-                // uv-coordinates
-                var relativePos = i / (float)(shape.points.Length - 1);
-                var relativeInnerPos = ROAD_HEIGHT / (
-                    ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
-                    + 2 * BORDER_LINE_WIDTH // borders
-                    + 2 * ROAD_HEIGHT // sides
-                    + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
-                    + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
-                );
-                uvs.Add(new Vector2(relativeInnerPos, relativePos));
-                uvs.Add(new Vector2(1 - relativeInnerPos, relativePos));
-                uvs.Add(new Vector2(0f, relativePos));
-                uvs.Add(new Vector2(1f, relativePos));
+                    // uv-coordinates
+                    var relativePos = i / (float)(shape.points.Length - 1);
+                    var relativeInnerPos = ROAD_HEIGHT / (
+                        ((incomingLanes.Count > 0 && outgoingLanes.Count > 0) ? MIDDLE_LINE_WIDTH : 0) // middle line
+                        + 2 * BORDER_LINE_WIDTH // borders
+                        + 2 * ROAD_HEIGHT // sides
+                        + LANE_WIDTH * (incomingLanes.Count + outgoingLanes.Count) // lanes
+                        + LINE_WIDTH * (lineCountIncoming + lineCountOutgoing) // lines between lanes going in the same direction
+                    );
+                    uvs.Add(new Vector2(relativeInnerPos, relativePos));
+                    uvs.Add(new Vector2(1 - relativeInnerPos, relativePos));
+                    uvs.Add(new Vector2(0f, relativePos));
+                    uvs.Add(new Vector2(1f, relativePos));
+
+                    curvatureOverflow = 0;
+                    setPoints++;
+                }
+                curvatureOverflow += 0.01f + Mathf.Abs(shape.points[i].curvature);
             }
 
             var triangles =
-                Enumerable.Range(0, shape.points.Length - 1)
+                Enumerable.Range(0, setPoints - 1)
                 .Select(i => 4 * i)
                 .Aggregate(
                     Enumerable.Empty<int>(),
